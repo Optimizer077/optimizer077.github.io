@@ -4,84 +4,121 @@
   <meta charset="UTF-8">
   <title>Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    h1 {
+      margin-bottom: 0.3rem;
+    }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+    }
+
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Ali Haider</h1>
-    <p><strong>PhD Researcher | Generative Models | Vision-Language | Implicit Learning</strong></p>
+  <h1>Ali Haider</h1>
+  <p><strong>PhD Researcher | Generative Models | Vision-Language | Implicit Learning</strong></p>
 
-    <img src="profile.jpg" alt="Ali Haider" class="profile-pic">
+  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEBAQDxAPEA8PDxAQEA8NDw8QDQ8PFRIWFhURExMYHSggGBolGxMTITEhJSorLi4uFx81ODMsNygtLisBCgoKDg0OGBAQGi0lHx8tLS0rKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIALcBEwMBIgACEQEDEQH/... (truncated for clarity)" 
+       alt="Ali Haider" class="profile-pic" />
 
-    <section>
-      <h2>About</h2>
-      <p>
-        I am a PhD researcher interested in <strong>generative models</strong>, <strong>image restoration</strong>, 
-        <strong>implicit neural representations</strong>, and <strong>vision-language models</strong>. 
-        My research focuses on creating efficient, explainable, and deployable AI systems.
-      </p>
-    </section>
+  <section>
+    <h2>About</h2>
+    <p>
+      I am a PhD researcher interested in <strong>generative models</strong>, 
+      <strong>image restoration</strong>, <strong>implicit neural representations</strong>, 
+      and <strong>vision-language models</strong>. My research focuses on creating efficient, 
+      explainable, and deployable AI systems.
+    </p>
+  </section>
 
-    <section>
-      <h2>Contact</h2>
-      <p>
-        <a href="mailto:youremail@example.com">Email</a> /
-        <a href="resume.pdf" target="_blank">CV</a> /
-        <a href="https://scholar.google.com/citations?user=XXXX">Google Scholar</a> /
-        <a href="https://github.com/alihaider">GitHub</a> /
-        <a href="https://linkedin.com/in/alihaider">LinkedIn</a>
-      </p>
-    </section>
+  <section>
+    <h2>Contact</h2>
+    <p>
+      <a href="mailto:youremail@example.com">Email</a> /
+      <a href="resume.pdf" target="_blank">CV</a> /
+      <a href="https://scholar.google.com/citations?user=XXXX">Google Scholar</a> /
+      <a href="https://github.com/alihaider">GitHub</a> /
+      <a href="https://linkedin.com/in/alihaider">LinkedIn</a>
+    </p>
+  </section>
 
-    <section>
-      <h2>Research Interests</h2>
-      <ul>
-        <li>Generative Models (Diffusion, Transformers)</li>
-        <li>Image Restoration</li>
-        <li>Implicit Neural Representations (INRs)</li>
-        <li>Vision-Language Models & Multimodal AI</li>
-        <li>Contrastive & Self-supervised Learning</li>
-      </ul>
-    </section>
+  <section>
+    <h2>Research Interests</h2>
+    <ul>
+      <li>Generative Models (Diffusion, Transformers)</li>
+      <li>Image Restoration</li>
+      <li>Implicit Neural Representations (INRs)</li>
+      <li>Vision-Language Models & Multimodal AI</li>
+      <li>Contrastive & Self-supervised Learning</li>
+    </ul>
+  </section>
 
-    <section>
-      <h2>News</h2>
-      <ul>
-        <li>[2025] — I-INR paper submitted to a major conference</li>
-        <li>[2024] — AAAI paper accepted: Color Correction via Diffusion</li>
-        <li>[2021] — First-author paper on thermal imaging published in Infrared Physics & Technology</li>
-      </ul>
-    </section>
+  <section>
+    <h2>News</h2>
+    <ul>
+      <li>[2025] — I-INR paper submitted to a major conference</li>
+      <li>[2024] — AAAI paper accepted: Color Correction via Diffusion</li>
+      <li>[2021] — First-author paper on thermal imaging published in Infrared Physics & Technology</li>
+    </ul>
+  </section>
 
-    <section>
-      <h2>Selected Publications</h2>
-      <ul>
-        <li>
-          <strong>Human detection in aerial thermal imaging using a fully convolutional regression network</strong><br>
-          <em>A Haider, F Shaukat, J Mir</em><br>
-          Infrared Physics & Technology 116, 103796, 2021
-        </li>
-        <li>
-          <strong>Descanning: From scanned to the original images with a color correction diffusion model</strong><br>
-          <em>J Cha, A Haider, et al.</em><br>
-          AAAI 2024
-        </li>
-        <li>
-          <strong>I-INR: Iterative Implicit Neural Representations</strong><br>
-          <em>A Haider, et al.</em><br>
-          arXiv:2504.17364, 2025
-        </li>
-        <li>
-          <strong>Improving INRs with Robust Loss Functions</strong><br>
-          <em>A Haider, SH Bae</em><br>
-          Korea Broadcasting Conference, 2025
-        </li>
-      </ul>
-    </section>
+  <section>
+    <h2>Selected Publications</h2>
+    <ul>
+      <li>
+        <strong>Human detection in aerial thermal imaging using a fully convolutional regression network</strong><br>
+        <em>A Haider, F Shaukat, J Mir</em><br>
+        Infrared Physics & Technology 116, 103796, 2021
+      </li>
+      <li>
+        <strong>Descanning: From scanned to the original images with a color correction diffusion model</strong><br>
+        <em>J Cha, A Haider, et al.</em><br>
+        AAAI 2024
+      </li>
+      <li>
+        <strong>I-INR: Iterative Implicit Neural Representations</strong><br>
+        <em>A Haider, et al.</em><br>
+        arXiv:2504.17364, 2025
+      </li>
+      <li>
+        <strong>Improving INRs with Robust Loss Functions</strong><br>
+        <em>A Haider, SH Bae</em><br>
+        Korea Broadcasting Conference, 2025
+      </li>
+    </ul>
+  </section>
 
-    <footer>
-      <p>© 2025 Ali Haider</p>
-    </footer>
-  </div>
+  <footer>
+    <p>© 2025 Ali Haider</p>
+  </footer>
 </body>
 </html>
