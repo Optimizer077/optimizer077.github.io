@@ -207,28 +207,28 @@
     </ul>
   </section>
   
-<footer>
-  <p>© 2025 Ali Haider</p>
-  <p id="visit-counter">Loading…</p>
-</footer>
-
-<!-- Global visit counter via CountAPI -->
-<script>
-  (async () => {
-    const NAMESPACE = 'ali_haider_site';
-    const KEY       = 'visits';
-
-    try {
-      // Hit (increment) the counter and get the new value
-      const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
-      const data = await res.json();                 // { value: <number> }
-      document.getElementById('visit-counter').textContent =
-        `Global visits: ${data.value}`;
-    } catch (err) {
-      document.getElementById('visit-counter').textContent =
-        'Visit counter unavailable.';
-    }
-  })();
-</script>
-</body>
+  <footer>
+    <p>© 2025 Ali Haider</p>
+    <p id="visit-counter">Loading…</p>
+  </footer>
+  
+  <!-- Global visit counter via CountAPI -->
+  <script>
+    (async () => {
+      const NAMESPACE = 'ali_haider_site';
+      const KEY       = 'visits';
+  
+      try {
+        // Hit (increment) the counter and get the new value
+        const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
+        const data = await res.json();                 // { value: <number> }
+        document.getElementById('visit-counter').textContent =
+          `Global visits: ${data.value}`;
+      } catch (err) {
+        document.getElementById('visit-counter').textContent =
+          'Visit counter unavailable.';
+      }
+    })();
+  </script>
+  </body>
 </html>
