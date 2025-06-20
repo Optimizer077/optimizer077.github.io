@@ -207,26 +207,28 @@
     </ul>
   </section>
   
-  <footer>
+<footer>
   <p>© 2025 Ali Haider</p>
-  <p id="visit-counter"></p>
+  <p id="visit-counter">Loading…</p>
 </footer>
 
-<!-- Local (per-browser) visit counter -->
+<!-- Global visit counter via CountAPI -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const counterEl = document.getElementById('visit-counter');
-    const STORAGE_KEY = 'ali_haider_visit_count';
+  (async () => {
+    const NAMESPACE = 'ali_haider_site';
+    const KEY       = 'visits';
 
     try {
-      let count = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
-      count += 1;
-      localStorage.setItem(STORAGE_KEY, count);
-      counterEl.textContent = `Visits from this browser: ${count}`;
+      // Hit (increment) the counter and get the new value
+      const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
+      const data = await res.json();                 // { value: <number> }
+      document.getElementById('visit-counter').textContent =
+        `Global visits: ${data.value}`;
     } catch (err) {
-      counterEl.textContent = 'Visit counter unavailable.';
+      document.getElementById('visit-counter').textContent =
+        'Visit counter unavailable.';
     }
-  });
+  })();
 </script>
 </body>
 </html>
