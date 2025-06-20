@@ -206,8 +206,27 @@
       <li>TensorFlow Developer Certificate</li>
     </ul>
   </section>
+  
   <footer>
-    <p>© 2025 Ali Haider</p>
-  </footer>
+  <p>© 2025 Ali Haider</p>
+  <p id="visit-counter"></p>
+</footer>
+
+<!-- Local (per-browser) visit counter -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const counterEl = document.getElementById('visit-counter');
+    const STORAGE_KEY = 'ali_haider_visit_count';
+
+    try {
+      let count = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+      count += 1;
+      localStorage.setItem(STORAGE_KEY, count);
+      counterEl.textContent = `Visits from this browser: ${count}`;
+    } catch (err) {
+      counterEl.textContent = 'Visit counter unavailable.';
+    }
+  });
+</script>
 </body>
 </html>
