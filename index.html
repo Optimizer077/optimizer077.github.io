@@ -11,6 +11,7 @@
       margin: auto;
       padding: 2rem;
       line-height: 1.6;
+      position: relative;
     }
 
     h1 {
@@ -41,22 +42,62 @@
       font-size: 0.9rem;
       color: #555;
     }
+
+    .top-nav {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .top-nav a {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #007acc;
+      border-radius: 6px;
+      color: #007acc;
+      background-color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .top-nav a:hover {
+      background: #007acc;
+      color: white;
+    }
   </style>
 </head>
 <body>
-    <nav class="top-nav">
+
+  <nav class="top-nav">
     <a href="assets/seminar.html">Seminar</a>
     <a href="talk.html">Talk</a>
   </nav>
+
   <h1>Ali Haider</h1>
   <p><strong>PhD Researcher | Generative Models | Vision-Language | Implicit Learning</strong></p>
 
- <img
-  class="profile-pic"
-  src="assets/img/download.jpeg"
-  alt="Ali Haider profile picture"
-/>
+  <img
+    class="profile-pic"
+    src="assets/img/download.jpeg"
+    alt="Ali Haider profile picture"
+  />
 
+  <!-- KEEP ALL YOUR EXISTING SECTIONS BELOW HERE -->
+  <!-- About, Contact, Research Interests, News, Publications, etc. -->
+
+  <!-- Example only: About Section -->
+  <section>
+    <h2>About</h2>
+    <p>
+      I am currently pursuing a Ph.D. in Artificial Intelligence at Kyung Hee University Global Campus, 
+      where I am a member of the 
+      <a href="https://mlvc.khu.ac.kr/home" target="_blank">Machine Learning and Visual Computing (MLVC) Lab</a>, 
+      under the supervision of 
+      <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank">Professor Sung Ho Bae</a>.
+    </p>
+    
   <section>
     <h2>About</h2>
     <p>
@@ -231,11 +272,11 @@
     </ul>
   </section>
   
-  <footer>
+<footer>
     <p>© 2025 Ali Haider</p>
     <p id="visit-counter">Loading…</p>
   </footer>
-  
+
   <!-- Global visit counter via CountAPI -->
   <script>
     (async () => {
@@ -243,9 +284,8 @@
       const KEY       = 'visits';
   
       try {
-        // Hit (increment) the counter and get the new value
         const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
-        const data = await res.json();                 // { value: <number> }
+        const data = await res.json();
         document.getElementById('visit-counter').textContent =
           `Global visits: ${data.value}`;
       } catch (err) {
@@ -254,5 +294,6 @@
       }
     })();
   </script>
-  </body>
+
+</body>
 </html>
