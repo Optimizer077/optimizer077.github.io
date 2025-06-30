@@ -7,63 +7,31 @@
   <style>
     /* ===== COLOR SYSTEM ===== */
     :root {
-      --clr-accent:  #007acc;  /* blue accent */
-      --clr-primary: #1f2937;  /* dark text */
-      --clr-text:    #374151;  /* body text */
-      --clr-bg:      #ffffff;  /* page bg */
-      --clr-bg-alt:  #fef9e7;  /* soft yellow */
-      --clr-border:  #e5e7eb;  /* light border */
-
-      --fs-sm:  0.875rem;
-      --fs-lg:  1.125rem;
-      --fs-xl: 1.45rem;
+      --clr-accent:#007acc;
+      --clr-primary:#1f2937;
+      --clr-text:#374151;
+      --clr-bg:#ffffff;
+      --clr-bg-alt:#fef9e7;
+      --clr-border:#e5e7eb;
+      --fs-sm:0.875rem;
+      --fs-lg:1.125rem;
+      --fs-xl:1.45rem;
     }
-
-    /* ===== BASE ===== */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      max-width:860px;margin:auto;padding:2.5rem 1rem 4rem;line-height:1.65;
-      color:var(--clr-text);
-    }
-
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:860px;margin:auto;padding:2.5rem 1rem 4rem;line-height:1.65;color:var(--clr-text);}
     h1{font-size:2rem;font-weight:600;color:var(--clr-primary);margin-bottom:.5rem;}
     h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}
-    p,li{font-size:var(--fs-lg);}  /* readability */
-
-    a{color:var(--clr-accent);text-decoration:none;}
-    a:hover{text-decoration:underline;}
-
-    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:6px;box-shadow:0 2px 6px rgb(0 0 0 / .08);}  
-
+    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}  
+    p,li{font-size:var(--fs-lg);}    
+    a{color:var(--clr-accent);text-decoration:none;}a:hover{text-decoration:underline;}
+    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:6px;box-shadow:0 2px 6px rgb(0 0 0 / .08);} 
     ul{padding-left:1.2rem;margin-top:.4rem;}
-
-    /* ===== SECTION CARD ===== */
-    section{
-      background:var(--clr-bg-alt);
-      border:1px solid var(--clr-border);
-      border-radius:8px;
-      padding:1.6rem 1.4rem;
-      margin-bottom:2rem;
-    }
-    section:nth-of-type(even){background:var(--clr-bg);} /* alternate white */
-
-    /* ===== Table of Contents ===== */
-    .toc{
-      background:var(--clr-bg-alt);
-      border:1px solid var(--clr-border);
-      border-radius:8px;
-      padding:1rem 1.25rem;
-      margin:1.5rem 0 2rem;
-    }
-    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;color:var(--clr-primary);}  /* override */
-    .toc ul{margin:0;padding-left:1.2rem;}
-    .toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}  
+    section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}section:nth-of-type(even){background:var(--clr-bg);}   
+    .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
+    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;color:var(--clr-primary);} .toc ul{margin:0;padding-left:1.2rem;}.toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}  
   </style>
 </head>
 <body>
-
   <h1>📢 Seminar Talks</h1>
   <p class="venue" style="color:#6b7280;font-style:italic;margin-bottom:1rem;">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
 
@@ -73,7 +41,8 @@
     <ul>
       <li><a href="#reasoning">Reasoning Models / Image Restoration</a></li>
       <li><a href="#multitask">Multi-Task Learning for Diffusion Models</a></li>
-      <li><a href="#taskdiffusion">Task‑Oriented Diffusion for Image Restoration</a></li>
+      <li><a href="#taskdiffusion">Task-Oriented Diffusion for Image Restoration</a></li>
+      <li><a href="#aaai24">Any‑Size & ResDiff (AAAI 2024)</a></li>
       <li><a href="#neurips">NeurIPS 2024 Paper Summaries</a></li>
     </ul>
   </nav>
@@ -85,12 +54,11 @@
       A seminar covering the use of large language models and vision‑language approaches in visual reasoning and restoration. We explored recent innovations in step‑wise reasoning and multimodal agents for complex image tasks.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self‑Motivated Learning</a></li>
-      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener noreferrer">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
-      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener noreferrer">Chain‑of‑Restoration: Multi‑Task Image Restoration Models as Zero‑Shot Step‑by‑Step Universal Restorers</a></li>
+      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener">Improving Language Model Reasoning with Self‑Motivated Learning</a></li>
+      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
+      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener">Chain‑of‑Restoration: Universal Step‑by‑Step Restorers</a></li>
     </ul>
   </section>
 
@@ -101,11 +69,10 @@
       This seminar presents a multi‑task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture‑of‑experts to solve denoising in a synergistic fashion.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener noreferrer">Addressing Negative Transfer in Diffusion Models</a></li>
-      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener noreferrer">Switch Diffusion Transformer: Synergizing Denoising Tasks with Sparse Mixture‑of‑Experts</a></li>
+      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener">Addressing Negative Transfer in Diffusion Models</a></li>
+      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener">Switch Diffusion Transformer</a></li>
     </ul>
   </section>
 
@@ -116,17 +83,31 @@
       A deep dive into diffusion‑based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super‑resolution, and DiffBIR’s two‑stage blind restoration pipeline.
     </p>
     <iframe src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener noreferrer">Ambient Diffusion: Learning Clean Distributions from Corrupted Data &nbsp;–&nbsp; NeurIPS 2023</a></li>
-      <li><a href="https://arxiv.org/abs/2306.00372" target="_blank" rel="noopener noreferrer">ResShift: Efficient Diffusion Model for Image Super‑Resolution by Residual Shifting</a></li>
-      <li><a href="https://arxiv.org/abs/2404.06020" target="_blank" rel="noopener noreferrer">DiffBIR: Diffusion‑based Blind Image Restoration with Multi‑Stage Degradation Removal and Information Regeneration</a></li>
-      <li><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener noreferrer">Denoising Diffusion Probabilistic Models</a></li>
+      <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener">Ambient Diffusion</a></li>
+      <li><a href="https://arxiv.org/abs/2306.00372" target="_blank" rel="noopener">ResShift: Efficient SR via Residual Shifting</a></li>
+      <li><a href="https://arxiv.org/abs/2404.06020" target="_blank" rel="noopener">DiffBIR: Diffusion‑based Blind Image Restoration</a></li>
+      <li><a href="https://arxiv.org/abs/2006.11239" target="_blank" rel="noopener">DDPM (Original Diffusion)</a></li>
     </ul>
   </section>
 
   <!-- ===== Seminar 4 ===== -->
+  <section id="aaai24">
+    <h2>Any‑Size Diffusion &amp; ResDiff (AAAI 2024)</h2>
+    <p>
+      Highlights from two AAAI‑24 papers: **Any‑Size‑Diffusion (ASD)**, a two‑stage pipeline for text‑to‑image synthesis at arbitrary resolutions, and **ResDiff**, which unites CNN priors with diffusion guidance for efficient single‑image super‑resolution.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <h3>Referenced Papers</h3>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2311.16452" target="_blank" rel="noopener">Any‑Size‑Diffusion: Text‑Driven Synthesis for Any‑Size HD Images</a></li>
+      <li><a href="https://arxiv.org/abs/2308.16048" target="_blank" rel="noopener">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
+      <li><a href="https://arxiv.org/abs/2207.14626" target="_blank" rel="noopener">Patch‑Based Denoising Diffusion for Adverse Weather</a></li>
+    </ul>
+  </section>
+
+  <!-- ===== Seminar 5 ===== -->
   <section id="neurips">
     <h2>NeurIPS 2024 Paper Summaries</h2>
     <p>
@@ -137,6 +118,3 @@
 
 </body>
 </html>
-
-
-
