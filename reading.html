@@ -37,77 +37,62 @@
   </nav>
 
   <h1>📚 Paper Reading List</h1>
-  <p style="color:#6b7280;font-style:italic;margin-bottom:1.5rem;">Curated reading collections for group study</p>
+  <p style="color:#6b7280;font-style:italic;margin-bottom:1.5rem;">Curated reading collections for group study (newest first)</p>
 
   <!-- ===== Reasoning Models Section ===== -->
   <section id="reasoning">
     <h2>Reasoning Models</h2>
-    <ul id="reasoning-list"><!-- filled by JS --></ul>
+    <ul id="reasoning-list"></ul>
   </section>
 
   <!-- ===== Implicit Neural Representations Section ===== -->
   <section id="inr">
     <h2>Implicit Neural Representations (INR)</h2>
-    <ul id="inr-list"><!-- filled by JS --></ul>
+    <ul id="inr-list"></ul>
+  </section>
+
+  <!-- ===== Diffusion Models Section ===== -->
+  <section id="diffusion">
+    <h2>Diffusion Models</h2>
+    <ul id="diffusion-list"></ul>
   </section>
 
   <script>
-    /**
-     * Very small CSV parser (RFC‑4180 style, quoted fields with escapes).
-     * Returns an array of rows, each being an array of fields.
-     */
+    // --- Lightweight CSV parser (RFC‑4180) ----------------------------------
     function parseCSV(text){
-      const rows=[], row=[]; let field='';
-      let i=0, inQuotes=false;
+      const rows=[], row=[]; let field='', i=0, inQuotes=false;
       while(i<text.length){
         const c=text[i];
         if(inQuotes){
-          if(c==='"' && text[i+1]==='"'){ field+='"'; i+=2; continue; }
-          if(c==='"'){ inQuotes=false; i++; continue; }
+          if(c==="\"" && text[i+1]==="\""){ field+='"'; i+=2; continue; }
+          if(c==="\""){ inQuotes=false; i++; continue; }
           field+=c; i++; continue;
         }
-        if(c==='"'){ inQuotes=true; i++; continue; }
+        if(c==="\""){ inQuotes=true; i++; continue; }
         if(c===','){ row.push(field); field=''; i++; continue; }
         if(c==='\n' || c==='\r'){
           if(c==='\r' && text[i+1]==='\n') i++; // CRLF
           row.push(field); rows.push(row.slice()); row.length=0; field=''; i++; continue; }
         field+=c; i++; }
-      // last field
-      if(field!==''||row.length){ row.push(field); rows.push(row); }
+      if(field!=='' || row.length){ row.push(field); rows.push(row); }
       return rows;
     }
 
-    /** Helper: pick column index by priority names */
-    function findColumn(header, prefer){
-      prefer=Array.isArray(prefer)?prefer:[prefer];
-      // 1) exact match
-      for(const name of prefer){
-        const idx=header.indexOf(name.toLowerCase());
-        if(idx!==-1) return idx;
-      }
-      // 2) first header containing any keyword fragment
-      for(const name of prefer){
-        const idx=header.findIndex(h=>h.includes(name.toLowerCase()));
-        if(idx!==-1) return idx;
-      }
+    // --- Helpers -----------------------------------------------------------
+    const lc = s => (s||'').toLowerCase();
+    function findColumn(header, keys){
+      keys = Array.isArray(keys)?keys:[keys];
+      for(const k of keys){ const idx=header.indexOf(lc(k)); if(idx!==-1) return idx; }
+      for(const k of keys){ const idx=header.findIndex(h=>h.includes(lc(k))); if(idx!==-1) return idx; }
       return -1;
     }
-
-    /** Convert Zotero-style Author string to "Surname et al." */
-    function formatAuthors(authorField){
-      if(!authorField) return 'Unknown';
-      // split by semicolon (Zotero)
-      const first=authorField.split(';')[0].trim();
-      if(!first) return 'Unknown';
-      let surname='';
-      if(first.includes(',')) surname=first.split(',')[0].trim();
-      else surname=first.split(' ').slice(-1)[0];
-      return surname+" et al.";
+    function formatAuthors(str){
+      if(!str) return 'Unknown';
+      const first=str.split(';')[0].trim(); if(!first) return 'Unknown';
+      const surname= first.includes(',') ? first.split(',')[0].trim() : first.split(' ').slice(-1)[0];
+      return surname + ' et al.';
     }
-
-    /** Insert <li> into a UL */
-    function pushPaper(ul,url,title,authors,year){
-      url=url?.trim(); title=title?.trim();
+    function pushPaper(ul,{url,title,authors,year}){
       if(!url || !title) return;
       const li=document.createElement('li');
       const a=document.createElement('a');
@@ -119,46 +104,65 @@
       li.appendChild(a); li.appendChild(span); ul.appendChild(li);
     }
 
-    /** Load papers from CSV (preferred) or TXT fallback */
+    // --- Core loader -------------------------------------------------------
     async function loadPapers(baseName,listId){
-      const ul=document.getElementById(listId);
-      if(!ul) return;
+      const ul=document.getElementById(listId); if(!ul) return;
+      const arr=[]; // collect objects then sort
 
-      const csvUrl=`${baseName}.csv`;
+      // 1) CSV attempt
       try{
-        const res=await fetch(csvUrl);
-        if(res.ok){
-          const text=await res.text();
-          const rows=parseCSV(text.trim());
+        const r=await fetch(`${baseName}.csv`);
+        if(r.ok){
+          const rows=parseCSV((await r.text()).trim());
           if(rows.length){
-            const header=rows[0].map(h=>h.trim().toLowerCase());
-            const idxUrl    = findColumn(header,['url','link']);
-            const idxTitle  = findColumn(header,'title');
-            const idxAuthor = findColumn(header,['author','authors']);
-            const idxYear   = findColumn(header,['publication year','year']);
-            rows.slice(1).forEach(r=>{
-              pushPaper(ul,r[idxUrl],r[idxTitle],formatAuthors(r[idxAuthor]),r[idxYear]);
+            const header=rows[0].map(h=>lc(h.trim()));
+            const urlIdx = findColumn(header,['url','link']);
+            const titIdx = findColumn(header,'title');
+            const autIdx = findColumn(header,['author','authors']);
+            const yrIdx  = findColumn(header,['publication year','year']);
+            rows.slice(1).forEach(rw=>{
+              const url = rw[urlIdx]?.trim();
+              const title=rw[titIdx]?.trim();
+              if(!url||!title) return;
+              const obj={
+                url,
+                title,
+                authors: formatAuthors(rw[autIdx]),
+                year: rw[yrIdx]?.trim()
+              };
+              arr.push(obj);
             });
-            return; // success with CSV
           }
         }
-      }catch(e){ console.warn(`Failed CSV ${csvUrl}`,e); }
+      }catch(e){ console.warn('CSV load failed',e); }
 
-      // TXT fallback "URL | Title | Authors | Year"
-      try{
-        const res=await fetch(`${baseName}.txt`);
-        if(!res.ok) return;
-        const lines=(await res.text()).trim().split(/\r?\n/);
-        lines.forEach(line=>{
-          if(!line || line.startsWith('#')) return;
-          const [url,title,authors,year]=line.split('|').map(s=>s?.trim());
-          pushPaper(ul,url,title,authors,year);
-        });
-      }catch(e){ console.warn(`Fallback TXT failed`,e); }
+      // 2) TXT fallback
+      if(!arr.length){
+        try{
+          const r=await fetch(`${baseName}.txt`);
+          if(r.ok){
+            (await r.text()).trim().split(/\r?\n/).forEach(line=>{
+              if(!line||line.startsWith('#')) return;
+              const [url,title,authors,year]=line.split('|').map(s=>s?.trim());
+              if(!url||!title) return;
+              arr.push({url,title,authors,year});
+            });
+          }
+        }catch(e){ console.warn('TXT load failed',e); }
+      }
+
+      // Sort newest->oldest (numeric year)
+      arr.sort((a,b)=>{
+        const ya=parseInt(a.year)||0, yb=parseInt(b.year)||0; return yb-ya; });
+
+      // Render
+      arr.forEach(obj=>pushPaper(ul,obj));
     }
 
+    // Load all sections
     loadPapers('reasoning','reasoning-list');
     loadPapers('inr','inr-list');
+    loadPapers('diffusion','diffusion-list');
   </script>
 
 </body>
