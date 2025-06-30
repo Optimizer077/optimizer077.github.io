@@ -26,7 +26,7 @@
     section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}
     nav.top-nav{position:absolute;top:1.5rem;right:2rem;display:flex;gap:.55rem;}
     nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s,color .2s;text-decoration:none;}
-    nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}
+    nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
   </style>
 </head>
 <body>
@@ -42,57 +42,123 @@
   <!-- ===== Reasoning Models Section ===== -->
   <section id="reasoning">
     <h2>Reasoning Models</h2>
-    <ul id="reasoning-list"><!-- dynamically filled --></ul>
+    <ul id="reasoning-list"><!-- filled by JS --></ul>
   </section>
 
   <!-- ===== Implicit Neural Representations Section ===== -->
   <section id="inr">
     <h2>Implicit Neural Representations (INR)</h2>
-    <ul id="inr-list"><!-- dynamically filled --></ul>
+    <ul id="inr-list"><!-- filled by JS --></ul>
   </section>
 
   <script>
     /**
-     * Populates a <ul> list with paper entries read from a pipe‑separated text file.
-     * Expected line format:
-     *   URL | Paper Title | Authors et al. | Year
-     * Example:
-     *   http://arxiv.org/abs/2410.08688 | Chain‑of‑Restoration: Multi‑Task Image Restoration Models as Zero‑Shot Step‑by‑Step Universal Image Restorers | Cao <em>et&nbsp;al.</em> | 2024
-     * Lines starting with # are ignored.
+     * Very small CSV parser (RFC‑4180 style, quoted fields with escapes).
+     * Returns an array of rows, each being an array of fields.
      */
-    async function loadPapers(file, listId){
-      try{
-        const res = await fetch(file);
-        if(!res.ok) return; // silently ignore missing list
-        const text = await res.text();
-        const ul = document.getElementById(listId);
-        text.trim().split(/\r?\n/).forEach(line=>{
-          if(!line || line.startsWith('#')) return;
-          const [url,title,authors,year] = line.split('|').map(s=>s && s.trim());
-          if(!url||!title) return;
-          const li = document.createElement('li');
-          const a  = document.createElement('a');
-          a.href   = url;
-          a.target = '_blank';
-          a.rel    = 'noopener noreferrer';
-          a.innerText = title;
-
-          const span = document.createElement('span');
-          span.style.color = '#6b7280';
-          span.innerHTML = ` (${authors || 'Unknown'}${year ? ', '+year : ''})`;
-
-          li.appendChild(a);
-          li.appendChild(span);
-          ul.appendChild(li);
-        });
-      }catch(err){
-        console.error(`Unable to load ${file}:`, err);
-      }
+    function parseCSV(text){
+      const rows=[], row=[]; let field='';
+      let i=0, inQuotes=false;
+      while(i<text.length){
+        const c=text[i];
+        if(inQuotes){
+          if(c==='"' && text[i+1]==='"'){ field+='"'; i+=2; continue; }
+          if(c==='"'){ inQuotes=false; i++; continue; }
+          field+=c; i++; continue;
+        }
+        if(c==='"'){ inQuotes=true; i++; continue; }
+        if(c===','){ row.push(field); field=''; i++; continue; }
+        if(c==='\n' || c==='\r'){
+          if(c==='\r' && text[i+1]==='\n') i++; // CRLF
+          row.push(field); rows.push(row.slice()); row.length=0; field=''; i++; continue; }
+        field+=c; i++; }
+      // last field
+      if(field!==''||row.length){ row.push(field); rows.push(row); }
+      return rows;
     }
 
-    // Load paper lists — keep filenames the same as your pasted text files
-    loadPapers('reasoning.txt','reasoning-list');
-    loadPapers('inr.txt','inr-list');
+    /** Helper: pick column index by priority names */
+    function findColumn(header, prefer){
+      prefer=Array.isArray(prefer)?prefer:[prefer];
+      // 1) exact match
+      for(const name of prefer){
+        const idx=header.indexOf(name.toLowerCase());
+        if(idx!==-1) return idx;
+      }
+      // 2) first header containing any keyword fragment
+      for(const name of prefer){
+        const idx=header.findIndex(h=>h.includes(name.toLowerCase()));
+        if(idx!==-1) return idx;
+      }
+      return -1;
+    }
+
+    /** Convert Zotero-style Author string to "Surname et al." */
+    function formatAuthors(authorField){
+      if(!authorField) return 'Unknown';
+      // split by semicolon (Zotero)
+      const first=authorField.split(';')[0].trim();
+      if(!first) return 'Unknown';
+      let surname='';
+      if(first.includes(',')) surname=first.split(',')[0].trim();
+      else surname=first.split(' ').slice(-1)[0];
+      return surname+" et al.";
+    }
+
+    /** Insert <li> into a UL */
+    function pushPaper(ul,url,title,authors,year){
+      url=url?.trim(); title=title?.trim();
+      if(!url || !title) return;
+      const li=document.createElement('li');
+      const a=document.createElement('a');
+      a.href=url; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent=title;
+      const span=document.createElement('span');
+      span.style.color='#6b7280';
+      const meta=[authors||'Unknown', year||''].filter(Boolean).join(', ');
+      span.innerHTML=` (${meta})`;
+      li.appendChild(a); li.appendChild(span); ul.appendChild(li);
+    }
+
+    /** Load papers from CSV (preferred) or TXT fallback */
+    async function loadPapers(baseName,listId){
+      const ul=document.getElementById(listId);
+      if(!ul) return;
+
+      const csvUrl=`${baseName}.csv`;
+      try{
+        const res=await fetch(csvUrl);
+        if(res.ok){
+          const text=await res.text();
+          const rows=parseCSV(text.trim());
+          if(rows.length){
+            const header=rows[0].map(h=>h.trim().toLowerCase());
+            const idxUrl    = findColumn(header,['url','link']);
+            const idxTitle  = findColumn(header,'title');
+            const idxAuthor = findColumn(header,['author','authors']);
+            const idxYear   = findColumn(header,['publication year','year']);
+            rows.slice(1).forEach(r=>{
+              pushPaper(ul,r[idxUrl],r[idxTitle],formatAuthors(r[idxAuthor]),r[idxYear]);
+            });
+            return; // success with CSV
+          }
+        }
+      }catch(e){ console.warn(`Failed CSV ${csvUrl}`,e); }
+
+      // TXT fallback "URL | Title | Authors | Year"
+      try{
+        const res=await fetch(`${baseName}.txt`);
+        if(!res.ok) return;
+        const lines=(await res.text()).trim().split(/\r?\n/);
+        lines.forEach(line=>{
+          if(!line || line.startsWith('#')) return;
+          const [url,title,authors,year]=line.split('|').map(s=>s?.trim());
+          pushPaper(ul,url,title,authors,year);
+        });
+      }catch(e){ console.warn(`Fallback TXT failed`,e); }
+    }
+
+    loadPapers('reasoning','reasoning-list');
+    loadPapers('inr','inr-list');
   </script>
 
 </body>
