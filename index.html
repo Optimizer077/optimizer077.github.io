@@ -5,145 +5,131 @@
   <title>Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* ---------- Color System ---------- */
+    /* =======================
+       COLOR & TYPE SCALE
+       ======================= */
     :root {
-      --primary-clr: #2c3e50;   /* Deep blue for headings/text */
-      --accent-clr:  #007acc;   /* Bright accent (links, borders) */
-      --bg-light:    #ffffff;   /* Light background */
-      --bg-alt:      #f7fafc;   /* Very-light alternate background */
-      --text-clr:    #1b2631;   /* Body text */
+      --clr-primary: #1f2937; /* Slate-900 */
+      --clr-accent:  #2563eb; /* Indigo-600 */
+      --clr-text:    #374151; /* Slate-700 */
+      --clr-bg:      #ffffff; /* White  */
+      --clr-bg-alt:  #f3f4f6; /* Slate-100 */
+      --clr-border:  #e5e7eb; /* Slate-200 */
+
+      --fs-base: 16px;
+      --fs-sm:   0.875rem;
+      --fs-lg:   1.125rem;
+      --fs-xl:   1.5rem;
     }
 
-    /* ---------- Base Layout ---------- */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      max-width: 820px;
+    /* =======================
+       GLOBAL RESETS
+       ======================= */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      font-size: var(--fs-base);
+      color: var(--clr-text);
+      background: var(--clr-bg);
+      line-height: 1.6;
+      max-width: 880px;
       margin: auto;
-      padding: 2rem 1rem;
-      line-height: 1.65;
-      color: var(--text-clr);
-      background: var(--bg-light);
+      padding: 3rem 1rem 4rem;
       position: relative;
     }
 
-    h1 { margin: 0 0 0.4rem; color: var(--primary-clr); }
-    h2 {
-      margin: 0 0 1rem;
-      color: var(--primary-clr);
-      border-bottom: 2px solid var(--accent-clr);
-      padding-bottom: 0.4rem;
-      font-size: 1.4rem;
+    h1{font-size:2.25rem;font-weight:600;color:var(--clr-primary);margin-bottom:0.25rem;}
+    h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:0.5rem;}
+    p,li{font-size:var(--fs-lg);} /* slightly larger for readability */
+
+    /* =======================
+       NAVIGATION
+       ======================= */
+    .top-nav{
+      position:sticky;top:0;display:flex;justify-content:flex-end;gap:0.5rem;background:var(--clr-bg);padding:1rem 0;z-index:10;
+    }
+    .top-nav a{
+      font-size:var(--fs-sm);
+      color:var(--clr-accent);
+      padding:0.35rem 0.9rem;
+      border:1px solid var(--clr-accent);
+      border-radius:6px;
+      transition:background .2s,color .2s;
+      text-decoration:none;
+    }
+    .top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}
+
+    /* =======================
+       PROFILE PICTURE
+       ======================= */
+    .profile-pic{
+      width:160px;height:160px;border-radius:50%;object-fit:cover;display:block;margin:1.2rem 0 2rem;
+      box-shadow:0 4px 8px rgb(0 0 0 / 0.05);
     }
 
-    p, li { font-size: 1rem; }
+    /* =======================
+       SECTIONS / CARDS
+       ======================= */
+    section{
+      background:var(--clr-bg-alt);
+      border:1px solid var(--clr-border);
+      border-radius:10px;
+      padding:2rem 1.5rem;
+      margin-bottom:2rem;
+    }
+    section:nth-of-type(even){background:var(--clr-bg);} /* alternate for subtle contrast */
 
-    /* ---------- Global Sections ---------- */
-    section {
-      background: var(--bg-alt);
-      padding: 1.6rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-    }
-    section:nth-of-type(even) { background: var(--bg-light); }
+    ul{padding-left:1.25rem;list-style:disc;}
+    li{margin-bottom:0.5rem;}
 
-    /* ---------- Links ---------- */
-    a {
-      color: var(--accent-clr);
-      text-decoration: none;
+    .card-list{list-style:none;padding:0;}
+    .card-item{
+      display:flex;gap:1.2rem;align-items:flex-start;margin-bottom:1.5rem;
+      background:var(--clr-bg);
+      border:1px solid var(--clr-border);
+      border-radius:8px;
+      padding:1rem;
+      box-shadow:0 1px 3px rgb(0 0 0 / 0.04);
     }
-    a:hover { text-decoration: underline; }
+    .card-item img{width:120px;height:auto;border-radius:6px;object-fit:cover;flex-shrink:0;}
 
-    /* ---------- Top-nav ---------- */
-    .top-nav {
-      position: absolute;
-      top: 1.5rem;
-      right: 2rem;
-      display: flex;
-      gap: 0.5rem;
-    }
-    .top-nav a {
-      padding: 0.35rem 0.8rem;
-      border: 1px solid var(--accent-clr);
-      border-radius: 6px;
-      background: var(--bg-light);
-      font-size: 0.9rem;
-      transition: background 0.2s, color 0.2s;
-    }
-    .top-nav a:hover {
-      background: var(--accent-clr);
-      color: var(--bg-light);
+    /* tag badges */
+    .tag{
+      display:inline-block;
+      background:var(--clr-accent);
+      color:var(--clr-bg);
+      font-size:var(--fs-sm);
+      padding:2px 6px;
+      border-radius:4px;
+      margin-left:6px;
     }
 
-    /* ---------- Profile ---------- */
-    .profile-pic {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      display: block;
-      margin: 1rem auto 1.5rem;
-    }
+    /* links */
+    a{color:var(--clr-accent);text-decoration:none;}
+    a:hover{text-decoration:underline;}
 
-    /* ---------- Lists & Tags ---------- */
-    ul { padding-left: 1.2rem; }
-    li { margin-bottom: 0.6rem; }
-
-    /* Publication & project cards */
-    .card-list { list-style: none; padding: 0; }
-    .card-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      background: var(--bg-alt);
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #e3e7ea;
-      margin-bottom: 1.5rem;
-    }
-    .card-item img {
-      width: 120px;
-      height: auto;
-      object-fit: cover;
-      border-radius: 6px;
-      flex-shrink: 0;
-    }
-    .tag {
-      background: var(--accent-clr);
-      color: var(--bg-light);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-left: 4px;
-      vertical-align: middle;
-    }
-    /* Alternating background for cards for subtle variety */
-    .card-item:nth-of-type(even) { background: var(--bg-light); }
-
-    /* Footer */
-    footer {
-      margin-top: 2.5rem;
-      font-size: 0.9rem;
-      color: #555;
-      text-align: center;
+    /* FOOTER */
+    footer{
+      text-align:center;
+      font-size:var(--fs-sm);
+      color:#6b7280; /* slate-500 */
+      margin-top:3rem;
     }
   </style>
 </head>
 <body>
-
-  <!-- ══════════ NAVIGATION ══════════ -->
+  <!-- ═════ NAVIGATION ═════ -->
   <nav class="top-nav">
     <a href="https://optimizer077.github.io/seminar.html">Seminar</a>
     <a href="talk.html">Talk</a>
   </nav>
 
-  <!-- ══════════ HEADER ══════════ -->
+  <!-- ═════ HEADER ═════ -->
   <h1>Ali Haider</h1>
   <p><strong>PhD Researcher | Generative Models | Vision-Language | Implicit Learning</strong></p>
   <img class="profile-pic" src="assets/img/download.jpeg" alt="Ali Haider profile picture" />
 
-  <!-- ══════════ ABOUT ══════════ -->
+  <!-- ═════ ABOUT ═════ -->
   <section>
     <h2>About</h2>
     <p>
@@ -167,7 +153,7 @@
     </p>
   </section>
 
-  <!-- ══════════ CONTACT ══════════ -->
+  <!-- ═════ CONTACT ═════ -->
   <section>
     <h2>Contact</h2>
     <p>
@@ -177,7 +163,7 @@
     </p>
   </section>
 
-  <!-- ══════════ RESEARCH INTERESTS ══════════ -->
+  <!-- ═════ RESEARCH INTERESTS ═════ -->
   <section>
     <h2>Research Interests</h2>
     <ul>
@@ -192,13 +178,13 @@
     </ul>
   </section>
 
-  <!-- ══════════ NEWS ══════════ -->
+  <!-- ═════ NEWS ═════ -->
   <section>
     <h2>News</h2>
     <ul>
       <li>[2025] — <strong>I-INR</strong> paper submitted to a major conference</li>
-      <li>[2024] — Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a> (Dec&nbsp;10–15, Vancouver, Canada)</li>
-      <li>[2024] — Presented at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI&nbsp;2024</a> (Feb&nbsp;20–27, Vancouver, Canada)</li>
+      <li>[2024] — Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a> (Dec 10–15, Vancouver, Canada)</li>
+      <li>[2024] — Presented at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a> (Feb 20–27, Vancouver, Canada)</li>
       <li>[2024] — AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model</em></li>
       <li>[2022] — Started Ph.D. in Artificial Intelligence at Kyung Hee University (Global Campus)</li>
       <li>[2022] — Joined the <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a> as a research member</li>
@@ -207,165 +193,12 @@
     </ul>
   </section>
 
-  <!-- ══════════ PUBLICATIONS ══════════ -->
+  <!-- ═════ PUBLICATIONS ═════ -->
   <section>
     <h2>Publications</h2>
     <ul class="card-list">
-      <!-- I-INR -->
       <li class="card-item">
         <img src="assets/Pub/I-INR.png" alt="I-INR cover">
         <div>
           <strong><a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a></strong><br>
-          <em>Ali Haider</em>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae<br>
-          <span><em>arXiv preprint arXiv:2504.17364, 2025</em></span><br>
-          <span>In collaboration with LTCI, Télécom Paris and Adobe Research</span>
-        </div>
-      </li>
-
-      <!-- Descanning Diffusion -->
-      <li class="card-item">
-        <img src="assets/Pub/Descan_diffusion.png" alt="Descanning Diffusion cover">
-        <div>
-          <strong><a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">Descanning: From scanned to the original images with a color correction diffusion model</a></strong><br>
-          Junghun Cha<sup>*</sup>, <em>Ali Haider</em><sup>*</sup>, Sanghyun Yang, Hyeongjin Jin, Soochan Yang, A&nbsp;F&nbsp;M&nbsp;Shahabuddin Uddin, Jinyoung Kim, Se-young Kim, Sung Ho Bae<br>
-          <span><em>Proceedings of the AAAI Conference on Artificial Intelligence, Vol.&nbsp;38, No.&nbsp;2, 2024</em></span><br>
-          <span>(AI Top-conference) In collaboration with Adobe Research</span>
-        </div>
-      </li>
-
-      <!-- FCRN -->
-      <li class="card-item">
-        <img src="assets/Pub/FCRN.png" alt="FCRN Thermal Imaging cover">
-        <div>
-          <strong><a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">Human detection in aerial thermal imaging using a fully convolutional regression network</a></strong><br>
-          <em>Ali Haider</em>, Furqan Shaukat, Junaid Mir<br>
-          <span><em>Infrared Physics &amp; Technology&nbsp;116 (2021): 103796</em></span><br>
-          <span>Impact Factor: 3.4</span>
-        </div>
-      </li>
-
-      <!-- KMBE -->
-      <li class="card-item">
-        <img src="assets/Pub/KMBE.png" alt="KMBE cover">
-        <div>
-          <strong><a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">Improving Implicit Neural Representations with Robust Loss Function</a></strong><br>
-          <em>Ali Haider</em>, Sung Ho Bae<br>
-          <span><em>Korea Broadcasting Media Engineering Conference Proceedings, 2024: 998–1001</em></span>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <!-- ══════════ PROJECTS ══════════ -->
-  <section>
-    <h2>Project Involvement</h2>
-    <ul class="card-list">
-      <!-- MRI -->
-      <li class="card-item">
-        <div>
-          <strong>MRI Acceleration and Reconstruction<span class="tag">Ongoing</span></strong><br>
-          In collaboration with <em>AiLive and NYU</em>, exploring advanced MRI image reconstruction using diffusion models and multi-modal frameworks for faster and accurate clinical diagnostics.
-        </div>
-      </li>
-      <!-- VQA -->
-      <li class="card-item">
-        <div>
-          <strong>Video Quality Assessment for Streaming Media</strong><br>
-          Conducted with <em>KEI Media</em>, involving perceptual video quality benchmarking and development of no-reference quality assessment metrics for streaming platforms.
-        </div>
-      </li>
-      <!-- Malaria -->
-      <li class="card-item">
-        <div>
-          <strong>Microscopic Malaria Detection<span class="tag">Research</span></strong><br>
-          Designed a low-cost system for microscopic malaria detection combining hardware and AI-based algorithms. Work done as Research Assistant at CISS Global, in collaboration with Lahore General Hospital. Focused on virtual staining, image enhancement, and low-resource diagnosis. Still contributing as reviewer.
-        </div>
-      </li>
-      <!-- Sports Card -->
-      <li class="card-item">
-        <div>
-          <strong>AI-based Sports Card Grading<span class="tag">Acquired</span></strong><br>
-          Led algorithm and data pipeline development at Due Dilly, an AI startup automating grading of sports cards as per PSA/Beckett standards. Worked on large-scale data curation, training, and visual centering networks. Startup was acquired by Beckett Media.
-        </div>
-      </li>
-      <!-- Track-following Robot -->
-      <li class="card-item">
-        <div>
-          <strong>Track-following Robot (PID Controlled)<span class="tag">1st&nbsp;Place</span></strong><br>
-          Designed a line-following robot using PID control and IR sensors. Led team from hardware design to embedded software using ATMEGA328P-PU. Secured 1st place in AirTech 2017, All Pakistan.
-        </div>
-      </li>
-      <!-- Vehicular Security -->
-      <li class="card-item">
-        <div>
-          <strong>Low-cost Embedded Vehicular Security System<span class="tag">2nd&nbsp;Prize</span></strong><br>
-          Developed a face recognition system with liveness detection deployed directly on a low-cost SoC. Focused on efficient embedded implementation. Won 2nd Prize at All Pakistan DICE-IET Competition 2019.
-        </div>
-      </li>
-      <!-- Traffic Light -->
-      <li class="card-item">
-        <div>
-          <strong>Real-time Traffic Light Control System</strong><br>
-          Built during internship at National Institute of Electronics (NIE), Islamabad. Utilized inductive loop sensors for real-time vehicle detection and adaptive traffic light control based on speed and time-of-day.
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <!-- ══════════ HONORS & AWARDS ══════════ -->
-  <section>
-    <h2>Honors &amp; Awards</h2>
-    <ul>
-      <li>Presidential Scholarship at Kyung Hee University Global Campus</li>
-      <li>2nd Prize – All Pakistan DICE-IET Competition 2019</li>
-      <li>1st Position – National Robotics Competition at Airtech 2017</li>
-      <li>Top Semester Positions – UET Taxila (Scholarships)</li>
-      <li>Winner – Circuit Mania, ElectroMinds Gala Expo 2016</li>
-      <li>Recipient – Prime Minister's Laptop Scheme</li>
-    </ul>
-  </section>
-
-  <!-- ══════════ LANGUAGES ══════════ -->
-  <section>
-    <h2>Languages</h2>
-    <ul>
-      <li>English – Fluent (IELTS Overall: 7.5)</li>
-      <li>Urdu – Native</li>
-    </ul>
-  </section>
-
-  <!-- ══════════ COURSES & CERTIFICATIONS ══════════ -->
-  <section>
-    <h2>Courses &amp; Certifications</h2>
-    <ul>
-      <li>Deep Neural Networks with PyTorch (IBM / Coursera)</li>
-      <li>Machine Learning Specialization (Coursera)</li>
-      <li>Generative Adversarial Networks (DeepLearning.AI)</li>
-      <li>Data Science Fundamentals (IBM)</li>
-      <li>Neural Networks and Deep Learning (DeepLearning.AI)</li>
-      <li>TensorFlow Developer Certificate</li>
-    </ul>
-  </section>
-
-  <!-- ══════════ FOOTER ══════════ -->
-  <footer>
-    <p>© 2025 Ali Haider</p>
-    <p id="visit-counter">Loading…</p>
-  </footer>
-
-  <!-- ══════════ GLOBAL VISIT COUNTER SCRIPT ══════════ -->
-  <script>
-    (async () => {
-      const NAMESPACE = "ali_haider_site";
-      const KEY       = "visits";
-      try {
-        const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
-        const data = await res.json();
-        document.getElementById("visit-counter").textContent = `Global visits: ${data.value}`;
-      } catch (err) {
-        document.getElementById("visit-counter").textContent = "Visit counter unavailable.";
-      }
-    })();
-  </script>
-</body>
-</html>
+          <em>Ali Haider</em>, Muhammad Salman Ali, Mary
