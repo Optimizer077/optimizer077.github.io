@@ -5,200 +5,364 @@
   <title>Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* =======================
-       COLOR & TYPE SCALE
-       ======================= */
-    :root {
-      --clr-primary: #1f2937; /* Slate-900 */
-      --clr-accent:  #2563eb; /* Indigo-600 */
-      --clr-text:    #374151; /* Slate-700 */
-      --clr-bg:      #ffffff; /* White  */
-      --clr-bg-alt:  #f3f4f6; /* Slate-100 */
-      --clr-border:  #e5e7eb; /* Slate-200 */
-
-      --fs-base: 16px;
-      --fs-sm:   0.875rem;
-      --fs-lg:   1.125rem;
-      --fs-xl:   1.5rem;
-    }
-
-    /* =======================
-       GLOBAL RESETS
-       ======================= */
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      font-size: var(--fs-base);
-      color: var(--clr-text);
-      background: var(--clr-bg);
-      line-height: 1.6;
-      max-width: 880px;
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
       margin: auto;
-      padding: 3rem 1rem 4rem;
+      padding: 2rem;
+      line-height: 1.6;
       position: relative;
     }
 
-    h1{font-size:2.25rem;font-weight:600;color:var(--clr-primary);margin-bottom:0.25rem;}
-    h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:0.5rem;}
-    p,li{font-size:var(--fs-lg);} /* slightly larger for readability */
-
-    /* =======================
-       NAVIGATION
-       ======================= */
-    .top-nav{
-      position:sticky;top:0;display:flex;justify-content:flex-end;gap:0.5rem;background:var(--clr-bg);padding:1rem 0;z-index:10;
-    }
-    .top-nav a{
-      font-size:var(--fs-sm);
-      color:var(--clr-accent);
-      padding:0.35rem 0.9rem;
-      border:1px solid var(--clr-accent);
-      border-radius:6px;
-      transition:background .2s,color .2s;
-      text-decoration:none;
-    }
-    .top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}
-
-    /* =======================
-       PROFILE PICTURE
-       ======================= */
-    .profile-pic{
-      width:160px;height:160px;border-radius:50%;object-fit:cover;display:block;margin:1.2rem 0 2rem;
-      box-shadow:0 4px 8px rgb(0 0 0 / 0.05);
+    h1 {
+      margin-bottom: 0.3rem;
     }
 
-    /* =======================
-       SECTIONS / CARDS
-       ======================= */
-    section{
-      background:var(--clr-bg-alt);
-      border:1px solid var(--clr-border);
-      border-radius:10px;
-      padding:2rem 1.5rem;
-      margin-bottom:2rem;
-    }
-    section:nth-of-type(even){background:var(--clr-bg);} /* alternate for subtle contrast */
-
-    ul{padding-left:1.25rem;list-style:disc;}
-    li{margin-bottom:0.5rem;}
-
-    .card-list{list-style:none;padding:0;}
-    .card-item{
-      display:flex;gap:1.2rem;align-items:flex-start;margin-bottom:1.5rem;
-      background:var(--clr-bg);
-      border:1px solid var(--clr-border);
-      border-radius:8px;
-      padding:1rem;
-      box-shadow:0 1px 3px rgb(0 0 0 / 0.04);
-    }
-    .card-item img{width:120px;height:auto;border-radius:6px;object-fit:cover;flex-shrink:0;}
-
-    /* tag badges */
-    .tag{
-      display:inline-block;
-      background:var(--clr-accent);
-      color:var(--clr-bg);
-      font-size:var(--fs-sm);
-      padding:2px 6px;
-      border-radius:4px;
-      margin-left:6px;
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
     }
 
-    /* links */
-    a{color:var(--clr-accent);text-decoration:none;}
-    a:hover{text-decoration:underline;}
+    ul {
+      padding-left: 1.2rem;
+    }
 
-    /* FOOTER */
-    footer{
-      text-align:center;
-      font-size:var(--fs-sm);
-      color:#6b7280; /* slate-500 */
-      margin-top:3rem;
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .top-nav {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .top-nav a {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #007acc;
+      border-radius: 6px;
+      color: #007acc;
+      background-color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .top-nav a:hover {
+      background: #007acc;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <!-- ═════ NAVIGATION ═════ -->
+
   <nav class="top-nav">
     <a href="https://optimizer077.github.io/seminar.html">Seminar</a>
     <a href="talk.html">Talk</a>
   </nav>
 
-  <!-- ═════ HEADER ═════ -->
   <h1>Ali Haider</h1>
   <p><strong>PhD Researcher | Generative Models | Vision-Language | Implicit Learning</strong></p>
-  <img class="profile-pic" src="assets/img/download.jpeg" alt="Ali Haider profile picture" />
 
-  <!-- ═════ ABOUT ═════ -->
-  <section>
-    <h2>About</h2>
-    <p>
-      I am currently pursuing a Ph.D. in Artificial Intelligence at Kyung Hee University Global Campus, where I am a member of the
-      <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>, under the supervision of
-      <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
-    </p>
-    <p>
-      Previously, I served as a Research Assistant at the
-      <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">Center for Intelligent Systems and Security (CISS)</a>
-      at the Information Technology University, Lahore, under the guidance of
-      <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Qasim Mehmood</a>.
-      My work involved developing intelligent pathology systems for automated malaria detection.
-      I also explored deep learning techniques for nanostructure response estimation and conducted an in-depth study on iterative solvers for inverse problems.
-    </p>
-    <p>
-      I hold a Bachelor’s degree in Electronics Engineering from the
-      <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">University of Engineering and Technology, Taxila</a>, where I conducted my undergraduate research under the supervision of
-      <a href="https://scholar.google.com/citations?user=TAues7sAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Furqan Shaukat</a> and
-      <a href="https://scholar.google.com/citations?hl=en&user=-4hepOgAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Dr. Laiq Rehman Shahid</a>.
-    </p>
-  </section>
+  <img
+    class="profile-pic"
+    src="assets/img/download.jpeg"
+    alt="Ali Haider profile picture"
+  />
 
-  <!-- ═════ CONTACT ═════ -->
-  <section>
-    <h2>Contact</h2>
-    <p>
-      <a href="mailto:Alihaiderfarooq07@gmail.com">Email</a> /
-      <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a> /
-      <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>
-    </p>
-  </section>
+  <!-- KEEP ALL YOUR EXISTING SECTIONS BELOW HERE -->
+  <!-- About, Contact, Research Interests, News, Publications, etc. -->
 
-  <!-- ═════ RESEARCH INTERESTS ═════ -->
-  <section>
-    <h2>Research Interests</h2>
-    <ul>
-      <li>Vision-Language Models &amp; Multimodal AI</li>
-      <li>Generative Models (Diffusion, Transformers)</li>
-      <li>Implicit Neural Representations (INRs)</li>
-      <li>Explainable AI</li>
-      <li>Model Compression and Quantization</li>
-      <li>Contrastive &amp; Self-supervised Learning</li>
-      <li>Image Restoration</li>
-      <li>Medical Image Analysis</li>
-    </ul>
-  </section>
+  <!-- Example only: About Section -->
+<section style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem;">About</h2>
 
-  <!-- ═════ NEWS ═════ -->
-  <section>
-    <h2>News</h2>
-    <ul>
-      <li>[2025] — <strong>I-INR</strong> paper submitted to a major conference</li>
-      <li>[2024] — Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a> (Dec 10–15, Vancouver, Canada)</li>
-      <li>[2024] — Presented at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a> (Feb 20–27, Vancouver, Canada)</li>
-      <li>[2024] — AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model</em></li>
-      <li>[2022] — Started Ph.D. in Artificial Intelligence at Kyung Hee University (Global Campus)</li>
-      <li>[2022] — Joined the <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a> as a research member</li>
-      <li>[2021] — First-author paper on thermal imaging published in <em>Infrared Physics &amp; Technology</em></li>
-      <li>[2019] — Joined <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS Lab</a> at ITU Lahore as a Research Assistant under Dr. Qasim Mehmood</li>
-    </ul>
-  </section>
+  <p>
+    I am currently pursuing a Ph.D. in Artificial Intelligence at Kyung Hee University Global Campus, 
+    where I am a member of the 
+    <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">
+      Machine Learning and Visual Computing (MLVC) Lab
+    </a>, 
+    under the supervision of 
+    <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">
+      Professor Sung Ho Bae
+    </a>.
+  </p>
 
-  <!-- ═════ PUBLICATIONS ═════ -->
-  <section>
-    <h2>Publications</h2>
-    <ul class="card-list">
-      <li class="card-item">
-        <img src="assets/Pub/I-INR.png" alt="I-INR cover">
-        <div>
-          <strong><a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a></strong><br>
-          <em>Ali Haider</em>, Muhammad Salman Ali, Mary
+  <p>
+    Previously, I served as a Research Assistant at the 
+    <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">
+      Center for Intelligent Systems and Security (CISS)
+    </a> 
+    at the Information Technology University, Lahore, under the guidance of 
+    <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
+      Dr. Qasim Mehmood
+    </a>. 
+    My work involved developing intelligent pathology systems for automated malaria detection. 
+    I also explored deep learning techniques for nanostructure response estimation and conducted an in-depth study on iterative solvers for inverse problems.
+  </p>
+
+  <p>
+    I hold a Bachelor’s degree in Electronics Engineering from the 
+    <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">
+      University of Engineering and Technology, Taxila
+    </a>, 
+    where I conducted my undergraduate research under the supervision of 
+    <a href="https://scholar.google.com/citations?user=TAues7sAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">
+      Dr. Furqan Shaukat
+    </a> and 
+    <a href="https://scholar.google.com/citations?hl=en&user=-4hepOgAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">
+      Dr. Laiq Rehman Shahid
+    </a>.
+  </p>
+</section>
+
+<!-- Contact Section -->
+<section style="background: #f4f6f7; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem;">Contact</h2>
+  <p>
+    <a href="mailto:Alihaiderfarooq07@gmail.com">Email</a> /
+    <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a> /
+    <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </p>
+</section>
+
+<!-- Research Interests Section -->
+<section style="background: #ebf5fb; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #154360; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem;">Research Interests</h2>
+  <ul style="margin-top: 1rem; color: #1b2631;">
+    <li>Vision-Language Models & Multimodal AI</li>
+    <li>Generative Models (Diffusion, Transformers)</li>
+    <li>Implicit Neural Representations (INRs)</li>
+    <li>Explainable AI</li>
+    <li>Model Compression and Quantization</li>
+    <li>Contrastive & Self-supervised Learning</li>
+    <li>Image Restoration</li>
+    <li>Medical Image Analysis</li>
+  </ul>
+</section>
+
+<!-- News Section -->
+<section style="background: #fef9e7; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #7d6608; border-bottom: 2px solid #f1c40f; padding-bottom: 0.5rem;">News</h2>
+  <ul style="margin-top: 1rem;">
+    <li>[2025] — <strong>I-INR</strong> paper submitted to a major conference</li>
+    <li>[2024] — Attended 
+      <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a> 
+      (Dec 10–15, Vancouver, Canada)
+    </li>
+    <li>[2024] — Presented at 
+      <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a> 
+      (Feb 20–27, Vancouver, Canada)
+    </li>
+    <li>[2024] — AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model</em></li>
+    <li>[2022] — Started Ph.D. in Artificial Intelligence at Kyung Hee University (Global Campus)</li>
+    <li>[2022] — Joined the 
+      <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a> 
+      as a research member
+    </li>
+    <li>[2021] — First-author paper on thermal imaging published in <em>Infrared Physics & Technology</em></li>
+    <li>[2019] — Joined 
+      <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS Lab</a> 
+      at ITU Lahore as a Research Assistant under Dr. Qasim Mehmood
+    </li>
+  </ul>
+</section>
+  
+<section>
+  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem;">Publications</h2>
+  <ul style="list-style: none; padding: 0;">
+
+    <!-- I-INR -->
+    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; background: #ecf5ff; padding: 1rem; border-radius: 8px;">
+      <img src="assets/Pub/I-INR.png" alt="I-INR" style="width: 120px; height: auto; object-fit: cover; border-radius: 6px;">
+      <div>
+        <strong style="color: #1a5276;">
+          <a href="https://arxiv.org/abs/2504.17364" target="_blank" style="text-decoration: none; color: #1a5276;">
+            I-INR: Iterative Implicit Neural Representations
+          </a>
+        </strong><br>
+        <em>Ali Haider</em>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae<br>
+        <span style="font-style: italic;">arXiv preprint arXiv:2504.17364, 2025</span><br>
+        <span style="color: #5d6d7e;">In collaboration with LTCI, Télécom Paris and Adobe Research</span>
+      </div>
+    </li>
+
+    <!-- Descan -->
+    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; background: #fef9e7; padding: 1rem; border-radius: 8px;">
+      <img src="assets/Pub/Descan_diffusion.png" alt="Descanning Diffusion" style="width: 120px; height: auto; object-fit: cover; border-radius: 6px;">
+      <div>
+        <strong style="color: #b9770e;">
+          <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" style="text-decoration: none; color: #b9770e;">
+            Descanning: From scanned to the original images with a color correction diffusion model
+          </a>
+        </strong><br>
+        Junghun Cha<sup>*</sup>, <em>Ali Haider</em><sup>*</sup>, Sanghyun Yang, Hyeongjin Jin, Soochan Yang, A F M Shahabuddin Uddin, Jinyoung Kim, Se-young Kim, Sung Ho Bae<br>
+        <span style="font-style: italic;">Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 38, No. 2, 2024</span><br>
+        <span style="color: #7d6608;">(AI Top-conference) In collaboration with Adobe Research</span>
+      </div>
+    </li>
+
+    <!-- FCRN -->
+    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; background: #eafaf1; padding: 1rem; border-radius: 8px;">
+      <img src="assets/Pub/FCRN.png" alt="FCRN Thermal Imaging" style="width: 120px; height: auto; object-fit: cover; border-radius: 6px;">
+      <div>
+        <strong style="color: #196f3d;">
+          <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" style="text-decoration: none; color: #196f3d;">
+            Human detection in aerial thermal imaging using a fully convolutional regression network
+          </a>
+        </strong><br>
+        <em>Ali Haider</em>, Furqan Shaukat, Junaid Mir<br>
+        <span style="font-style: italic;">Infrared Physics & Technology 116 (2021): 103796</span><br>
+        <span style="color: #117864;">Impact Factor: 3.4</span>
+      </div>
+    </li>
+
+    <!-- KMBE -->
+    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; background: #f5eef8; padding: 1rem; border-radius: 8px;">
+      <img src="assets/Pub/KMBE.png" alt="KMBE" style="width: 120px; height: auto; object-fit: cover; border-radius: 6px;">
+      <div>
+        <strong style="color: #6c3483;">
+          <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" style="text-decoration: none; color: #6c3483;">
+            Improving Implicit Neural Representations with Robust Loss Function
+          </a>
+        </strong><br>
+        <em>Ali Haider</em>, Sung Ho Bae<br>
+        <span style="font-style: italic;">Korea Broadcasting Media Engineering Conference Proceedings, 2024: 998–1001</span>
+      </div>
+    </li>
+
+  </ul>
+</section>
+
+  
+
+  
+<section>
+  <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem;">Project Involvement</h2>
+  <ul style="list-style: none; padding: 0;">
+
+    <!-- MRI Acceleration and Reconstruction -->
+    <li style="margin-bottom: 1.5rem; background: #eaf2f8; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #2874a6;">MRI Acceleration and Reconstruction</strong> 
+      <span style="background: #aed6f1; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">🔄 Ongoing</span><br>
+      In collaboration with <em>AiLive and NYU</em>, exploring advanced MRI image reconstruction using diffusion models and multi-modal frameworks for faster and accurate clinical diagnostics.
+    </li>
+
+    <!-- Video Quality Assessment -->
+    <li style="margin-bottom: 1.5rem; background: #fef9e7; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #b9770e;">Video Quality Assessment for Streaming Media</strong><br>
+      Conducted with <em>KEI Media</em>, involving perceptual video quality benchmarking and development of no-reference quality assessment metrics for streaming platforms.
+    </li>
+
+    <!-- Microscopic Malaria Detection -->
+    <li style="margin-bottom: 1.5rem; background: #fdf2e9; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #ba4a00;">Microscopic Malaria Detection</strong> 
+      <span style="background: #f5cba7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">🔬 Research</span><br>
+      Designed a low-cost system for microscopic malaria detection combining hardware and AI-based algorithms. Work done as Research Assistant at CISS Global, in collaboration with Lahore General Hospital. Focused on virtual staining, image enhancement, and low-resource diagnosis. Still contributing as reviewer.
+    </li>
+
+    <!-- Sports Card Grading -->
+    <li style="margin-bottom: 1.5rem; background: #f5eef8; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #8e44ad;">AI-based Sports Card Grading</strong> 
+      <span style="background: #d7bde2; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">🚀 Acquired by Beckett Media</span><br>
+      Led algorithm and data pipeline development at Due Dilly, an AI startup automating grading of sports cards as per PSA/Beckett standards. Worked on large-scale data curation, training, and visual centering networks. Startup was acquired by Beckett Media.
+    </li>
+
+    <!-- Track-following Robot -->
+    <li style="margin-bottom: 1.5rem; background: #ebf5fb; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #21618c;">Track-following Robot (PID Controlled)</strong> 
+      <span style="background: #85c1e9; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">🏆 1st Position – AirTech 2017</span><br>
+      Designed a line-following robot using PID control and IR sensors. Led team from hardware design to embedded software using ATMEGA328P-PU. Secured 1st place in AirTech 2017, All Pakistan.
+    </li>
+
+    <!-- Embedded Vehicular Security -->
+    <li style="margin-bottom: 1.5rem; background: #e8f8f5; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #117864;">Low-cost Embedded Vehicular Security System</strong> 
+      <span style="background: #76d7c4; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">🏆 2nd Prize – DICE-IET 2019</span><br>
+      Developed a face recognition system with liveness detection deployed directly on a low-cost SoC. Focused on efficient embedded implementation. Won 2nd Prize at All Pakistan DICE-IET Competition 2019.
+    </li>
+
+    <!-- Traffic Light Control System -->
+    <li style="margin-bottom: 1.5rem; background: #f9ebea; padding: 1rem; border-radius: 8px;">
+      <strong style="color: #c0392b;">Real-time Traffic Light Control System</strong><br>
+      Built during internship at National Institute of Electronics (NIE), Islamabad. Utilized inductive loop sensors for real-time vehicle detection and adaptive traffic light control based on speed and time-of-day.
+    </li>
+
+  </ul>
+</section>
+  
+<!-- Honors & Awards -->
+<section style="background: #fef9e7; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #b9770e; border-bottom: 2px solid #f1c40f; padding-bottom: 0.5rem;">Honors & Awards</h2>
+  <ul style="margin-top: 1rem; color: #633974;">
+    <li>Presidential Scholarship at Kyung Hee University Global Campus</li>
+    <li>2nd Prize – All Pakistan DICE-IET Competition 2019</li>
+    <li>1st Position – National Robotics Competition at Airtech 2017</li>
+    <li>Top Semester Positions – UET Taxila (Scholarships)</li>
+    <li>Winner – Circuit Mania, ElectroMinds Gala Expo 2016</li>
+    <li>Recipient – Prime Minister's Laptop Scheme</li>
+  </ul>
+</section>
+
+<!-- Languages -->
+<section style="background: #f2f4f4; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #2e4053; border-bottom: 2px solid #95a5a6; padding-bottom: 0.5rem;">Languages</h2>
+  <ul style="margin-top: 1rem; color: #1b2631;">
+    <li>English – Fluent (IELTS Overall: 7.5)</li>
+    <li>Urdu – Native</li>
+  </ul>
+</section>
+
+<!-- Courses & Certifications -->
+<section style="background: #f4ecf7; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+  <h2 style="color: #6c3483; border-bottom: 2px solid #af7ac5; padding-bottom: 0.5rem;">Courses & Certifications</h2>
+  <ul style="margin-top: 1rem; color: #4a235a;">
+    <li>Deep Neural Networks with PyTorch (IBM / Coursera)</li>
+    <li>Machine Learning Specialization (Coursera)</li>
+    <li>Generative Adversarial Networks (DeepLearning.AI)</li>
+    <li>Data Science Fundamentals (IBM)</li>
+    <li>Neural Networks and Deep Learning (DeepLearning.AI)</li>
+    <li>TensorFlow Developer Certificate</li>
+  </ul>
+</section>
+  
+<footer>
+    <p>© 2025 Ali Haider</p>
+    <p id="visit-counter">Loading…</p>
+  </footer>
+
+  <!-- Global visit counter via CountAPI -->
+  <script>
+    (async () => {
+      const NAMESPACE = 'ali_haider_site';
+      const KEY       = 'visits';
+  
+      try {
+        const res  = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
+        const data = await res.json();
+        document.getElementById('visit-counter').textContent =
+          `Global visits: ${data.value}`;
+      } catch (err) {
+        document.getElementById('visit-counter').textContent =
+          'Visit counter unavailable.';
+      }
+    })();
+  </script>
+
+</body>
+</html>
