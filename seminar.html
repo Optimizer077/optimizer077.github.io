@@ -29,20 +29,32 @@
     section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}section:nth-of-type(even){background:var(--clr-bg);}   
     .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
     .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;color:var(--clr-primary);} .toc ul{margin:0;padding-left:1.2rem;}.toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}  
+
+    /* top nav */
+    nav.top-nav{position:absolute;top:1.5rem;right:1rem;display:flex;gap:.55rem;}
+    nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s;white-space:nowrap;}
+    nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
   </style>
 </head>
 <body>
+
+  <!-- back / home buttons -->
+  <nav class="top-nav">
+    <a href="index.html">🏠 Home</a>
+    <a href="javascript:history.back()">← Back</a>
+  </nav>
+
   <h1>📢 Seminar Talks</h1>
   <p class="venue" style="color:#6b7280;font-style:italic;margin-bottom:1rem;">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
 
   <!-- ===== CONTENTS ===== -->
-  <nav class="toc">
+  <nav class="toc" aria-label="Contents">
     <h2>Contents</h2>
     <ul>
       <li><a href="#reasoning">Reasoning Models / Image Restoration</a></li>
       <li><a href="#multitask">Multi-Task Learning for Diffusion Models</a></li>
       <li><a href="#taskdiffusion">Task-Oriented Diffusion for Image Restoration</a></li>
-      <li><a href="#aaai24">Any‑Size & ResDiff (AAAI 2024)</a></li>
+      <li><a href="#aaai24">Any-Size Diffusion & ResDiff (AAAI 2024)</a></li>
       <li><a href="#neurips">NeurIPS 2024 Paper Summaries</a></li>
     </ul>
   </nav>
@@ -51,22 +63,22 @@
   <section id="reasoning">
     <h2>Reasoning Models / Reasoning Image Restoration</h2>
     <p>
-      A seminar covering the use of large language models and vision‑language approaches in visual reasoning and restoration. We explored recent innovations in step‑wise reasoning and multimodal agents for complex image tasks.
+      Seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener">Improving Language Model Reasoning with Self‑Motivated Learning</a></li>
+      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
       <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
-      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener">Chain‑of‑Restoration: Universal Step‑by‑Step Restorers</a></li>
+      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener">Chain-of-Restoration: Universal Step-by-Step Restorers</a></li>
     </ul>
   </section>
 
   <!-- ===== Seminar 2 ===== -->
   <section id="multitask">
-    <h2>Multi‑Task Learning Perspective for Diffusion Models</h2>
+    <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
     <p>
-      This seminar presents a multi‑task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture‑of‑experts to solve denoising in a synergistic fashion.
+      Presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
     <h3>Referenced Papers</h3>
@@ -78,29 +90,29 @@
 
   <!-- ===== Seminar 3 ===== -->
   <section id="taskdiffusion">
-    <h2>Task‑Oriented Diffusion for Image Restoration</h2>
+    <h2>Task-Oriented Diffusion for Image Restoration</h2>
     <p>
-      A deep dive into diffusion‑based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super‑resolution, and DiffBIR’s two‑stage blind restoration pipeline.
+      A deep dive into diffusion-based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super-resolution, and DiffBIR’s two-stage blind restoration pipeline.
     </p>
     <iframe src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
     <h3>Referenced Papers</h3>
     <ul>
       <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener">Ambient Diffusion</a></li>
       <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResShift: Efficient SR via Residual Shifting</a></li>
-      <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener">DiffBIR: Diffusion‑based Blind Image Restoration</a></li>
+      <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener">DiffBIR: Diffusion-based Blind Image Restoration</a></li>
     </ul>
   </section>
 
   <!-- ===== Seminar 4 ===== -->
   <section id="aaai24">
-    <h2>Any‑Size Diffusion &amp; ResDiff (AAAI 2024)</h2>
+    <h2>Any-Size Diffusion & ResDiff (AAAI 2024)</h2>
     <p>
-      Highlights from two AAAI‑24 papers: **Any‑Size‑Diffusion (ASD)**, a two‑stage pipeline for text‑to‑image synthesis at arbitrary resolutions, and **ResDiff**, which unites CNN priors with diffusion guidance for efficient single‑image super‑resolution.
+      Highlights from two AAAI-24 papers: Any-Size-Diffusion (ASD), a two-stage pipeline for text-to-image synthesis at arbitrary resolutions, and ResDiff, which unites CNN priors with diffusion guidance for efficient single-image super-resolution.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener">Any‑Size‑Diffusion: Text‑Driven Synthesis for Any‑Size HD Images</a></li>
+      <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
       <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
     </ul>
   </section>
@@ -109,7 +121,7 @@
   <section id="neurips">
     <h2>NeurIPS 2024 Paper Summaries</h2>
     <p>
-      A summary session from NeurIPS 2024, where I attended and analyzed several key papers presented at the conference.
+      Summary session from NeurIPS 2024, with analyses of several key papers presented at the conference.
     </p>
     <iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
   </section>
