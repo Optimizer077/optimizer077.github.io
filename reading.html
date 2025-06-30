@@ -17,20 +17,25 @@
       --fs-xl:1.45rem;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:860px;margin:auto;padding:2.5rem 1rem 4rem;line-height:1.65;color:var(--clr-text);}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:860px;margin:auto;padding:2.5rem 1rem 4rem 180px; /* leave space for sidebar */ line-height:1.65;color:var(--clr-text);}
     h1{font-size:2rem;font-weight:600;color:var(--clr-primary);margin-bottom:.5rem;}
     h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
     a{color:var(--clr-accent);text-decoration:none;}a:hover{text-decoration:underline;}
     ul{padding-left:1.25rem;margin-top:.6rem;}
-    li{margin-bottom:.55rem;font-size:var(--fs-lg);}
+    li{margin-bottom:.55rem;font-size:var(--fs-lg);}    
     section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}
-    nav.top-nav{position:absolute;top:1.5rem;right:2rem;display:flex;gap:.55rem;}
+
+    /* top nav */
+    nav.top-nav{position:absolute;top:1.5rem;right:2rem;display:flex;gap:.55rem;z-index:20;}
     nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s;white-space:nowrap;}
     nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
-    /* Table-of-contents */
-    nav#toc{margin:1rem 0 2rem;}
-    nav#toc ul{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.6rem;}
-    nav#toc a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:6px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;}
+
+    /* Sidebar (vertical index) */
+    nav#toc{position:fixed;top:5rem;left:0;bottom:0;width:160px;padding:1rem;overflow-y:auto;background:var(--clr-bg-alt);border-right:1px solid var(--clr-border);}    
+    nav#toc h3{font-size:var(--fs-sm);font-weight:600;margin-bottom:.75rem;color:var(--clr-primary);}    
+    nav#toc ul{list-style:none;padding-left:0;display:block;}
+    nav#toc li{margin-bottom:.4rem;}
+    nav#toc a{display:block;font-size:var(--fs-sm);padding:.35rem .6rem;border-radius:6px;transition:background .2s;white-space:nowrap;border:1px solid transparent;}
     nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}  
   </style>
 </head>
@@ -41,11 +46,9 @@
     <a href="seminar.html">Seminar</a>
   </nav>
 
-  <h1>📚 Paper Reading List</h1>
-  <p style="color:#6b7280;font-style:italic;margin-bottom:.75rem;">Newest papers first – grouped by topic</p>
-
-  <!-- ===== Simple Index ===== -->
+  <!-- ===== Vertical Index Sidebar ===== -->
   <nav id="toc" aria-label="Table of contents">
+    <h3>Sections</h3>
     <ul>
       <li><a href="#vlm">VLM</a></li>
       <li><a href="#reasoning">Reasoning</a></li>
@@ -59,43 +62,37 @@
     </ul>
   </nav>
 
-  <!-- Sections (in requested order) -->
-  <section id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
-  <section id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
-  <section id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
-  <section id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
-  <section id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
-  <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
-  <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
-  <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
-  <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
+  <main>
+    <h1>📚 Paper Reading List</h1>
+    <p style="color:#6b7280;font-style:italic;margin-bottom:.75rem;">Newest papers first – grouped by topic</p>
+
+    <!-- Sections -->
+    <section id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
+    <section id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
+    <section id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
+    <section id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
+    <section id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
+    <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
+    <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
+    <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
+    <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
+  </main>
 
   <script>
     /* ---------- CSV parser & helpers ---------- */
-    function parseCSV(t){const r=[],c=[],q='"';let i=0,f='',inQ=false;while(i<t.length){const ch=t[i];if(inQ){if(ch===q&&t[i+1]==="\""){f+=q;i+=2;continue}if(ch===q){inQ=false;i++;continue}f+=ch;i++;continue}if(ch===q){inQ=true;i++;continue}if(ch===','){c.push(f);f='';i++;continue}if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;c.push(f);r.push(c.slice());c.length=0;f='';i++;continue}f+=ch;i++}if(f!==''||c.length){c.push(f);r.push(c)}return r}
+    function parseCSV(t){const r=[],c=[],q='"';let i=0,f='',inQ=false;while(i<t.length){const ch=t[i];if(inQ){if(ch===q&&t[i+1]==='"'){f+=q;i+=2;continue}if(ch===q){inQ=false;i++;continue}f+=ch;i++;continue}if(ch===q){inQ=true;i++;continue}if(ch===','){c.push(f);f='';i++;continue}if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;c.push(f);r.push(c.slice());c.length=0;f='';i++;continue}f+=ch;i++}if(f!==''||c.length){c.push(f);r.push(c)}return r}
     const lc=s=>(s||'').toLowerCase();
-    function colIdx(h,keys){keys=Array.isArray(keys)?keys:[keys];for(const k of keys){const i=h.indexOf(lc(k));if(i!==-1) return i;}for(const k of keys){const i=h.findIndex(x=>x.includes(lc(k)));if(i!==-1) return i;}return-1;}
-    function authorsEt(a){if(!a) return'Unknown';const first=a.split(';')[0].trim();if(!first)return'Unknown';const sur=first.includes(',')?first.split(',')[0].trim():first.split(' ').slice(-1)[0];return sur+' et al.';}
+    function colIdx(h,keys){keys=Array.isArray(keys)?keys:[keys];for(const k of keys){const i=h.indexOf(lc(k));if(i!==-1)return i;}for(const k of keys){const i=h.findIndex(x=>x.includes(lc(k)));if(i!==-1)return i;}return-1;}
+    function authorsEt(a){if(!a)return'Unknown';const first=a.split(';')[0].trim();if(!first)return'Unknown';const sur=first.includes(',')?first.split(',')[0].trim():first.split(' ').slice(-1)[0];return sur+' et al.';}
 
-    // Track duplicates across ALL sections by URL (fallback title)
     const seen=new Set();
-    function add(ul,{url,title,authors,year}){
-      const key=url||title; if(!key||seen.has(key)) return; seen.add(key);
-      const li=document.createElement('li');
-      const link=document.createElement('a'); link.href=url; link.target='_blank'; link.rel='noopener noreferrer'; link.textContent=title;
-      const meta=document.createElement('span'); meta.style.color='#6b7280'; meta.innerHTML=` (${[authors||'Unknown',year||''].filter(Boolean).join(', ')})`;
-      li.appendChild(link); li.appendChild(meta); ul.appendChild(li);
-    }
+    function add(ul,{url,title,authors,year}){const key=url||title;if(!key||seen.has(key))return;seen.add(key);const li=document.createElement('li');const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=title;const meta=document.createElement('span');meta.style.color='#6b7280';meta.innerHTML=` (${[authors||'Unknown',year||''].filter(Boolean).join(', ')})`;li.appendChild(link);li.appendChild(meta);ul.appendChild(li);}
 
-    async function load(base,id){const ul=document.getElementById(id); if(!ul) return; const list=[];
-      // CSV
-      try{const res=await fetch(`${base}.csv`); if(res.ok){const rows=parseCSV((await res.text()).trim()); if(rows.length){const h=rows[0].map(v=>lc(v.trim())); const iu=colIdx(h,['url','link']), it=colIdx(h,'title'), ia=colIdx(h,['author','authors']), iy=colIdx(h,['publication year','year']); rows.slice(1).forEach(r=>{const url=r[iu]?.trim(), title=r[it]?.trim(); if(!url||!title) return; list.push({url, title, authors:authorsEt(r[ia]), year:r[iy]?.trim()});});}}}catch(e){}
-      // TXT fallback
-      if(!list.length){try{const res=await fetch(`${base}.txt`); if(res.ok){(await res.text()).trim().split(/\r?\n/).forEach(l=>{if(!l||l.startsWith('#'))return; const [u,t,a,y]=l.split('|').map(s=>s?.trim()); list.push({url:u, title:t, authors:a, year:y});});}}catch(e){}
+    async function load(base,id){const ul=document.getElementById(id);if(!ul)return;const list=[];try{const res=await fetch(`${base}.csv`);if(res.ok){const rows=parseCSV((await res.text()).trim());if(rows.length){const h=rows[0].map(v=>lc(v.trim()));const iu=colIdx(h,['url','link']),it=colIdx(h,'title'),ia=colIdx(h,['author','authors']),iy=colIdx(h,['publication year','year']);rows.slice(1).forEach(r=>{const url=r[iu]?.trim(),title=r[it]?.trim();if(!url||!title)return;list.push({url,title,authors:authorsEt(r[ia]),year:r[iy]?.trim()})});}}}catch(e){}
+      if(!list.length){try{const res=await fetch(`${base}.txt`);if(res.ok){(await res.text()).trim().split(/\r?\n/).forEach(l=>{if(!l||l.startsWith('#'))return;const [u,t,a,y]=l.split('|').map(s=>s?.trim());list.push({url:u,title:t,authors:a,year:y});})}}catch(e){}
       }
-      list.sort((a,b)=>(parseInt(b.year)||0)-(parseInt(a.year)||0)); list.forEach(o=>add(ul,o)); }
+      list.sort((a,b)=>(parseInt(b.year)||0)-(parseInt(a.year)||0));list.forEach(o=>add(ul,o));}
 
-    // Load in order
     [['vlm','vlm-list'],['reasoning','reasoning-list'],['token','token-list'],['diffusion','diffusion-list'],['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],['misc','misc-list']].forEach(([b,id])=>load(b,id));
   </script>
 
