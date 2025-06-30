@@ -6,22 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: sans-serif;
-      max-width: 800px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 860px;
       margin: auto;
-      padding: 2rem;
+      padding: 2rem 1rem 4rem;
       line-height: 1.6;
+      color: #374151; /* slate-700 */
     }
 
     h1 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
+      color: #1f2937; /* slate-900 */
     }
 
     h2 {
       margin-top: 2.5rem;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
+      color: #1f2937;
+      border-bottom: 2px solid #2563eb; /* indigo-600 */
+      padding-bottom: .4rem;
     }
+
+    h3 { margin-top: 1.5rem; font-size: 1.1rem; }
 
     iframe {
       width: 100%;
@@ -29,26 +36,35 @@
       border: none;
       margin-top: 1rem;
       margin-bottom: 1.5rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / .08);
     }
 
     a {
-      color: #007acc;
+      color: #2563eb;
       text-decoration: none;
     }
-
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
 
     .venue {
-      color: #555;
+      color: #6b7280; /* slate-500 */
       font-style: italic;
       margin-bottom: 1rem;
     }
 
-    ul {
-      padding-left: 1.2rem;
+    ul { padding-left: 1.2rem; margin-top: .6rem; }
+
+    /* ---------- Table of contents ---------- */
+    .toc {
+      background: #f3f4f6; /* slate-100 */
+      border: 1px solid #e5e7eb; /* slate-200 */
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      margin: 1.5rem 0 2rem;
     }
+    .toc h2 { border: none; margin: 0 0 .8rem; font-size: 1.25rem; }
+    .toc ul { margin: 0; }
+    .toc li { margin-bottom: .4rem; list-style: square; }
   </style>
 </head>
 <body>
@@ -56,45 +72,55 @@
   <h1>📢 Seminar Talks</h1>
   <p class="venue">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
 
-  <section>
+  <!-- ========= Table of Contents ========= -->
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ul>
+      <li><a href="#reasoning">Reasoning Models / Reasoning Image Restoration</a></li>
+      <li><a href="#multitask">Multi‑Task Learning Perspective for Diffusion Models</a></li>
+      <li><a href="#neurips">NeurIPS 2024 Paper Summarizations</a></li>
+    </ul>
+  </nav>
+
+  <section id="reasoning">
     <h2>Reasoning Models / Reasoning Image Restoration</h2>
     <p>
-      A seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.
+      A seminar covering the use of large language models and vision‑language approaches in visual reasoning and restoration. We explored recent innovations in step‑wise reasoning and multimodal agents for complex image tasks.
     </p>
 
     <iframe src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
 
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
-      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank">RestoreAgent: Autonomous Image Restoration Agent via Multimodal Large Language Models</a></li>
-      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank">Chain-of-Restoration: Multi-Task Image Restoration Models as Zero-Shot Step-by-Step Universal Image Restorers</a></li>
+      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self‑Motivated Learning</a></li>
+      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener noreferrer">RestoreAgent: Autonomous Image Restoration Agent via Multimodal Large Language Models</a></li>
+      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener noreferrer">Chain‑of‑Restoration: Multi‑Task Image Restoration Models as Zero‑Shot Step‑by‑Step Universal Image Restorers</a></li>
     </ul>
   </section>
 
-  <section>
-    <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
+  <section id="multitask">
+    <h2>Multi‑Task Learning Perspective for Diffusion Models</h2>
     <p>
-      This seminar presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.
+      This seminar presents a multi‑task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture‑of‑experts to solve denoising in a synergistic fashion.
     </p>
 
     <iframe src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+
     <h3>Referenced Papers</h3>
     <ul>
-      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank">Addressing Negative Transfer in Diffusion Models</a></li>
-      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank">Switch Diffusion Transformer: Synergizing Denoising Tasks with Sparse Mixture-of-Experts</a></li>
+      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener noreferrer">Addressing Negative Transfer in Diffusion Models</a></li>
+      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener noreferrer">Switch Diffusion Transformer: Synergizing Denoising Tasks with Sparse Mixture‑of‑Experts</a></li>
     </ul>
   </section>
 
-  
-<section>
-  <h2>NeurIPS 2024 Paper Summarizations</h2>
-  <p>
-    A summary session from NeurIPS 2024, where I attended and analyzed several key papers presented at the conference.
-  </p>
-<iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-</section>
+  <section id="neurips">
+    <h2>NeurIPS 2024 Paper Summarizations</h2>
+    <p>
+      A summary session from NeurIPS 2024, where I attended and analyzed several key papers presented at the conference.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+  </section>
 
-  
 </body>
 </html>
+
