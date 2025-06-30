@@ -42,21 +42,58 @@
   <!-- ===== Reasoning Models Section ===== -->
   <section id="reasoning">
     <h2>Reasoning Models</h2>
-    <ul>
-      <!-- CSV-driven entries -->
-      <li><a href="http://arxiv.org/abs/2410.08688" target="_blank" rel="noopener noreferrer">Chain-of-Restoration: Multi-Task Image Restoration Models as Zero-Shot Step-by-Step Universal Image Restorers</a> <span style="color:#6b7280;">(Cao <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2504.05419" target="_blank" rel="noopener noreferrer">Reasoning Models Know When They're Right: Probabilistic Confidence for Chain-of-Thought</a> <span style="color:#6b7280;">(Zhang <em>et&nbsp;al.</em>, 2025)</span></li>
-      <li><a href="http://arxiv.org/abs/2504.15777" target="_blank" rel="noopener noreferrer">Tina: Tiny Reasoning Models via LoRA</a> <span style="color:#6b7280;">(Wang <em>et&nbsp;al.</em>, 2025)</span></li>
-      <li><a href="http://arxiv.org/abs/2503.09567" target="_blank" rel="noopener noreferrer">Towards Reasoning Era: A Survey of Long Chain-of-Thought in Large Language Models</a> <span style="color:#6b7280;">(Chen <em>et&nbsp;al.</em>, 2025)</span></li>
-      <li><a href="http://arxiv.org/abs/2410.13639" target="_blank" rel="noopener noreferrer">A Comparative Study on Reasoning Patterns of Open-Source Language Models</a> <span style="color:#6b7280;">(Wu <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self-Motivated Learning</a> <span style="color:#6b7280;">(Dong <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2305.17234" target="_blank" rel="noopener noreferrer">Automatic Chain of Thought Generation</a> <span style="color:#6b7280;">(Yao <em>et&nbsp;al.</em>, 2023)</span></li>
-      <li><a href="http://arxiv.org/abs/2403.04478" target="_blank" rel="noopener noreferrer">Why Chain-of-Thought Reasoning Works: Theoretical Evidence via an Atomic Decomposition of Tasks</a> <span style="color:#6b7280;">(Dasgupta <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2403.09114" target="_blank" rel="noopener noreferrer">NES: A Benchmark for Numeracy and Symbolic Reasoning</a> <span style="color:#6b7280;">(Sun <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2402.18151" target="_blank" rel="noopener noreferrer">Cognitive Arithmetic: Measuring LLMs' Symbolic Reasoning Abilities</a> <span style="color:#6b7280;">(Qian <em>et&nbsp;al.</em>, 2024)</span></li>
-      <li><a href="http://arxiv.org/abs/2405.00042" target="_blank" rel="noopener noreferrer">Self-Verify: An Iterative Chain-of-Thought Framework</a> <span style="color:#6b7280;">(Feng <em>et&nbsp;al.</em>, 2024)</span></li>
-    </ul>
+    <ul id="reasoning-list"><!-- dynamically filled --></ul>
   </section>
+
+  <!-- ===== Implicit Neural Representations Section ===== -->
+  <section id="inr">
+    <h2>Implicit Neural Representations (INR)</h2>
+    <ul id="inr-list"><!-- dynamically filled --></ul>
+  </section>
+
+  <script>
+    /**
+     * Populates a <ul> list with paper entries read from a pipe‑separated text file.
+     * Expected line format:
+     *   URL | Paper Title | Authors et al. | Year
+     * Example:
+     *   http://arxiv.org/abs/2410.08688 | Chain‑of‑Restoration: Multi‑Task Image Restoration Models as Zero‑Shot Step‑by‑Step Universal Image Restorers | Cao <em>et&nbsp;al.</em> | 2024
+     * Lines starting with # are ignored.
+     */
+    async function loadPapers(file, listId){
+      try{
+        const res = await fetch(file);
+        if(!res.ok) return; // silently ignore missing list
+        const text = await res.text();
+        const ul = document.getElementById(listId);
+        text.trim().split(/\r?\n/).forEach(line=>{
+          if(!line || line.startsWith('#')) return;
+          const [url,title,authors,year] = line.split('|').map(s=>s && s.trim());
+          if(!url||!title) return;
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href   = url;
+          a.target = '_blank';
+          a.rel    = 'noopener noreferrer';
+          a.innerText = title;
+
+          const span = document.createElement('span');
+          span.style.color = '#6b7280';
+          span.innerHTML = ` (${authors || 'Unknown'}${year ? ', '+year : ''})`;
+
+          li.appendChild(a);
+          li.appendChild(span);
+          ul.appendChild(li);
+        });
+      }catch(err){
+        console.error(`Unable to load ${file}:`, err);
+      }
+    }
+
+    // Load paper lists — keep filenames the same as your pasted text files
+    loadPapers('reasoning.txt','reasoning-list');
+    loadPapers('inr.txt','inr-list');
+  </script>
 
 </body>
 </html>
