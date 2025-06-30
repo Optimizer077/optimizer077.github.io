@@ -25,8 +25,13 @@
     li{margin-bottom:.55rem;font-size:var(--fs-lg);}
     section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}
     nav.top-nav{position:absolute;top:1.5rem;right:2rem;display:flex;gap:.55rem;}
-    nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s,color .2s;text-decoration:none;}
+    nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s;white-space:nowrap;}
     nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
+    /* Table-of-contents */
+    nav#toc{margin:1rem 0 2rem;}
+    nav#toc ul{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.6rem;}
+    nav#toc a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:6px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;}
+    nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}  
   </style>
 </head>
 <body>
@@ -37,132 +42,61 @@
   </nav>
 
   <h1>📚 Paper Reading List</h1>
-  <p style="color:#6b7280;font-style:italic;margin-bottom:1.5rem;">Curated reading collections for group study (newest first)</p>
+  <p style="color:#6b7280;font-style:italic;margin-bottom:.75rem;">Newest papers first – grouped by topic</p>
 
-  <!-- ===== Reasoning Models Section ===== -->
-  <section id="reasoning">
-    <h2>Reasoning Models</h2>
-    <ul id="reasoning-list"></ul>
-  </section>
+  <!-- ===== Simple Index ===== -->
+  <nav id="toc" aria-label="Table of contents">
+    <ul>
+      <li><a href="#vlm">VLM</a></li>
+      <li><a href="#reasoning">Reasoning</a></li>
+      <li><a href="#token">Token Reduction</a></li>
+      <li><a href="#diffusion">Diffusion</a></li>
+      <li><a href="#inr">INR</a></li>
+      <li><a href="#retrieval">Retrieval</a></li>
+      <li><a href="#mri">MRI</a></li>
+      <li><a href="#hyperspectral">Hyperspectral</a></li>
+      <li><a href="#misc">Others</a></li>
+    </ul>
+  </nav>
 
-  <!-- ===== Implicit Neural Representations Section ===== -->
-  <section id="inr">
-    <h2>Implicit Neural Representations (INR)</h2>
-    <ul id="inr-list"></ul>
-  </section>
-
-  <!-- ===== Diffusion Models Section ===== -->
-  <section id="diffusion">
-    <h2>Diffusion Models</h2>
-    <ul id="diffusion-list"></ul>
-  </section>
+  <!-- Sections (in requested order) -->
+  <section id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
+  <section id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
+  <section id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
+  <section id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
+  <section id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
+  <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
+  <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
+  <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
+  <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
 
   <script>
-    // --- Lightweight CSV parser (RFC‑4180) ----------------------------------
-    function parseCSV(text){
-      const rows=[], row=[]; let field='', i=0, inQuotes=false;
-      while(i<text.length){
-        const c=text[i];
-        if(inQuotes){
-          if(c==="\"" && text[i+1]==="\""){ field+='"'; i+=2; continue; }
-          if(c==="\""){ inQuotes=false; i++; continue; }
-          field+=c; i++; continue;
-        }
-        if(c==="\""){ inQuotes=true; i++; continue; }
-        if(c===','){ row.push(field); field=''; i++; continue; }
-        if(c==='\n' || c==='\r'){
-          if(c==='\r' && text[i+1]==='\n') i++; // CRLF
-          row.push(field); rows.push(row.slice()); row.length=0; field=''; i++; continue; }
-        field+=c; i++; }
-      if(field!=='' || row.length){ row.push(field); rows.push(row); }
-      return rows;
-    }
+    /* ---------- CSV parser & helpers ---------- */
+    function parseCSV(t){const r=[],c=[],q='"';let i=0,f='',inQ=false;while(i<t.length){const ch=t[i];if(inQ){if(ch===q&&t[i+1]==="\""){f+=q;i+=2;continue}if(ch===q){inQ=false;i++;continue}f+=ch;i++;continue}if(ch===q){inQ=true;i++;continue}if(ch===','){c.push(f);f='';i++;continue}if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;c.push(f);r.push(c.slice());c.length=0;f='';i++;continue}f+=ch;i++}if(f!==''||c.length){c.push(f);r.push(c)}return r}
+    const lc=s=>(s||'').toLowerCase();
+    function colIdx(h,keys){keys=Array.isArray(keys)?keys:[keys];for(const k of keys){const i=h.indexOf(lc(k));if(i!==-1) return i;}for(const k of keys){const i=h.findIndex(x=>x.includes(lc(k)));if(i!==-1) return i;}return-1;}
+    function authorsEt(a){if(!a) return'Unknown';const first=a.split(';')[0].trim();if(!first)return'Unknown';const sur=first.includes(',')?first.split(',')[0].trim():first.split(' ').slice(-1)[0];return sur+' et al.';}
 
-    // --- Helpers -----------------------------------------------------------
-    const lc = s => (s||'').toLowerCase();
-    function findColumn(header, keys){
-      keys = Array.isArray(keys)?keys:[keys];
-      for(const k of keys){ const idx=header.indexOf(lc(k)); if(idx!==-1) return idx; }
-      for(const k of keys){ const idx=header.findIndex(h=>h.includes(lc(k))); if(idx!==-1) return idx; }
-      return -1;
-    }
-    function formatAuthors(str){
-      if(!str) return 'Unknown';
-      const first=str.split(';')[0].trim(); if(!first) return 'Unknown';
-      const surname= first.includes(',') ? first.split(',')[0].trim() : first.split(' ').slice(-1)[0];
-      return surname + ' et al.';
-    }
-    function pushPaper(ul,{url,title,authors,year}){
-      if(!url || !title) return;
+    // Track duplicates across ALL sections by URL (fallback title)
+    const seen=new Set();
+    function add(ul,{url,title,authors,year}){
+      const key=url||title; if(!key||seen.has(key)) return; seen.add(key);
       const li=document.createElement('li');
-      const a=document.createElement('a');
-      a.href=url; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent=title;
-      const span=document.createElement('span');
-      span.style.color='#6b7280';
-      const meta=[authors||'Unknown', year||''].filter(Boolean).join(', ');
-      span.innerHTML=` (${meta})`;
-      li.appendChild(a); li.appendChild(span); ul.appendChild(li);
+      const link=document.createElement('a'); link.href=url; link.target='_blank'; link.rel='noopener noreferrer'; link.textContent=title;
+      const meta=document.createElement('span'); meta.style.color='#6b7280'; meta.innerHTML=` (${[authors||'Unknown',year||''].filter(Boolean).join(', ')})`;
+      li.appendChild(link); li.appendChild(meta); ul.appendChild(li);
     }
 
-    // --- Core loader -------------------------------------------------------
-    async function loadPapers(baseName,listId){
-      const ul=document.getElementById(listId); if(!ul) return;
-      const arr=[]; // collect objects then sort
-
-      // 1) CSV attempt
-      try{
-        const r=await fetch(`${baseName}.csv`);
-        if(r.ok){
-          const rows=parseCSV((await r.text()).trim());
-          if(rows.length){
-            const header=rows[0].map(h=>lc(h.trim()));
-            const urlIdx = findColumn(header,['url','link']);
-            const titIdx = findColumn(header,'title');
-            const autIdx = findColumn(header,['author','authors']);
-            const yrIdx  = findColumn(header,['publication year','year']);
-            rows.slice(1).forEach(rw=>{
-              const url = rw[urlIdx]?.trim();
-              const title=rw[titIdx]?.trim();
-              if(!url||!title) return;
-              const obj={
-                url,
-                title,
-                authors: formatAuthors(rw[autIdx]),
-                year: rw[yrIdx]?.trim()
-              };
-              arr.push(obj);
-            });
-          }
-        }
-      }catch(e){ console.warn('CSV load failed',e); }
-
-      // 2) TXT fallback
-      if(!arr.length){
-        try{
-          const r=await fetch(`${baseName}.txt`);
-          if(r.ok){
-            (await r.text()).trim().split(/\r?\n/).forEach(line=>{
-              if(!line||line.startsWith('#')) return;
-              const [url,title,authors,year]=line.split('|').map(s=>s?.trim());
-              if(!url||!title) return;
-              arr.push({url,title,authors,year});
-            });
-          }
-        }catch(e){ console.warn('TXT load failed',e); }
+    async function load(base,id){const ul=document.getElementById(id); if(!ul) return; const list=[];
+      // CSV
+      try{const res=await fetch(`${base}.csv`); if(res.ok){const rows=parseCSV((await res.text()).trim()); if(rows.length){const h=rows[0].map(v=>lc(v.trim())); const iu=colIdx(h,['url','link']), it=colIdx(h,'title'), ia=colIdx(h,['author','authors']), iy=colIdx(h,['publication year','year']); rows.slice(1).forEach(r=>{const url=r[iu]?.trim(), title=r[it]?.trim(); if(!url||!title) return; list.push({url, title, authors:authorsEt(r[ia]), year:r[iy]?.trim()});});}}}catch(e){}
+      // TXT fallback
+      if(!list.length){try{const res=await fetch(`${base}.txt`); if(res.ok){(await res.text()).trim().split(/\r?\n/).forEach(l=>{if(!l||l.startsWith('#'))return; const [u,t,a,y]=l.split('|').map(s=>s?.trim()); list.push({url:u, title:t, authors:a, year:y});});}}catch(e){}
       }
+      list.sort((a,b)=>(parseInt(b.year)||0)-(parseInt(a.year)||0)); list.forEach(o=>add(ul,o)); }
 
-      // Sort newest->oldest (numeric year)
-      arr.sort((a,b)=>{
-        const ya=parseInt(a.year)||0, yb=parseInt(b.year)||0; return yb-ya; });
-
-      // Render
-      arr.forEach(obj=>pushPaper(ul,obj));
-    }
-
-    // Load all sections
-    loadPapers('reasoning','reasoning-list');
-    loadPapers('inr','inr-list');
-    loadPapers('diffusion','diffusion-list');
+    // Load in order
+    [['vlm','vlm-list'],['reasoning','reasoning-list'],['token','token-list'],['diffusion','diffusion-list'],['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],['misc','misc-list']].forEach(([b,id])=>load(b,id));
   </script>
 
 </body>
