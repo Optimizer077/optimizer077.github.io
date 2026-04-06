@@ -1,21 +1,31 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Seminars - Ali Haider</title>
+  <title>Seminars – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Seminar talks and reading sessions by Ali Haider covering reasoning models, diffusion, image restoration, and conference summaries." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body{max-width:860px;margin:auto;padding:2rem 1.25rem 5rem;}
+    p,li{font-size:var(--fs-lg);}
+    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}
+    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);}
+    ul{padding-left:1.2rem;margin-top:.4rem;}
+    section{background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:1.6rem 1.4rem;margin-bottom:2rem;}
+    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
+    .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
+    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;}
+    .toc ul{margin:0;padding-left:1.2rem;}
+    .toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}
+  </style>
 </head>
 <body>
+
   <header class="site-header">
-    <a class="logo" href="index.html">
-      <span class="logo-mark">AH</span>
-      <span class="logo-text">Ali Haider<small>Research Portfolio</small></span>
-    </a>
+    <a class="logo" href="index.html">Ali Haider</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
       <a href="index.html">Home</a>
@@ -24,132 +34,102 @@
     </nav>
   </header>
 
-  <main class="page-wrap">
-    <section class="page-hero">
-      <div class="kicker">Lab Talks and Reading Sessions</div>
-      <h1 class="page-title">Seminar talks with a cleaner structure and a more polished presentation.</h1>
-      <p class="page-intro">
-        This page collects my seminar sessions at MLVC Lab, Kyung Hee University Global Campus, focused on current ideas in diffusion,
-        reasoning, image restoration, and conference highlights.
-      </p>
-      <div class="page-meta">
-        <span class="badge">MLVC Lab</span>
-        <span class="badge">Google Slides embeds</span>
-        <span class="badge">Research notes + references</span>
-      </div>
-    </section>
+  <h1 style="margin-top:2rem;">Seminar Talks</h1>
+  <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1rem;">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
 
-    <nav class="toc card" aria-label="Contents">
-      <div class="section-heading">
-        <h2>Contents</h2>
-        <p>Jump directly to the session you want to revisit.</p>
-      </div>
-      <div class="toc-top">
-        <ul>
-          <li><a href="#reasoning">Reasoning and Restoration</a></li>
-          <li><a href="#multitask">Multi-Task Diffusion</a></li>
-          <li><a href="#taskdiffusion">Task-Oriented Diffusion</a></li>
-          <li><a href="#aaai24">AAAI 2024 Highlights</a></li>
-          <li><a href="#neurips">NeurIPS 2024 Summary</a></li>
-        </ul>
-      </div>
-    </nav>
+  <!-- ===== CONTENTS ===== -->
+  <nav class="toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ul>
+      <li><a href="#reasoning">Reasoning Models / Image Restoration</a></li>
+      <li><a href="#multitask">Multi-Task Learning for Diffusion Models</a></li>
+      <li><a href="#taskdiffusion">Task-Oriented Diffusion for Image Restoration</a></li>
+      <li><a href="#aaai24">Any-Size Diffusion & ResDiff (AAAI 2024)</a></li>
+      <li><a href="#neurips">NeurIPS 2024 Paper Summaries</a></li>
+    </ul>
+  </nav>
 
-    <section class="seminar-card" id="reasoning">
-      <div class="section-heading">
-        <h2>Reasoning Models and Image Restoration</h2>
-        <p>Large language models, multimodal agents, and step-wise restoration strategies.</p>
-      </div>
-      <p>
-        This talk covered how reasoning-oriented language models and vision-language systems can support difficult restoration tasks,
-        especially when the pipeline benefits from explicit decomposition and agent-style planning.
-      </p>
-      <iframe class="embed-frame" src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen title="Reasoning models and image restoration seminar"></iframe>
-      <h3 style="margin: 1rem 0 0.5rem;">Referenced Papers</h3>
-      <ul>
-        <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
-        <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener noreferrer">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
-        <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener noreferrer">Chain-of-Restoration: Universal Step-by-Step Restorers</a></li>
-      </ul>
-    </section>
+  <!-- ===== Seminar 1 ===== -->
+  <section id="reasoning">
+    <h2>Reasoning Models / Reasoning Image Restoration</h2>
+    <p>
+      Seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <h3>Referenced Papers</h3>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
+      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
+      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener">Chain-of-Restoration: Universal Step-by-Step Restorers</a></li>
+    </ul>
+  </section>
 
-    <section class="seminar-card" id="multitask">
-      <div class="section-heading">
-        <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
-        <p>Transferability, negative transfer, and mixture-of-experts views of denoising.</p>
-      </div>
-      <p>
-        This session framed diffusion models through the lens of multi-task learning and discussed when shared representations help,
-        when they interfere, and how routing strategies can improve overall robustness.
-      </p>
-      <iframe class="embed-frame" src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen title="Multi-task diffusion seminar"></iframe>
-      <h3 style="margin: 1rem 0 0.5rem;">Referenced Papers</h3>
-      <ul>
-        <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener noreferrer">Addressing Negative Transfer in Diffusion Models</a></li>
-        <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener noreferrer">Switch Diffusion Transformer</a></li>
-      </ul>
-    </section>
+  <!-- ===== Seminar 2 ===== -->
+  <section id="multitask">
+    <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
+    <p>
+      Presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <h3>Referenced Papers</h3>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener">Addressing Negative Transfer in Diffusion Models</a></li>
+      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener">Switch Diffusion Transformer</a></li>
+    </ul>
+  </section>
 
-    <section class="seminar-card" id="taskdiffusion">
-      <div class="section-heading">
-        <h2>Task-Oriented Diffusion for Image Restoration</h2>
-        <p>Restoration-first diffusion systems tailored for practical image quality tasks.</p>
-      </div>
-      <p>
-        A focused deep dive into diffusion-based restoration models including Ambient Diffusion, ResShift, and DiffBIR,
-        with attention to how each system balances visual quality, speed, and task specificity.
-      </p>
-      <iframe class="embed-frame" src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen title="Task-oriented diffusion seminar"></iframe>
-      <h3 style="margin: 1rem 0 0.5rem;">Referenced Papers</h3>
-      <ul>
-        <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener noreferrer">Ambient Diffusion</a></li>
-        <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener noreferrer">ResShift: Efficient SR via Residual Shifting</a></li>
-        <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener noreferrer">DiffBIR: Diffusion-based Blind Image Restoration</a></li>
-      </ul>
-    </section>
+  <!-- ===== Seminar 3 ===== -->
+  <section id="taskdiffusion">
+    <h2>Task-Oriented Diffusion for Image Restoration</h2>
+    <p>
+      A deep dive into diffusion-based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super-resolution, and DiffBIR’s two-stage blind restoration pipeline.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <h3>Referenced Papers</h3>
+    <ul>
+      <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener">Ambient Diffusion</a></li>
+      <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResShift: Efficient SR via Residual Shifting</a></li>
+      <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener">DiffBIR: Diffusion-based Blind Image Restoration</a></li>
+    </ul>
+  </section>
 
-    <section class="seminar-card" id="aaai24">
-      <div class="section-heading">
-        <h2>Any-Size Diffusion and ResDiff</h2>
-        <p>Highlights from two AAAI 2024 papers on synthesis and super-resolution.</p>
-      </div>
-      <p>
-        This seminar compared Any-Size-Diffusion for arbitrary-resolution text-to-image generation and ResDiff for single-image super-resolution,
-        focusing on how each paper combines structure with generation quality.
-      </p>
-      <iframe class="embed-frame" src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen title="AAAI 2024 seminar"></iframe>
-      <h3 style="margin: 1rem 0 0.5rem;">Referenced Papers</h3>
-      <ul>
-        <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener noreferrer">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
-        <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener noreferrer">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
-      </ul>
-    </section>
+  <!-- ===== Seminar 4 ===== -->
+  <section id="aaai24">
+    <h2>Any-Size Diffusion & ResDiff (AAAI 2024)</h2>
+    <p>
+      Highlights from two AAAI-24 papers: Any-Size-Diffusion (ASD), a two-stage pipeline for text-to-image synthesis at arbitrary resolutions, and ResDiff, which unites CNN priors with diffusion guidance for efficient single-image super-resolution.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    <h3>Referenced Papers</h3>
+    <ul>
+      <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
+      <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
+    </ul>
+  </section>
 
-    <section class="seminar-card" id="neurips">
-      <div class="section-heading">
-        <h2>NeurIPS 2024 Paper Summaries</h2>
-        <p>A summary session focused on notable conference papers and their broader implications.</p>
-      </div>
-      <p>
-        This closing session gathered key NeurIPS 2024 papers into a compact overview, helping connect individual contributions to larger trends across the field.
-      </p>
-      <iframe class="embed-frame" src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen title="NeurIPS 2024 summary seminar"></iframe>
-    </section>
-  </main>
+  <!-- ===== Seminar 5 ===== -->
+  <section id="neurips">
+    <h2>NeurIPS 2024 Paper Summaries</h2>
+    <p>
+      Summary session from NeurIPS 2024, with analyses of several key papers presented at the conference.
+    </p>
+    <iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+  </section>
 
   <footer class="site-footer">
     <p>&copy; 2026 Ali Haider</p>
   </footer>
 
   <script>
+    /* Mobile nav toggle */
     const navBtn = document.getElementById('nav-toggle');
     if (navBtn) {
       navBtn.addEventListener('click', () => {
         const open = document.body.classList.toggle('nav-open');
-        navBtn.setAttribute('aria-expanded', String(open));
+        navBtn.setAttribute('aria-expanded', open);
         navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
       });
-      document.querySelectorAll('.site-header nav a').forEach((a) => {
+      document.querySelectorAll('.site-header nav a').forEach(a => {
         a.addEventListener('click', () => {
           document.body.classList.remove('nav-open');
           navBtn.setAttribute('aria-expanded', 'false');
@@ -158,5 +138,6 @@
       });
     }
   </script>
+
 </body>
 </html>
