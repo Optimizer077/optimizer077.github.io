@@ -1,69 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Paper Reading – Ali Haider</title>
+  <title>Paper Reading - Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Ali Haider's categorized paper reading list across VLMs, reasoning, diffusion, INR, retrieval, MRI, and related topics." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* ----- Layout: leave room for fixed sidebar ----- */
-    body{
-      max-width:860px;
-      margin:auto;
-      padding:2rem 1rem 4rem 180px;
-      transition:padding-left .3s;
-    }
-    li{margin-bottom:.55rem;font-size:var(--fs-lg);}
-    section{background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:8px;box-shadow:var(--shadow-sm);padding:1.6rem 1.4rem;margin-bottom:2rem;}
-    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-
-    /* ----- Sidebar (vertical index) ----- */
-    nav#toc{
-      position:fixed;top:var(--header-h);left:0;bottom:0;width:160px;padding:1rem;overflow-y:auto;
-      background:var(--clr-bg-alt);border-right:1px solid var(--clr-border);
-      transition:transform .3s;z-index:90;
-    }
-    nav#toc h3{font-size:var(--fs-sm);font-weight:600;margin-bottom:.75rem;color:var(--clr-primary);}
-    nav#toc ul{list-style:none;padding-left:0;}
-    nav#toc li{margin-bottom:.4rem;}
-    nav#toc a{display:block;font-size:var(--fs-sm);padding:.35rem .6rem;border-radius:6px;transition:background .2s;white-space:nowrap;border:1px solid transparent;}
-    nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
-
-    /* ----- Horizontal top index ----- */
-    nav#toc-top{margin:1rem 0 2rem;}
-    nav#toc-top ul{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.6rem;}
-    nav#toc-top a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:20px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;color:var(--clr-text);font-weight:500;}
-    nav#toc-top a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
-
-    /* ----- Mobile ----- */
-    @media (max-width:768px){
-      body{padding:2rem 1rem 4rem 1rem;}
-      nav#toc{transform:translateX(-100%);width:220px;box-shadow:2px 0 6px rgba(0,0,0,.08);top:var(--header-h);}
-      body.toc-open nav#toc{transform:translateX(0);}
-      /* backdrop overlay */
-      body.toc-open::before{
-        content:'';position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;
-        top:var(--header-h); /* don't cover sticky header */
-      }
-      #toc-toggle{display:block;position:fixed;bottom:1.25rem;right:1.25rem;z-index:50;
-        background:var(--clr-accent);color:#fff;border:none;padding:.55rem .9rem;
-        border-radius:20px;font-size:var(--fs-sm);cursor:pointer;box-shadow:var(--shadow-md);}
-      nav#toc-top ul{flex-wrap:nowrap;overflow-x:auto;gap:.4rem;}
-      nav#toc-top a{flex:0 0 auto;}
-    }
-    @media (max-width:480px){
-      h1{font-size:1.55rem;} h2{font-size:1.25rem;} li{font-size:var(--fs-sm);}
-    }
-  </style>
 </head>
 <body>
-
-  <!-- ===== Sticky site header ===== -->
   <header class="site-header">
-    <a class="logo" href="index.html">Ali Haider</a>
+    <a class="logo" href="index.html">
+      <span class="logo-mark">AH</span>
+      <span class="logo-text">Ali Haider<small>Research Portfolio</small></span>
+    </a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
       <a href="index.html">Home</a>
@@ -72,166 +24,247 @@
     </nav>
   </header>
 
-  <!-- ===== Hamburger (mobile only) ===== -->
-  <button id="toc-toggle" aria-label="Toggle table of contents" style="display:none">☰ Sections</button>
+  <main class="page-wrap">
+    <section class="page-hero">
+      <div class="kicker">Curated Reading Library</div>
+      <h1 class="page-title">A categorized reading list for the ideas I am actively following.</h1>
+      <p class="page-intro">
+        This page collects papers across vision-language systems, reasoning, diffusion, INR, retrieval, MRI, and other adjacent topics.
+        It is designed as a working library, not just an archive, so the organization is quick to scan and easy to return to.
+      </p>
+      <div class="page-meta">
+        <span class="badge">Updated from CSV files</span>
+        <span class="badge">Grouped by topic</span>
+        <span class="badge">Newest papers first</span>
+      </div>
+    </section>
 
-  <!-- ===== Vertical Index Sidebar ===== -->
-  <nav id="toc" aria-label="Table of contents sidebar">
-    <h3>Sections</h3>
-    <ul>
-      <li><a href="#vln-vla">VLN / VLA</a></li>
-      <li><a href="#vlm">VLM</a></li>
-      <li><a href="#reasoning">Reasoning</a></li>
-      <li><a href="#token">Token Reduction</a></li>
-      <li><a href="#diffusion">Diffusion</a></li>
-      <li><a href="#inr">INR</a></li>
-      <li><a href="#retrieval">Retrieval</a></li>
-      <li><a href="#mri">MRI</a></li>
-      <li><a href="#hyperspectral">Hyperspectral</a></li>
-      <li><a href="#misc">Others</a></li>
-    </ul>
-  </nav>
+    <div class="sidebar-layout">
+      <nav class="toc" aria-label="Table of contents sidebar">
+        <h2 style="margin-bottom: 0.8rem;">Sections</h2>
+        <ul>
+          <li><a href="#vln-vla">VLN / VLA</a></li>
+          <li><a href="#vlm">VLM</a></li>
+          <li><a href="#reasoning">Reasoning</a></li>
+          <li><a href="#token">Token Reduction</a></li>
+          <li><a href="#diffusion">Diffusion</a></li>
+          <li><a href="#inr">INR</a></li>
+          <li><a href="#retrieval">Retrieval</a></li>
+          <li><a href="#mri">MRI</a></li>
+          <li><a href="#hyperspectral">Hyperspectral</a></li>
+          <li><a href="#misc">Others</a></li>
+        </ul>
+      </nav>
 
-  <main>
-    <h1>📚 Paper Reading List</h1>
-    <p style="color:#6b7280;font-style:italic;margin-bottom:.75rem;">Updated weekly – newest papers first, grouped by topic</p>
+      <div>
+        <nav class="toc-top" aria-label="Quick links" style="margin-bottom: 1rem;">
+          <ul>
+            <li><a href="#vln-vla">VLN / VLA</a></li>
+            <li><a href="#vlm">VLM</a></li>
+            <li><a href="#reasoning">Reasoning</a></li>
+            <li><a href="#token">Token Reduction</a></li>
+            <li><a href="#diffusion">Diffusion</a></li>
+            <li><a href="#inr">INR</a></li>
+            <li><a href="#retrieval">Retrieval</a></li>
+            <li><a href="#mri">MRI</a></li>
+            <li><a href="#hyperspectral">Hyperspectral</a></li>
+            <li><a href="#misc">Others</a></li>
+          </ul>
+        </nav>
 
-    <!-- ===== Horizontal Top Index ===== -->
-    <nav id="toc-top" aria-label="Quick links">
-      <ul>
-        <li><a href="#vln-vla">VLN / VLA</a></li>
-        <li><a href="#vlm">VLM</a></li>
-        <li><a href="#reasoning">Reasoning</a></li>
-        <li><a href="#token">Token Reduction</a></li>
-        <li><a href="#diffusion">Diffusion</a></li>
-        <li><a href="#inr">INR</a></li>
-        <li><a href="#retrieval">Retrieval</a></li>
-        <li><a href="#mri">MRI</a></li>
-        <li><a href="#hyperspectral">Hyperspectral</a></li>
-        <li><a href="#misc">Others</a></li>
-      </ul>
-    </nav>
-
-    <!-- Sections -->
-    <section id="vln-vla"><h2>Vision-Language Navigation / Vision-Language Action (VLN &middot; VLA)</h2><ul id="vln-vla-list"></ul></section>
-    <section id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
-    <section id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
-    <section id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
-    <section id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
-    <section id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
-    <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
-    <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
-    <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
-    <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
+        <section class="reading-group" id="vln-vla"><div class="section-heading"><h2>Vision-Language Navigation / Action</h2><p>Embodied systems, navigation, and action-conditioned multimodal models.</p></div><ul class="reading-list" id="vln-vla-list"></ul></section>
+        <section class="reading-group" id="vlm"><div class="section-heading"><h2>Vision-Language and Multimodal Models</h2><p>General-purpose multimodal systems and foundation-model behavior.</p></div><ul class="reading-list" id="vlm-list"></ul></section>
+        <section class="reading-group" id="reasoning"><div class="section-heading"><h2>Reasoning Models</h2><p>Work on deliberate inference, decomposition, and long-horizon reasoning.</p></div><ul class="reading-list" id="reasoning-list"></ul></section>
+        <section class="reading-group" id="token"><div class="section-heading"><h2>Token Reduction Techniques</h2><p>Compression, pruning, and efficient context strategies.</p></div><ul class="reading-list" id="token-list"></ul></section>
+        <section class="reading-group" id="diffusion"><div class="section-heading"><h2>Diffusion Models</h2><p>Generative modeling papers spanning theory, synthesis, and restoration.</p></div><ul class="reading-list" id="diffusion-list"></ul></section>
+        <section class="reading-group" id="inr"><div class="section-heading"><h2>Implicit Neural Representations</h2><p>Representation learning through continuous signals and iterative refinement.</p></div><ul class="reading-list" id="inr-list"></ul></section>
+        <section class="reading-group" id="retrieval"><div class="section-heading"><h2>Instance Retrieval</h2><p>Retrieval, similarity learning, and ranking-oriented methods.</p></div><ul class="reading-list" id="retrieval-list"></ul></section>
+        <section class="reading-group" id="mri"><div class="section-heading"><h2>MRI-related Papers</h2><p>Acceleration, reconstruction, and image-quality research for MRI.</p></div><ul class="reading-list" id="mri-list"></ul></section>
+        <section class="reading-group" id="hyperspectral"><div class="section-heading"><h2>Hyperspectral Imaging</h2><p>Restoration, understanding, and representation learning in spectral domains.</p></div><ul class="reading-list" id="hyperspectral-list"></ul></section>
+        <section class="reading-group" id="misc"><div class="section-heading"><h2>Other Interesting Papers</h2><p>Useful outliers that still influence how I think about the field.</p></div><ul class="reading-list" id="misc-list"></ul></section>
+      </div>
+    </div>
   </main>
 
-  <script>
-    /* ---------- CSV parser & helpers ---------- */
-    function parseCSV(text){
-      const rows=[],row=[];let field='',i=0,inQ=false;
-      while(i<text.length){const ch=text[i];
-        if(inQ){
-          if(ch==='"'&&text[i+1]==='"'){field+='"';i+=2;continue;}
-          if(ch==='"'){inQ=false;i++;continue;}
-          field+=ch;i++;continue;
-        }
-        if(ch==='"'){inQ=true;i++;continue;}
-        if(ch===','){row.push(field);field='';i++;continue;}
-        if(ch==='\n'||ch==='\r'){
-          if(ch==='\r'&&text[i+1]==='\n')i++;
-          row.push(field);rows.push(row.slice());row.length=0;field='';i++;continue;
-        }
-        field+=ch;i++;
-      }
-      if(field!==''||row.length){row.push(field);rows.push(row);}return rows;
-    }
-    const lc=s=>(s||'').toLowerCase();
-    function colIdx(header,keys){keys=Array.isArray(keys)?keys:[keys];
-      for(const k of keys){const idx=header.indexOf(lc(k));if(idx!==-1)return idx;}
-      for(const k of keys){const idx=header.findIndex(h=>h.includes(lc(k)));if(idx!==-1)return idx;}
-      return -1;
-    }
-    function authorsEt(a){if(!a)return'Unknown';const first=a.split(';')[0].trim();if(!first)return'Unknown';const surname=first.includes(',')?first.split(',')[0].trim():first.split(' ').slice(-1)[0];return surname+' et al.';}
-
-    /* Deduplicate across all sections */
-    const seen=new Set();
-    function add(ul,{url,title,authors,year}){
-      const key=url||title;if(!key||seen.has(key))return;seen.add(key);
-      const li=document.createElement('li');
-      const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=title;
-      const meta=document.createElement('span');meta.style.color='#6b7280';meta.innerHTML=` (${[authors||'Unknown',year||''].filter(Boolean).join(', ')})`;
-      li.appendChild(link);li.appendChild(meta);ul.appendChild(li);
-    }
-
-    async function load(base,id){
-      const ul=document.getElementById(id);if(!ul)return;const arr=[];
-      /* CSV attempt */
-      try{
-        const res=await fetch(`${base}.csv`);
-        if(res.ok){
-          const rows=parseCSV((await res.text()).trim());
-          if(rows.length){
-            const h=rows[0].map(v=>lc(v.trim()));
-            const iu=colIdx(h,['url','link']),it=colIdx(h,'title'),ia=colIdx(h,['author','authors']),iy=colIdx(h,['publication year','year']);
-            rows.slice(1).forEach(r=>{
-              const url=r[iu]?.trim(),title=r[it]?.trim();if(!url||!title)return;
-              arr.push({url,title,authors:authorsEt(r[ia]),year:r[iy]?.trim()});
-            });
-          }
-        }
-      }catch(e){}
-      /* TXT fallback */
-      if(!arr.length){
-        try{
-          const res=await fetch(`${base}.txt`);
-          if(res.ok){
-            (await res.text()).trim().split(/\r?\n/).forEach(line=>{
-              if(!line||line.startsWith('#'))return;
-              const [url,title,authors,year]=line.split('|').map(s=>s?.trim());if(!url||!title)return;
-              arr.push({url,title,authors,year});
-            });
-          }
-        }catch(e){}
-      }
-      arr.sort((a,b)=>(parseInt(b.year)||0)-(parseInt(a.year)||0));
-      arr.forEach(o=>add(ul,o));
-    }
-
-    /* Load each section */
-    const sections=[
-      ['vlm','vlm-list'],['reasoning','reasoning-list'],['token','token-list'],['diffusion','diffusion-list'],
-      ['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],
-      ['Autonomous_Drive','vln-vla-list'],['misc','misc-list']
-    ];
-    sections.forEach(([base,id])=>load(base,id));
-
-    /* --------- Mobile sidebar toggle --------- */
-    const tocBtn=document.getElementById('toc-toggle');
-    tocBtn.addEventListener('click',()=>document.body.classList.toggle('toc-open'));
-    /* Close sidebar when tapping the backdrop (::before pseudo-element area) */
-    document.addEventListener('click', e => {
-      if (!document.body.classList.contains('toc-open')) return;
-      const toc = document.getElementById('toc');
-      if (!toc.contains(e.target) && e.target !== tocBtn) {
-        document.body.classList.remove('toc-open');
-      }
-    });
-  </script>
-
   <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; Updated weekly</p>
+    <p>&copy; 2026 Ali Haider · Updated regularly</p>
   </footer>
 
   <script>
-    /* Mobile nav toggle */
+    function parseCSV(text) {
+      const rows = [];
+      const row = [];
+      let field = '';
+      let i = 0;
+      let inQuotes = false;
+
+      while (i < text.length) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"' && text[i + 1] === '"') {
+            field += '"';
+            i += 2;
+            continue;
+          }
+          if (ch === '"') {
+            inQuotes = false;
+            i += 1;
+            continue;
+          }
+          field += ch;
+          i += 1;
+          continue;
+        }
+        if (ch === '"') {
+          inQuotes = true;
+          i += 1;
+          continue;
+        }
+        if (ch === ',') {
+          row.push(field);
+          field = '';
+          i += 1;
+          continue;
+        }
+        if (ch === '\n' || ch === '\r') {
+          if (ch === '\r' && text[i + 1] === '\n') {
+            i += 1;
+          }
+          row.push(field);
+          rows.push(row.slice());
+          row.length = 0;
+          field = '';
+          i += 1;
+          continue;
+        }
+        field += ch;
+        i += 1;
+      }
+
+      if (field !== '' || row.length) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    const lower = (value) => (value || '').toLowerCase();
+
+    function colIdx(header, keys) {
+      const list = Array.isArray(keys) ? keys : [keys];
+      for (const key of list) {
+        const idx = header.indexOf(lower(key));
+        if (idx !== -1) return idx;
+      }
+      for (const key of list) {
+        const idx = header.findIndex((item) => item.includes(lower(key)));
+        if (idx !== -1) return idx;
+      }
+      return -1;
+    }
+
+    function authorsEt(authors) {
+      if (!authors) return 'Unknown';
+      const first = authors.split(';')[0].trim();
+      if (!first) return 'Unknown';
+      const surname = first.includes(',') ? first.split(',')[0].trim() : first.split(' ').slice(-1)[0];
+      return surname + ' et al.';
+    }
+
+    const seen = new Set();
+
+    function addPaper(listElement, paper) {
+      const key = paper.url || paper.title;
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = paper.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = paper.title;
+
+      const meta = document.createElement('div');
+      meta.className = 'reading-meta';
+      meta.textContent = [paper.authors || 'Unknown', paper.year || ''].filter(Boolean).join(' · ');
+
+      item.appendChild(link);
+      item.appendChild(meta);
+      listElement.appendChild(item);
+    }
+
+    async function loadSection(base, id) {
+      const listElement = document.getElementById(id);
+      if (!listElement) return;
+      const papers = [];
+
+      try {
+        const response = await fetch(base + '.csv');
+        if (response.ok) {
+          const rows = parseCSV((await response.text()).trim());
+          if (rows.length) {
+            const header = rows[0].map((value) => lower(value.trim()));
+            const urlIndex = colIdx(header, ['url', 'link']);
+            const titleIndex = colIdx(header, 'title');
+            const authorsIndex = colIdx(header, ['author', 'authors']);
+            const yearIndex = colIdx(header, ['publication year', 'year']);
+            rows.slice(1).forEach((row) => {
+              const url = row[urlIndex] ? row[urlIndex].trim() : '';
+              const title = row[titleIndex] ? row[titleIndex].trim() : '';
+              if (!url || !title) return;
+              papers.push({
+                url,
+                title,
+                authors: authorsEt(row[authorsIndex]),
+                year: row[yearIndex] ? row[yearIndex].trim() : ''
+              });
+            });
+          }
+        }
+      } catch (_) {
+      }
+
+      if (!papers.length) {
+        try {
+          const response = await fetch(base + '.txt');
+          if (response.ok) {
+            (await response.text()).trim().split(/\r?\n/).forEach((line) => {
+              if (!line || line.startsWith('#')) return;
+              const [url, title, authors, year] = line.split('|').map((value) => (value || '').trim());
+              if (!url || !title) return;
+              papers.push({ url, title, authors, year });
+            });
+          }
+        } catch (_) {
+        }
+      }
+
+      papers.sort((a, b) => (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0));
+      papers.forEach((paper) => addPaper(listElement, paper));
+    }
+
+    [
+      ['vlm', 'vlm-list'],
+      ['reasoning', 'reasoning-list'],
+      ['token', 'token-list'],
+      ['diffusion', 'diffusion-list'],
+      ['inr', 'inr-list'],
+      ['retrieval', 'retrieval-list'],
+      ['mri', 'mri-list'],
+      ['hyperspectral', 'hyperspectral-list'],
+      ['Autonomous_Drive', 'vln-vla-list'],
+      ['misc', 'misc-list']
+    ].forEach(([base, id]) => loadSection(base, id));
+
     const navBtn = document.getElementById('nav-toggle');
     if (navBtn) {
       navBtn.addEventListener('click', () => {
         const open = document.body.classList.toggle('nav-open');
-        navBtn.setAttribute('aria-expanded', open);
+        navBtn.setAttribute('aria-expanded', String(open));
         navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
       });
-      document.querySelectorAll('.site-header nav a').forEach(a => {
+      document.querySelectorAll('.site-header nav a').forEach((a) => {
         a.addEventListener('click', () => {
           document.body.classList.remove('nav-open');
           navBtn.setAttribute('aria-expanded', 'false');
@@ -240,6 +273,5 @@
       });
     }
   </script>
-
 </body>
 </html>
