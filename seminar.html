@@ -4,48 +4,38 @@
   <meta charset="UTF-8" />
   <title>Seminars – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <style>
-    /* ===== COLOR SYSTEM ===== */
-    :root {
-      --clr-accent:#007acc;
-      --clr-primary:#1f2937;
-      --clr-text:#374151;
-      --clr-bg:#ffffff;
-      --clr-bg-alt:#fef9e7;
-      --clr-border:#e5e7eb;
-      --fs-sm:0.875rem;
-      --fs-lg:1.125rem;
-      --fs-xl:1.45rem;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:860px;margin:auto;padding:2.5rem 1rem 4rem;line-height:1.65;color:var(--clr-text);}
-    h1{font-size:2rem;font-weight:600;color:var(--clr-primary);margin-bottom:.5rem;}
-    h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}  
-    p,li{font-size:var(--fs-lg);}    
-    a{color:var(--clr-accent);text-decoration:none;}a:hover{text-decoration:underline;}
-    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:6px;box-shadow:0 2px 6px rgb(0 0 0 / .08);} 
+    body{max-width:860px;margin:auto;padding:2rem 1.25rem 5rem;}
+    p,li{font-size:var(--fs-lg);}
+    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}
+    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);}
     ul{padding-left:1.2rem;margin-top:.4rem;}
-    section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}section:nth-of-type(even){background:var(--clr-bg);}   
-    .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
-    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;color:var(--clr-primary);} .toc ul{margin:0;padding-left:1.2rem;}.toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}  
-
-    /* top nav */
-    nav.top-nav{position:absolute;top:1.5rem;right:1rem;display:flex;gap:.55rem;}
-    nav.top-nav a{font-size:var(--fs-sm);color:var(--clr-accent);padding:.35rem .85rem;border:1px solid var(--clr-accent);border-radius:6px;background:var(--clr-bg);transition:background .2s;white-space:nowrap;}
-    nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
+    section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1.6rem 1.4rem;margin-bottom:2rem;}
+    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
+    section:nth-of-type(even){background:var(--clr-bg);}
+    .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
+    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;}
+    .toc ul{margin:0;padding-left:1.2rem;}
+    .toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}
   </style>
 </head>
 <body>
 
-  <!-- back / home buttons -->
-  <nav class="top-nav">
-    <a href="index.html">🏠 Home</a>
-    <a href="javascript:history.back()">← Back</a>
-  </nav>
+  <header class="site-header">
+    <a class="logo" href="index.html">Ali Haider</a>
+    <nav aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="seminar.html" class="active">Seminars</a>
+      <a href="reading.html">Paper Reading</a>
+    </nav>
+  </header>
 
-  <h1>📢 Seminar Talks</h1>
-  <p class="venue" style="color:#6b7280;font-style:italic;margin-bottom:1rem;">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
+  <h1 style="margin-top:2rem;">Seminar Talks</h1>
+  <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1rem;">Presented at MLVC Lab, Kyung Hee University Global Campus</p>
 
   <!-- ===== CONTENTS ===== -->
   <nav class="toc" aria-label="Contents">
@@ -125,6 +115,10 @@
     </p>
     <iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
   </section>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Ali Haider</p>
+  </footer>
 
 </body>
 </html>

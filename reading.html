@@ -4,110 +4,70 @@
   <meta charset="UTF-8" />
   <title>Paper Reading – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <style>
-    :root {
-      --clr-accent:#007acc;
-      --clr-primary:#1f2937;
-      --clr-text:#374151;
-      --clr-bg:#ffffff;
-      --clr-bg-alt:#f9f9f9;
-      --clr-border:#e5e7eb;
-      --fs-sm:0.875rem;
-      --fs-lg:1.125rem;
-      --fs-xl:1.45rem;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
-    /* ----- Layout ----- */
+    /* ----- Layout: leave room for fixed sidebar ----- */
     body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       max-width:860px;
       margin:auto;
-      padding:2.5rem 1rem 4rem 180px; /* left-padding gives room for sidebar on desktop */
-      line-height:1.65;
-      color:var(--clr-text);
+      padding:2rem 1rem 4rem 180px;
       transition:padding-left .3s;
     }
-
-    h1{font-size:2rem;font-weight:600;color:var(--clr-primary);margin-bottom:.5rem;}
-    h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-    a{color:var(--clr-accent);text-decoration:none;}a:hover{text-decoration:underline;}
-    ul{padding-left:1.25rem;margin-top:.6rem;}
-    li{margin-bottom:.55rem;font-size:var(--fs-lg);}    
+    li{margin-bottom:.55rem;font-size:var(--fs-lg);}
     section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:8px;padding:1.6rem 1.4rem;margin-bottom:2rem;}
-
-    /* ----- Top navigation ----- */
-    nav.top-nav{
-      position:absolute;top:1.5rem;right:2rem;display:flex;gap:.55rem;z-index:20;
-    }
-    nav.top-nav a{
-      font-size:var(--fs-sm);color:var(--clr-accent);
-      padding:.35rem .85rem;border:1px solid var(--clr-accent);
-      border-radius:6px;background:var(--clr-bg);transition:background .2s;white-space:nowrap;
-    }
-    nav.top-nav a:hover{background:var(--clr-accent);color:var(--clr-bg);}  
+    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
 
     /* ----- Sidebar (vertical index) ----- */
     nav#toc{
-      position:fixed;top:5rem;left:0;bottom:0;width:160px;padding:1rem;overflow-y:auto;
+      position:fixed;top:3.2rem;left:0;bottom:0;width:160px;padding:1rem;overflow-y:auto;
       background:var(--clr-bg-alt);border-right:1px solid var(--clr-border);
-      transition:transform .3s; /* for slide-in on mobile */
+      transition:transform .3s;
     }
-    nav#toc h3{font-size:var(--fs-sm);font-weight:600;margin-bottom:.75rem;color:var(--clr-primary);}    
+    nav#toc h3{font-size:var(--fs-sm);font-weight:600;margin-bottom:.75rem;color:var(--clr-primary);}
     nav#toc ul{list-style:none;padding-left:0;}
     nav#toc li{margin-bottom:.4rem;}
     nav#toc a{display:block;font-size:var(--fs-sm);padding:.35rem .6rem;border-radius:6px;transition:background .2s;white-space:nowrap;border:1px solid transparent;}
-    nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}  
+    nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
 
-    /* ----- Horizontal (top) index ----- */
+    /* ----- Horizontal top index ----- */
     nav#toc-top{margin:1rem 0 2rem;}
     nav#toc-top ul{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.6rem;}
-    nav#toc-top a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:6px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;}
-    nav#toc-top a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}  
+    nav#toc-top a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:20px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;color:var(--clr-text);font-weight:500;}
+    nav#toc-top a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
 
-    /* ----- Mobile tweaks ----- */
-    /* 768px and below */
+    /* ----- Mobile ----- */
     @media (max-width:768px){
-      body{padding:2.5rem 1rem 4rem 1rem;} /* remove left padding when sidebar hidden */
-
-      /* hide sidebar by default */
-      nav#toc{transform:translateX(-100%);width:220px;box-shadow:2px 0 6px rgba(0,0,0,.08);}  
-      body.toc-open nav#toc{transform:translateX(0);} /* slide-in when toggled */
-
-      /* hamburger button */
-      #toc-toggle{
-        display:block;position:fixed;top:1rem;left:1rem;z-index:30;
-        background:var(--clr-accent);color:#fff;border:none;padding:.5rem .75rem;
-        border-radius:6px;font-size:var(--fs-sm);cursor:pointer;
-      }
-
-      /* adjust top nav */
-      nav.top-nav{top:1rem;right:1rem;gap:.4rem;}
-      nav.top-nav a{font-size:var(--fs-sm);padding:.3rem .6rem;}
-
-      /* make horizontal index scrollable */
+      body{padding:2rem 1rem 4rem 1rem;}
+      nav#toc{transform:translateX(-100%);width:220px;box-shadow:2px 0 6px rgba(0,0,0,.08);top:0;}
+      body.toc-open nav#toc{transform:translateX(0);}
+      #toc-toggle{display:block;position:fixed;bottom:1.25rem;right:1.25rem;z-index:50;
+        background:var(--clr-accent);color:#fff;border:none;padding:.55rem .9rem;
+        border-radius:20px;font-size:var(--fs-sm);cursor:pointer;box-shadow:var(--shadow-md);}
       nav#toc-top ul{flex-wrap:nowrap;overflow-x:auto;gap:.4rem;}
       nav#toc-top a{flex:0 0 auto;}
     }
-
-    /* even smaller phones */
     @media (max-width:480px){
-      h1{font-size:1.55rem;}
-      h2{font-size:1.25rem;}
-      li{font-size:var(--fs-sm);}
+      h1{font-size:1.55rem;} h2{font-size:1.25rem;} li{font-size:var(--fs-sm);}
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== Hamburger (mobile only) ===== -->
-  <button id="toc-toggle" aria-label="Toggle table of contents" style="display:none">☰ TOC</button>
+  <!-- ===== Sticky site header ===== -->
+  <header class="site-header">
+    <a class="logo" href="index.html">Ali Haider</a>
+    <nav aria-label="Site navigation">
+      <a href="index.html">Home</a>
+      <a href="seminar.html">Seminars</a>
+      <a href="reading.html" class="active">Paper Reading</a>
+    </nav>
+  </header>
 
-  <!-- ===== Top navigation ===== -->
-  <nav class="top-nav">
-    <a href="index.html">Home</a>
-    <a href="seminar.html">Seminar</a>
-  </nav>
+  <!-- ===== Hamburger (mobile only) ===== -->
+  <button id="toc-toggle" aria-label="Toggle table of contents" style="display:none">☰ Sections</button>
 
   <!-- ===== Vertical Index Sidebar ===== -->
   <nav id="toc" aria-label="Table of contents sidebar">
@@ -121,6 +81,7 @@
       <li><a href="#retrieval">Retrieval</a></li>
       <li><a href="#mri">MRI</a></li>
       <li><a href="#hyperspectral">Hyperspectral</a></li>
+      <li><a href="#vln-vla">VLN / VLA</a></li>
       <li><a href="#misc">Others</a></li>
     </ul>
   </nav>
@@ -140,6 +101,7 @@
         <li><a href="#retrieval">Retrieval</a></li>
         <li><a href="#mri">MRI</a></li>
         <li><a href="#hyperspectral">Hyperspectral</a></li>
+        <li><a href="#vln-vla">VLN / VLA</a></li>
         <li><a href="#misc">Others</a></li>
       </ul>
     </nav>
@@ -153,6 +115,7 @@
     <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
     <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
     <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
+    <section id="vln-vla"><h2>Vision-Language Navigation / Vision-Language Action (VLN &middot; VLA)</h2><ul id="vln-vla-list"></ul></section>
     <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
   </main>
 
@@ -231,7 +194,8 @@
     /* Load each section */
     const sections=[
       ['vlm','vlm-list'],['reasoning','reasoning-list'],['token','token-list'],['diffusion','diffusion-list'],
-      ['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],['misc','misc-list']
+      ['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],
+      ['Autonomous_Drive','vln-vla-list'],['misc','misc-list']
     ];
     sections.forEach(([base,id])=>load(base,id));
 
@@ -239,6 +203,10 @@
     const tocBtn=document.getElementById('toc-toggle');
     tocBtn.addEventListener('click',()=>document.body.classList.toggle('toc-open'));
   </script>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; Updated weekly</p>
+  </footer>
 
 </body>
 </html>
