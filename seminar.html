@@ -14,9 +14,8 @@
     h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}
     iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);}
     ul{padding-left:1.2rem;margin-top:.4rem;}
-    section{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1.6rem 1.4rem;margin-bottom:2rem;}
+    section{background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:1.6rem 1.4rem;margin-bottom:2rem;}
     section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-    section:nth-of-type(even){background:var(--clr-bg);}
     .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
     .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;}
     .toc ul{margin:0;padding-left:1.2rem;}
@@ -27,6 +26,7 @@
 
   <header class="site-header">
     <a class="logo" href="index.html">Ali Haider</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
       <a href="index.html">Home</a>
       <a href="seminar.html" class="active">Seminars</a>
@@ -119,6 +119,25 @@
   <footer class="site-footer">
     <p>&copy; 2026 Ali Haider</p>
   </footer>
+
+  <script>
+    /* Mobile nav toggle */
+    const navBtn = document.getElementById('nav-toggle');
+    if (navBtn) {
+      navBtn.addEventListener('click', () => {
+        const open = document.body.classList.toggle('nav-open');
+        navBtn.setAttribute('aria-expanded', open);
+        navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
+      });
+      document.querySelectorAll('.site-header nav a').forEach(a => {
+        a.addEventListener('click', () => {
+          document.body.classList.remove('nav-open');
+          navBtn.setAttribute('aria-expanded', 'false');
+          navBtn.innerHTML = '&#9776;';
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>
