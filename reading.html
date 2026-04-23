@@ -9,121 +9,73 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* ----- Layout: leave room for fixed sidebar ----- */
-    body{
-      max-width:860px;
-      margin:auto;
-      padding:2rem 1rem 4rem 180px;
-      transition:padding-left .3s;
+    .topic-pills { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 2rem; }
+    .topic-pills a {
+      font-size: var(--fs-sm); font-weight: 500;
+      padding: .3rem .85rem;
+      border: 1px solid var(--clr-border); border-radius: 20px;
+      color: var(--clr-text); background: var(--clr-bg-alt);
+      text-decoration: none; transition: all .18s;
     }
-    li{margin-bottom:.55rem;font-size:var(--fs-lg);}
-    section{background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:8px;box-shadow:var(--shadow-sm);padding:1.6rem 1.4rem;margin-bottom:2rem;}
-    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-
-    /* ----- Sidebar (vertical index) ----- */
-    nav#toc{
-      position:fixed;top:var(--header-h);left:0;bottom:0;width:160px;padding:1rem;overflow-y:auto;
-      background:var(--clr-bg-alt);border-right:1px solid var(--clr-border);
-      transition:transform .3s;z-index:90;
+    .topic-pills a:hover {
+      background: var(--clr-accent); color: #fff;
+      border-color: var(--clr-accent); text-decoration: none;
     }
-    nav#toc h3{font-size:var(--fs-sm);font-weight:600;margin-bottom:.75rem;color:var(--clr-primary);}
-    nav#toc ul{list-style:none;padding-left:0;}
-    nav#toc li{margin-bottom:.4rem;}
-    nav#toc a{display:block;font-size:var(--fs-sm);padding:.35rem .6rem;border-radius:6px;transition:background .2s;white-space:nowrap;border:1px solid transparent;}
-    nav#toc a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
-
-    /* ----- Horizontal top index ----- */
-    nav#toc-top{margin:1rem 0 2rem;}
-    nav#toc-top ul{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.6rem;}
-    nav#toc-top a{font-size:var(--fs-sm);padding:.4rem .75rem;border:1px solid var(--clr-border);border-radius:20px;background:var(--clr-bg-alt);transition:background .2s;white-space:nowrap;color:var(--clr-text);font-weight:500;}
-    nav#toc-top a:hover{background:var(--clr-accent);color:#fff;border-color:var(--clr-accent);}
-
-    /* ----- Mobile ----- */
-    @media (max-width:768px){
-      body{padding:2rem 1rem 4rem 1rem;}
-      nav#toc{transform:translateX(-100%);width:220px;box-shadow:2px 0 6px rgba(0,0,0,.08);top:var(--header-h);}
-      body.toc-open nav#toc{transform:translateX(0);}
-      /* backdrop overlay */
-      body.toc-open::before{
-        content:'';position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:80;
-        top:var(--header-h); /* don't cover sticky header */
-      }
-      #toc-toggle{display:block;position:fixed;bottom:1.25rem;right:1.25rem;z-index:50;
-        background:var(--clr-accent);color:#fff;border:none;padding:.55rem .9rem;
-        border-radius:20px;font-size:var(--fs-sm);cursor:pointer;box-shadow:var(--shadow-md);}
-      nav#toc-top ul{flex-wrap:nowrap;overflow-x:auto;gap:.4rem;}
-      nav#toc-top a{flex:0 0 auto;}
+    .reading-section { margin-bottom: 2.5rem; }
+    .reading-section h2 {
+      font-size: var(--fs-xl); color: var(--clr-primary);
+      padding-bottom: .45rem; margin-bottom: 1rem;
+      border-bottom: 2px solid var(--clr-accent);
     }
-    @media (max-width:480px){
-      h1{font-size:1.55rem;} h2{font-size:1.25rem;} li{font-size:var(--fs-sm);}
-    }
+    .reading-section ul { padding-left: 1.25rem; }
+    .reading-section li { margin-bottom: .55rem; font-size: var(--fs-sm); }
+    .reading-section li a { color: var(--clr-accent); }
+    .reading-section li a:hover { color: var(--clr-accent-dark); }
+    .reading-section li span { color: var(--clr-muted); }
   </style>
 </head>
 <body>
 
-  <!-- ===== Sticky site header ===== -->
   <header class="site-header">
     <a class="logo" href="index.html">Ali Haider</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
-      <a href="index.html">Home</a>
-      <a href="seminar.html">Seminars</a>
-      <a href="reading.html" class="active">Paper Reading</a>
+      <a href="index.html">about</a>
+      <a href="seminar.html">🗣 seminars</a>
+      <a href="reading.html" class="active">📄 paper reading</a>
     </nav>
   </header>
 
-  <!-- ===== Hamburger (mobile only) ===== -->
-  <button id="toc-toggle" aria-label="Toggle table of contents" style="display:none">☰ Sections</button>
+  <div class="page-wrap">
 
-  <!-- ===== Vertical Index Sidebar ===== -->
-  <nav id="toc" aria-label="Table of contents sidebar">
-    <h3>Sections</h3>
-    <ul>
-      <li><a href="#vln-vla">VLN / VLA</a></li>
-      <li><a href="#vlm">VLM</a></li>
-      <li><a href="#reasoning">Reasoning</a></li>
-      <li><a href="#token">Token Reduction</a></li>
-      <li><a href="#diffusion">Diffusion</a></li>
-      <li><a href="#inr">INR</a></li>
-      <li><a href="#retrieval">Retrieval</a></li>
-      <li><a href="#mri">MRI</a></li>
-      <li><a href="#hyperspectral">Hyperspectral</a></li>
-      <li><a href="#misc">Others</a></li>
-    </ul>
-  </nav>
+    <h1 style="margin-bottom:.35rem;">📚 Paper Reading List</h1>
+    <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1.5rem;">Updated weekly &mdash; newest papers first, grouped by topic</p>
 
-  <main>
-    <h1>📚 Paper Reading List</h1>
-    <p style="color:#6b7280;font-style:italic;margin-bottom:.75rem;">Updated weekly – newest papers first, grouped by topic</p>
-
-    <!-- ===== Horizontal Top Index ===== -->
-    <nav id="toc-top" aria-label="Quick links">
-      <ul>
-        <li><a href="#vln-vla">VLN / VLA</a></li>
-        <li><a href="#vlm">VLM</a></li>
-        <li><a href="#reasoning">Reasoning</a></li>
-        <li><a href="#token">Token Reduction</a></li>
-        <li><a href="#diffusion">Diffusion</a></li>
-        <li><a href="#inr">INR</a></li>
-        <li><a href="#retrieval">Retrieval</a></li>
-        <li><a href="#mri">MRI</a></li>
-        <li><a href="#hyperspectral">Hyperspectral</a></li>
-        <li><a href="#misc">Others</a></li>
-      </ul>
+    <!-- Topic pills -->
+    <nav class="topic-pills" aria-label="Quick links">
+      <a href="#vln-vla">VLN / VLA</a>
+      <a href="#vlm">VLM</a>
+      <a href="#reasoning">Reasoning</a>
+      <a href="#token">Token Reduction</a>
+      <a href="#diffusion">Diffusion</a>
+      <a href="#inr">INR</a>
+      <a href="#retrieval">Retrieval</a>
+      <a href="#mri">MRI</a>
+      <a href="#hyperspectral">Hyperspectral</a>
+      <a href="#misc">Others</a>
     </nav>
 
     <!-- Sections -->
-    <section id="vln-vla"><h2>Vision-Language Navigation / Vision-Language Action (VLN &middot; VLA)</h2><ul id="vln-vla-list"></ul></section>
-    <section id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
-    <section id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
-    <section id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
-    <section id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
-    <section id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
-    <section id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
-    <section id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
-    <section id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
-    <section id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
-  </main>
+    <section class="reading-section" id="vln-vla"><h2>Vision-Language Navigation / Vision-Language Action (VLN &middot; VLA)</h2><ul id="vln-vla-list"></ul></section>
+    <section class="reading-section" id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
+    <section class="reading-section" id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
+    <section class="reading-section" id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
+    <section class="reading-section" id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
+    <section class="reading-section" id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
+    <section class="reading-section" id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
+    <section class="reading-section" id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
+    <section class="reading-section" id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
+    <section class="reading-section" id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
 
   <script>
     /* ---------- CSV parser & helpers ---------- */
@@ -205,24 +157,6 @@
     ];
     sections.forEach(([base,id])=>load(base,id));
 
-    /* --------- Mobile sidebar toggle --------- */
-    const tocBtn=document.getElementById('toc-toggle');
-    tocBtn.addEventListener('click',()=>document.body.classList.toggle('toc-open'));
-    /* Close sidebar when tapping the backdrop (::before pseudo-element area) */
-    document.addEventListener('click', e => {
-      if (!document.body.classList.contains('toc-open')) return;
-      const toc = document.getElementById('toc');
-      if (!toc.contains(e.target) && e.target !== tocBtn) {
-        document.body.classList.remove('toc-open');
-      }
-    });
-  </script>
-
-  <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; Updated weekly</p>
-  </footer>
-
-  <script>
     /* Mobile nav toggle */
     const navBtn = document.getElementById('nav-toggle');
     if (navBtn) {
@@ -240,6 +174,12 @@
       });
     }
   </script>
+
+  </div><!-- /page-wrap -->
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; Updated weekly</p>
+  </footer>
 
 </body>
 </html>

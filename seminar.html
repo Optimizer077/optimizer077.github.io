@@ -9,17 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    body{max-width:860px;margin:auto;padding:2rem 1.25rem 5rem;}
-    p,li{font-size:var(--fs-lg);}
-    h3{margin-top:1.25rem;font-size:var(--fs-lg);color:var(--clr-primary);}
-    iframe{width:100%;height:480px;border:none;margin:1rem 0 1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);}
-    ul{padding-left:1.2rem;margin-top:.4rem;}
-    section{background:var(--clr-bg);border:1px solid var(--clr-border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:1.6rem 1.4rem;margin-bottom:2rem;}
-    section h2{font-size:var(--fs-xl);font-weight:600;color:var(--clr-primary);margin-bottom:1rem;border-bottom:2px solid var(--clr-accent);padding-bottom:.4rem;}
-    .toc{background:var(--clr-bg-alt);border:1px solid var(--clr-border);border-radius:var(--radius);padding:1rem 1.25rem;margin:1.5rem 0 2rem;}
-    .toc h2{margin:0 0 .6rem;font-size:1.25rem;border:none;padding:0;}
-    .toc ul{margin:0;padding-left:1.2rem;}
-    .toc li{list-style:square;margin-bottom:.35rem;font-size:var(--fs-lg);}
+    .seminar-iframe {
+      width: 100%; height: 480px; border: none;
+      margin: 1rem 0 1.25rem;
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    }
+    .seminar-card h2 { font-size: var(--fs-xl); }
+    .seminar-card h3 { font-size: var(--fs-base); font-weight: 600; margin: 1rem 0 .4rem; color: var(--clr-primary); }
+
+    /* Index table */
+    .seminar-index {
+      width: 100%; border-collapse: collapse;
+      font-size: var(--fs-sm);
+    }
+    .seminar-index thead tr {
+      background: var(--clr-accent-light);
+    }
+    .seminar-index th {
+      text-align: left; padding: .55rem .75rem;
+      font-weight: 700; font-size: var(--fs-xs);
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--clr-accent-dark); border-bottom: 2px solid var(--clr-accent-border);
+    }
+    .seminar-index td {
+      padding: .55rem .75rem; vertical-align: top;
+      border-bottom: 1px solid var(--clr-border); line-height: 1.5;
+    }
+    .seminar-index tr:last-child td { border-bottom: none; }
+    .seminar-index tr:hover td { background: var(--clr-accent-light); }
+    .seminar-index td:first-child {
+      width: 32px; color: var(--clr-muted); font-weight: 600; text-align: center;
+    }
+
+    .seminar-index a { color: var(--clr-accent); font-weight: 500; }
+    .seminar-index a:hover { color: var(--clr-accent-dark); }
   </style>
 </head>
 <body>
@@ -28,114 +51,139 @@
     <a class="logo" href="index.html">Ali Haider</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
-      <a href="index.html">Home</a>
-      <a href="seminar.html" class="active">Seminars</a>
-      <a href="reading.html">Paper Reading</a>
+      <a href="index.html">about</a>
+      <a href="seminar.html" class="active">🗣 seminars</a>
+      <a href="reading.html">📄 paper reading</a>
     </nav>
   </header>
 
-  <h1 style="margin-top:2rem;">Seminar Talks</h1>
-  <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1rem;">Selected seminar talks and invited presentations</p>
+  <div class="page-wrap">
 
-  <!-- ===== CONTENTS ===== -->
-  <nav class="toc" aria-label="Contents">
-    <h2>Contents</h2>
-    <ul>
-      <li><a href="#shu-talk">Talk at Salim Habib University</a></li>
-      <li><a href="#reasoning">Reasoning Models / Image Restoration</a></li>
-      <li><a href="#multitask">Multi-Task Learning for Diffusion Models</a></li>
-      <li><a href="#taskdiffusion">Task-Oriented Diffusion for Image Restoration</a></li>
-      <li><a href="#aaai24">Any-Size Diffusion & ResDiff (AAAI 2024)</a></li>
-      <li><a href="#neurips">NeurIPS 2024 Paper Summaries</a></li>
-    </ul>
-  </nav>
+    <h1 style="margin-bottom:.35rem;">Seminar Talks</h1>
+    <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1.75rem;">Selected seminar talks and invited presentations</p>
 
-  <!-- ===== Seminar 0 ===== -->
-  <section id="shu-talk">
-    <h2>The Evolving Landscape of Computer Vision: From Diffusion Models to Agentic Systems</h2>
-    <p>
-      Invited talk at Salim Habib University covering the progression from diffusion-based generative modeling to reasoning- and agent-driven computer vision systems. The presentation introduces diffusion fundamentals, restoration-oriented diffusion pipelines, reasoning-based restoration methods such as Chain-of-Zoom and Chain-of-Restoration, and agentic workflows including RestoreAgent and 4KAgent.
-    </p>
-    <p><strong>Venue:</strong> Salim Habib University</p>
-    <iframe src="https://docs.google.com/presentation/d/1aAdPiTZodkvvlJu_OT030nrPWrKv6cUf/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-    <h3>Topics Covered</h3>
-    <ul>
-      <li>Diffusion models for generative modeling and image restoration, including StableSR and efficient fine-tuning.</li>
-      <li>Reasoning-based restoration strategies such as Chain-of-Zoom and Chain-of-Restoration.</li>
-      <li>Agentic restoration systems including RestoreAgent and 4KAgent, with planning, execution, reflection, and tool use.</li>
-      <li>Foundation-model examples spanning segmentation, self-supervised learning, and world models.</li>
-    </ul>
-  </section>
+    <!-- ===== Index table ===== -->
+    <section class="card" style="margin-bottom:2.5rem;">
+      <h2>All Talks</h2>
+      <table class="seminar-index">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Venue / Context</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><a href="#shu-talk">The Evolving Landscape of Computer Vision: From Diffusion Models to Agentic Systems</a></td>
+            <td>Salim Habib University (Invited Talk)</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><a href="#reasoning">Reasoning Models / Reasoning Image Restoration</a></td>
+            <td>MLVC Lab Seminar</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><a href="#multitask">Multi-Task Learning Perspective for Diffusion Models</a></td>
+            <td>MLVC Lab Seminar</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><a href="#taskdiffusion">Task-Oriented Diffusion for Image Restoration</a></td>
+            <td>MLVC Lab Seminar</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><a href="#aaai24">Any-Size Diffusion &amp; ResDiff</a></td>
+            <td>AAAI 2024 Paper Highlights</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><a href="#neurips">NeurIPS 2024 Paper Summaries</a></td>
+            <td>NeurIPS 2024 Recap Session</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-  <!-- ===== Seminar 1 ===== -->
-  <section id="reasoning">
-    <h2>Reasoning Models / Reasoning Image Restoration</h2>
-    <p>
-      Seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.
-    </p>
-    <iframe src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-    <h3>Referenced Papers</h3>
-    <ul>
-      <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
-      <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
-      <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener">Chain-of-Restoration: Universal Step-by-Step Restorers</a></li>
-    </ul>
-  </section>
+    <!-- ===== Seminar 0 ===== -->
+    <section class="card seminar-card" id="shu-talk">
+      <h2>The Evolving Landscape of Computer Vision: From Diffusion Models to Agentic Systems</h2>
+      <p>Invited talk at Salim Habib University covering the progression from diffusion-based generative modeling to reasoning- and agent-driven computer vision systems. The presentation introduces diffusion fundamentals, restoration-oriented diffusion pipelines, reasoning-based restoration methods such as Chain-of-Zoom and Chain-of-Restoration, and agentic workflows including RestoreAgent and 4KAgent.</p>
+      <p><strong>Venue:</strong> Salim Habib University</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1aAdPiTZodkvvlJu_OT030nrPWrKv6cUf/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <h3>Topics Covered</h3>
+      <ul>
+        <li>Diffusion models for generative modeling and image restoration, including StableSR and efficient fine-tuning.</li>
+        <li>Reasoning-based restoration strategies such as Chain-of-Zoom and Chain-of-Restoration.</li>
+        <li>Agentic restoration systems including RestoreAgent and 4KAgent, with planning, execution, reflection, and tool use.</li>
+        <li>Foundation-model examples spanning segmentation, self-supervised learning, and world models.</li>
+      </ul>
+    </section>
 
-  <!-- ===== Seminar 2 ===== -->
-  <section id="multitask">
-    <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
-    <p>
-      Presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.
-    </p>
-    <iframe src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-    <h3>Referenced Papers</h3>
-    <ul>
-      <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener">Addressing Negative Transfer in Diffusion Models</a></li>
-      <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener">Switch Diffusion Transformer</a></li>
-    </ul>
-  </section>
+    <!-- ===== Seminar 1 ===== -->
+    <section class="card seminar-card" id="reasoning">
+      <h2>Reasoning Models / Reasoning Image Restoration</h2>
+      <p>Seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <h3>Referenced Papers</h3>
+      <ul>
+        <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
+        <li><a href="https://arxiv.org/abs/2407.18035" target="_blank" rel="noopener noreferrer">RestoreAgent: Autonomous Image Restoration Agent via Multimodal LLMs</a></li>
+        <li><a href="https://arxiv.org/abs/2410.08688" target="_blank" rel="noopener noreferrer">Chain-of-Restoration: Universal Step-by-Step Restorers</a></li>
+      </ul>
+    </section>
 
-  <!-- ===== Seminar 3 ===== -->
-  <section id="taskdiffusion">
-    <h2>Task-Oriented Diffusion for Image Restoration</h2>
-    <p>
-      A deep dive into diffusion-based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super-resolution, and DiffBIR’s two-stage blind restoration pipeline.
-    </p>
-    <iframe src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-    <h3>Referenced Papers</h3>
-    <ul>
-      <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener">Ambient Diffusion</a></li>
-      <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResShift: Efficient SR via Residual Shifting</a></li>
-      <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener">DiffBIR: Diffusion-based Blind Image Restoration</a></li>
-    </ul>
-  </section>
+    <!-- ===== Seminar 2 ===== -->
+    <section class="card seminar-card" id="multitask">
+      <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
+      <p>Presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <h3>Referenced Papers</h3>
+      <ul>
+        <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener noreferrer">Addressing Negative Transfer in Diffusion Models</a></li>
+        <li><a href="https://arxiv.org/abs/2403.09176" target="_blank" rel="noopener noreferrer">Switch Diffusion Transformer</a></li>
+      </ul>
+    </section>
 
-  <!-- ===== Seminar 4 ===== -->
-  <section id="aaai24">
-    <h2>Any-Size Diffusion & ResDiff (AAAI 2024)</h2>
-    <p>
-      Highlights from two AAAI-24 papers: Any-Size-Diffusion (ASD), a two-stage pipeline for text-to-image synthesis at arbitrary resolutions, and ResDiff, which unites CNN priors with diffusion guidance for efficient single-image super-resolution.
-    </p>
-    <iframe src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-    <h3>Referenced Papers</h3>
-    <ul>
-      <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
-      <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
-    </ul>
-  </section>
+    <!-- ===== Seminar 3 ===== -->
+    <section class="card seminar-card" id="taskdiffusion">
+      <h2>Task-Oriented Diffusion for Image Restoration</h2>
+      <p>A deep dive into diffusion-based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super-resolution, and DiffBIR's two-stage blind restoration pipeline.</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <h3>Referenced Papers</h3>
+      <ul>
+        <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener noreferrer">Ambient Diffusion</a></li>
+        <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener noreferrer">ResShift: Efficient SR via Residual Shifting</a></li>
+        <li><a href="https://arxiv.org/abs/2308.15070" target="_blank" rel="noopener noreferrer">DiffBIR: Diffusion-based Blind Image Restoration</a></li>
+      </ul>
+    </section>
 
-  <!-- ===== Seminar 5 ===== -->
-  <section id="neurips">
-    <h2>NeurIPS 2024 Paper Summaries</h2>
-    <p>
-      Summary session from NeurIPS 2024, with analyses of several key papers presented at the conference.
-    </p>
-    <iframe src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
-  </section>
+    <!-- ===== Seminar 4 ===== -->
+    <section class="card seminar-card" id="aaai24">
+      <h2>Any-Size Diffusion &amp; ResDiff (AAAI 2024)</h2>
+      <p>Highlights from two AAAI-24 papers: Any-Size-Diffusion (ASD), a two-stage pipeline for text-to-image synthesis at arbitrary resolutions, and ResDiff, which unites CNN priors with diffusion guidance for efficient single-image super-resolution.</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <h3>Referenced Papers</h3>
+      <ul>
+        <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener noreferrer">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
+        <li><a href="https://arxiv.org/abs/2303.08714" target="_blank" rel="noopener noreferrer">ResDiff: Combining CNN and Diffusion for Image SR</a></li>
+      </ul>
+    </section>
+
+    <!-- ===== Seminar 5 ===== -->
+    <section class="card seminar-card" id="neurips">
+      <h2>NeurIPS 2024 Paper Summaries</h2>
+      <p>Summary session from NeurIPS 2024, with analyses of several key papers presented at the conference.</p>
+      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+    </section>
+
+  </div><!-- /page-wrap -->
 
   <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider</p>
+    <p>&copy; 2026 Ali Haider.</p>
   </footer>
 
   <script>
