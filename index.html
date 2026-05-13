@@ -9,103 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Hero gradient wrapper */
-    .hero-wrapper {
-      background: linear-gradient(140deg, #eef2ff 0%, #f9f8ff 45%, #ffffff 75%);
-      margin: -2.5rem -1.25rem 2rem;
-      padding: 3rem 1.25rem 2rem;
-      border-bottom: 1px solid var(--clr-border);
-    }
-    /* Hero */
-    .hero {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 2rem;
-      align-items: flex-start;
-      padding: 2.5rem 0 1.5rem;
-    }
-    .hero-photo {
-      width: 148px; height: 148px;
-      border-radius: 50%;
-      object-fit: cover; object-position: top;
-      border: 3px solid var(--clr-accent-border);
-      box-shadow: 0 0 0 6px var(--clr-accent-light), var(--shadow-md);
-      flex-shrink: 0;
-    }
-    .hero-title { font-size: var(--fs-3xl); font-weight: 700; margin-bottom: .3rem; }
-    .hero-subtitle { font-size: var(--fs-lg); color: var(--clr-muted); font-weight: 400; margin-bottom: 1rem; }
-    .hero-links { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .hero-links a {
-      display: inline-flex; align-items: center; gap: .35rem;
-      font-size: var(--fs-sm); font-weight: 500;
-      padding: .35rem .85rem;
-      border: 1px solid var(--clr-border); border-radius: 20px;
-      color: var(--clr-text); background: var(--clr-bg);
-      transition: all .18s; text-decoration: none;
-    }
-    .hero-links a:hover {
-      border-color: var(--clr-accent); color: var(--clr-accent);
-      background: var(--clr-accent-light); text-decoration: none;
-    }
-    @media (max-width: 520px) {
-      .hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-      .hero-links { justify-content: center; }
-    }
-    /* News */
-    .news-list { list-style: none; padding: 0; }
-    .news-list li {
-      display: flex; gap: .85rem; align-items: flex-start;
-      padding: .65rem 0; border-bottom: 1px solid var(--clr-border);
-    }
-    .news-list li:last-child { border-bottom: none; }
-    .news-year {
-      flex-shrink: 0; font-size: var(--fs-xs); font-weight: 700;
-      color: var(--clr-accent-dark); background: var(--clr-accent-light);
-      border: 1px solid var(--clr-accent-border); border-radius: 20px;
-      padding: .15rem .55rem; margin-top: .22rem; white-space: nowrap;
-    }
-    /* Publications */
-    .pub-list { list-style: none; padding: 0; }
-    .pub-card {
-      display: flex; gap: 1.1rem; align-items: flex-start;
-      padding: 1.1rem 1rem; border-radius: var(--radius-sm);
-      border: 1px solid var(--clr-border); background: var(--clr-bg);
-      margin-bottom: 1rem; transition: box-shadow .2s, border-color .2s;
-    }
-    .pub-card:hover { box-shadow: var(--shadow-md); border-color: var(--clr-accent-border); }
-    .pub-thumb { width: 110px; flex-shrink: 0; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--clr-border); }
-    .pub-title { font-weight: 600; font-size: var(--fs-base); color: var(--clr-primary); margin-bottom: .25rem; }
-    .pub-title a { color: inherit; }
-    .pub-title a:hover { color: var(--clr-accent); text-decoration: none; }
-    .pub-authors { font-size: var(--fs-sm); color: var(--clr-muted); margin-bottom: .25rem; }
-    .pub-venue { font-size: var(--fs-sm); font-style: italic; }
-    .pub-note { font-size: var(--fs-sm); color: var(--clr-muted); margin-top: .2rem; }
-    @media (max-width: 480px) {
-      .pub-card { flex-direction: column; }
-      .pub-thumb { width: 100%; max-height: 160px; object-fit: contain; }
-    }
-    /* Projects */
-    .project-list { list-style: none; padding: 0; }
-    .project-item {
-      padding: .9rem 1rem; margin-bottom: .85rem;
-      border-left: 3px solid var(--clr-accent);
-      border-top: 1px solid var(--clr-border);
-      border-right: 1px solid var(--clr-border);
-      border-bottom: 1px solid var(--clr-border);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      background: var(--clr-bg);
-    }
-    .project-title { font-weight: 600; color: var(--clr-primary); }
-    .project-desc { font-size: var(--fs-sm); color: var(--clr-text); margin-top: .3rem; }
-    /* Two-col */
-    .two-col { columns: 2; gap: 1.5rem; }
-    @media (max-width: 540px) { .two-col { columns: 1; } }
-    .two-col li { break-inside: avoid; }
-    /* Side-by-side cards */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-    @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
-  </style>
 </head>
 <body>
 
@@ -113,136 +16,207 @@
     <a class="logo" href="index.html">Ali Haider</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
     <nav aria-label="Site navigation">
-      <a href="index.html" class="active">Home</a>
-      <a href="seminar.html">Seminars</a>
-      <a href="reading.html">Paper Reading</a>
+      <a href="index.html" class="active">about</a>
+      <a href="seminar.html">🗣 seminars</a>
+      <a href="reading.html">📄 paper reading</a>
     </nav>
   </header>
 
   <div class="page-wrap">
+    <div class="page-layout">
 
-    <!-- Hero -->
-    <div class="hero-wrapper">
-      <div class="hero">
-        <img class="hero-photo" src="assets/img/download.jpeg" alt="Ali Haider" />
-        <div>
-          <h1 class="hero-title">Ali Haider</h1>
-          <p class="hero-subtitle">Ph.D. Researcher &middot; Generative Models &middot; Vision-Language &middot; Implicit Neural Representations</p>
-          <div class="hero-links">
-            <a href="mailto:Alihaiderfarooq07@gmail.com">✉ Email</a>
-            <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">🎓 Scholar</a>
-            <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">⌨ GitHub</a>
-            <a href="https://x.com/007Alihaider" target="_blank" rel="noopener noreferrer">𝕏 Twitter</a>
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+        <img class="sidebar-photo" src="assets/img/download.jpeg" alt="Ali Haider" />
+        <h1 class="sidebar-name">Ali Haider</h1>
+        <p class="sidebar-email">
+          <a href="mailto:Alihaiderfarooq07@gmail.com">alihaiderfarooq07 at gmail dot com</a>
+        </p>
+
+        <p class="sidebar-bio">
+          I am a Ph.D. researcher in Artificial Intelligence at
+          <strong>Kyung Hee University Global Campus</strong>, member of the
+          <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>
+          under <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
+        </p>
+
+        <p class="sidebar-bio">
+          Previously a Research Assistant at the
+          <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">Center for Intelligent Systems and Security (CISS)</a>,
+          ITU Lahore, under <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Qasim Mehmood</a>.
+          B.Sc. in Electronics Engineering from
+          <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">UET Taxila</a>.
+        </p>
+
+        <p class="sidebar-bio">
+          My research focuses on generative models, implicit neural representations,
+          vision-language models, and image restoration. I have published at
+          <strong>AAAI</strong> and in <em>Infrared Physics &amp; Technology</em>, with
+          collaborations at Adobe Research and Télécom Paris.
+        </p>
+
+        <p class="sidebar-bio">
+          I enjoy 📖 reading, 🌍 traveling, and 🧑‍💻 building things.
+        </p>
+
+        <div class="sidebar-socials">
+          <a href="mailto:Alihaiderfarooq07@gmail.com" title="Email">✉</a>
+          <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" title="Google Scholar">🎓 Scholar</a>
+          <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer" title="GitHub">GitHub</a>
+          <a href="https://x.com/007Alihaider" target="_blank" rel="noopener noreferrer" title="Twitter / X">𝕏</a>
+        </div>
+
+        <div class="sidebar-interests">
+          <p class="sidebar-interests-label">Research Interests</p>
+          <div class="tags">
+            <span class="tag">Vision-Language Models</span>
+            <span class="tag">Generative Models</span>
+            <span class="tag">Diffusion Models</span>
+            <span class="tag">Implicit Neural Representations</span>
+            <span class="tag">Image Restoration</span>
+            <span class="tag">Medical Image Analysis</span>
+            <span class="tag">Model Compression</span>
+            <span class="tag">Multimodal AI</span>
           </div>
         </div>
-      </div>
-    </div>
+      </aside>
 
-    <!-- About -->
-    <section class="card" id="about">
-      <h2>About</h2>
-      <p>
-        I am currently pursuing a Ph.D. in Artificial Intelligence at
-        <strong>Kyung Hee University Global Campus</strong>, where I am a member of the
-        <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>,
-        under the supervision of
-        <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
-      </p>
-      <p>
-        Previously, I served as a Research Assistant at the
-        <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">Center for Intelligent Systems and Security (CISS)</a>
-        at the Information Technology University, Lahore, under
-        <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Qasim Mehmood</a>,
-        developing intelligent pathology systems for automated malaria detection and exploring deep learning for nanostructure response estimation.
-      </p>
-      <p>
-        I hold a Bachelor's degree in Electronics Engineering from the
-        <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">University of Engineering and Technology, Taxila</a>,
-        where I conducted undergraduate research under
-        <a href="https://scholar.google.com/citations?user=TAues7sAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Furqan Shaukat</a> and
-        <a href="https://scholar.google.com/citations?hl=en&user=-4hepOgAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Dr. Laiq Rehman Shahid</a>.
-      </p>
-    </section>
+      <!-- ── Main content ── -->
+      <main class="main-content">
 
-    <!-- Research Interests -->
-    <section class="card" id="interests">
-      <h2>Research Interests</h2>
-      <div class="tags">
-        <span class="tag">Vision-Language Models</span>
-        <span class="tag">Multimodal AI</span>
-        <span class="tag">Generative Models</span>
-        <span class="tag">Diffusion Models</span>
-        <span class="tag">Implicit Neural Representations</span>
-        <span class="tag">Image Restoration</span>
-        <span class="tag">Model Compression &amp; Quantization</span>
-        <span class="tag">Contrastive Learning</span>
-        <span class="tag">Medical Image Analysis</span>
-        <span class="tag">Explainable AI</span>
-      </div>
-    </section>
+        <!-- Updates -->
+        <section id="news">
+          <h2>Updates</h2>
+          <table class="updates-table">
+            <tbody>
+              <tr>
+                <td class="upd-year">2026:</td>
+                <td>Presented <strong>I-INR</strong> at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>, Singapore.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2025:</td>
+                <td><strong>I-INR</strong> accepted at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>. Congratulations to the co-authors.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2025:</td>
+                <td>Submitted 2 papers to top AI conferences.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2025:</td>
+                <td><strong>I-INR</strong> preprint available on <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2024:</td>
+                <td>Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a>, Vancouver.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2024:</td>
+                <td>Presented <em>Descanning</em> at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a>, Vancouver.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2024:</td>
+                <td>AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model.</em></td>
+              </tr>
+              <tr>
+                <td class="upd-year">2022:</td>
+                <td>Joined <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a>, Kyung Hee University as a Ph.D. student.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2021:</td>
+                <td>First-author paper published in <em>Infrared Physics &amp; Technology</em>.</td>
+              </tr>
+              <tr>
+                <td class="upd-year">2019:</td>
+                <td>Joined <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS Lab</a>, ITU Lahore as a Research Assistant.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-    <!-- News -->
-    <section class="card" id="news">
-      <h2>News</h2>
-      <ul class="news-list">
-        <li><span class="news-year">2026</span><span>Presented <strong>I-INR</strong> at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>, Singapore <span class="badge badge-green">Presented</span></span></li>
-        <li><span class="news-year">2025</span><span><strong>I-INR</strong> accepted at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a> <span class="badge badge-blue">Accepted</span></span></li>
-        <li><span class="news-year">2025</span><span>Submitted 2 papers to top AI conferences</span></li>
-        <li><span class="news-year">2025</span><span><strong>I-INR</strong> preprint on <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a></span></li>
-        <li><span class="news-year">2024</span><span>Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a>, Vancouver</span></li>
-        <li><span class="news-year">2024</span><span>Presented at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a>, Vancouver <span class="badge badge-green">Presented</span></span></li>
-        <li><span class="news-year">2024</span><span>AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model</em> <span class="badge badge-blue">Accepted</span></span></li>
-        <li><span class="news-year">2022</span><span>Joined <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a>, Kyung Hee University</span></li>
-        <li><span class="news-year">2021</span><span>First-author paper published in <em>Infrared Physics &amp; Technology</em></span></li>
-        <li><span class="news-year">2019</span><span>Joined <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS Lab</a>, ITU Lahore</span></li>
-      </ul>
-    </section>
+        <!-- Selected Publications -->
+        <section id="publications">
+          <h2>Selected Publications</h2>
+          <ul class="pub-list">
 
-    <!-- Publications -->
-    <section class="card" id="publications">
-      <h2>Publications</h2>
-      <ul class="pub-list">
+            <li class="pub-card">
+              <img class="pub-thumb" src="assets/Pub/I-INR.png" alt="I-INR" />
+              <div class="pub-body">
+                <p class="pub-venue-tag"><a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a></p>
+                <p class="pub-title">
+                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a>
+                </p>
+                <p class="pub-authors"><em>Ali Haider</em>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae</p>
+                <p class="pub-venue">AAAI Conference on Artificial Intelligence, 2026 &middot; Singapore</p>
+                <p class="pub-note">In collaboration with LTCI, Télécom Paris &amp; Adobe Research</p>
+                <div class="pub-links">
+                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">PDF</a>
+                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>
+                </div>
+              </div>
+            </li>
 
-        <li class="pub-card">
-          <img class="pub-thumb" src="assets/Pub/I-INR.png" alt="I-INR" />
-          <div>
-            <p class="pub-title"><a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a> <span class="badge badge-blue">AAAI 2026</span></p>
-            <p class="pub-authors"><em>Ali Haider</em>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae</p>
-            <p class="pub-venue">AAAI Conference on Artificial Intelligence, 2026 · Singapore</p>
-            <p class="pub-note">In collaboration with LTCI, Télécom Paris &amp; Adobe Research</p>
-          </div>
-        </li>
+            <li class="pub-card">
+              <img class="pub-thumb" src="assets/Pub/Descan_diffusion.png" alt="Descanning" />
+              <div class="pub-body">
+                <p class="pub-venue-tag"><a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a></p>
+                <p class="pub-title">
+                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">Descanning: From Scanned to the Original Images with a Color Correction Diffusion Model</a>
+                </p>
+                <p class="pub-authors">Junghun Cha<sup>*</sup>, <em>Ali Haider</em><sup>*</sup>, Seoyun Yang, Hoeyeong Jin, Subin Yang, A.&nbsp;F.&nbsp;M. Shahab Uddin, Jaehyoung Kim, Soo Ye Kim, Sung-Ho Bae</p>
+                <p class="pub-venue">AAAI, Vol.&nbsp;38 No.&nbsp;2, 2024</p>
+                <p class="pub-note">In collaboration with Adobe Research</p>
+                <div class="pub-links">
+                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">HTML</a>
+                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">PDF</a>
+                </div>
+              </div>
+            </li>
 
-        <li class="pub-card">
-          <img class="pub-thumb" src="assets/Pub/Descan_diffusion.png" alt="Descanning" />
-          <div>
-            <p class="pub-title"><a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">Descanning: From Scanned to the Original Images with a Color Correction Diffusion Model</a> <span class="badge badge-blue">AAAI 2024</span></p>
-            <p class="pub-authors">Junghun Cha<sup>*</sup>, <em>Ali Haider</em><sup>*</sup>, Seoyun Yang, Hoeyeong Jin, Subin Yang, A.&nbsp;F.&nbsp;M. Shahab Uddin, Jaehyoung Kim, Soo Ye Kim, Sung-Ho Bae</p>
-            <p class="pub-venue">AAAI, Vol.&nbsp;38 No.&nbsp;2, 2024</p>
-            <p class="pub-note">In collaboration with Adobe Research</p>
-          </div>
-        </li>
+            <li class="pub-card">
+              <img class="pub-thumb" src="assets/Pub/FCRN.png" alt="FCRN" />
+              <div class="pub-body">
+                <p class="pub-venue-tag">Journal &middot; Infrared Physics &amp; Technology</p>
+                <p class="pub-title">
+                  <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">Human Detection in Aerial Thermal Imaging using a Fully Convolutional Regression Network</a>
+                </p>
+                <p class="pub-authors"><em>Ali Haider</em>, Furqan Shaukat, Junaid Mir</p>
+                <p class="pub-venue">Infrared Physics &amp; Technology 116 (2021) &middot; Impact Factor: 3.4</p>
+                <div class="pub-links">
+                  <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">HTML</a>
+                </div>
+              </div>
+            </li>
 
-        <li class="pub-card">
-          <img class="pub-thumb" src="assets/Pub/FCRN.png" alt="FCRN" />
-          <div>
-            <p class="pub-title"><a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">Human Detection in Aerial Thermal Imaging using a Fully Convolutional Regression Network</a> <span class="badge badge-green">Journal</span></p>
-            <p class="pub-authors"><em>Ali Haider</em>, Furqan Shaukat, Junaid Mir</p>
-            <p class="pub-venue">Infrared Physics &amp; Technology 116 (2021) · Impact Factor: 3.4</p>
-          </div>
-        </li>
+            <li class="pub-card">
+              <img class="pub-thumb" src="assets/Pub/KMBE.png" alt="KMBE" />
+              <div class="pub-body">
+                <p class="pub-venue-tag">Workshop · KMBE 2024</p>
+                <p class="pub-title">
+                  <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">Improving Implicit Neural Representations with Robust Loss Function</a>
+                </p>
+                <p class="pub-authors"><em>Ali Haider</em>, Sung Ho Bae</p>
+                <p class="pub-venue">Korea Broadcasting Media Engineering Conference, 2024: 998–1001</p>
+                <div class="pub-links">
+                  <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">PDF</a>
+                </div>
+              </div>
+            </li>
 
-        <li class="pub-card">
-          <img class="pub-thumb" src="assets/Pub/KMBE.png" alt="KMBE" />
-          <div>
-            <p class="pub-title"><a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">Improving Implicit Neural Representations with Robust Loss Function</a> <span class="badge badge-amber">Workshop</span></p>
-            <p class="pub-authors"><em>Ali Haider</em>, Sung Ho Bae</p>
-            <p class="pub-venue">Korea Broadcasting Media Engineering Conference, 2024: 998–1001</p>
-          </div>
-        </li>
+          </ul>
+        </section>
 
-      </ul>
-    </section>
+        <!-- Projects -->
+        <section id="projects">
+          <h2>Projects</h2>
+          <ul class="proj-list">
+            <li><strong>MRI Acceleration &amp; Reconstruction</strong> <span class="proj-collab">with AiLive &amp; NYU</span> — Diffusion models and multi-modal frameworks for faster, accurate clinical MRI diagnostics.</li>
+            <li><strong>Video Quality Assessment for Streaming</strong> <span class="proj-collab">with KEI Media</span> — Perceptual benchmarking and no-reference quality metrics for streaming platforms.</li>
+            <li><strong>Microscopic Malaria Detection</strong> — Low-cost AI system with Lahore General Hospital (CISS Global) for virtual staining and low-resource diagnosis.</li>
+            <li><strong>AI-based Sports Card Grading</strong> <span class="proj-collab">Acquired by Beckett Media</span> — Algorithm lead at Due Dilly; automated PSA/Beckett-standard grading. Startup acquired.</li>
+            <li><strong>Track-following Robot (PID)</strong> — 🏆 1st Place nationally, AirTech 2017.</li>
+            <li><strong>Embedded Vehicular Security System</strong> — 🏆 2nd Prize, All Pakistan DICE-IET 2019.</li>
+          </ul>
+        </section>
 
     <!-- Projects -->
     <section class="card" id="projects">
@@ -317,26 +291,15 @@
       </section>
     </div>
 
+      </main>
+    </div><!-- /page-layout -->
   </div><!-- /page-wrap -->
 
   <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; <span id="visit-counter"></span></p>
+    <p>&copy; 2026 Ali Haider.</p>
   </footer>
 
   <script>
-    (async () => {
-      try {
-        const res  = await fetch('https://api.countapi.xyz/hit/ali_haider_site/visits');
-        const data = await res.json();
-        document.getElementById('visit-counter').textContent = 'Visits: ' + data.value;
-      } catch (_) {
-        document.getElementById('visit-counter').textContent = '';
-      }
-    })();
-  </script>
-
-  <script>
-    /* Mobile nav toggle */
     const navBtn = document.getElementById('nav-toggle');
     if (navBtn) {
       navBtn.addEventListener('click', () => {
@@ -344,7 +307,6 @@
         navBtn.setAttribute('aria-expanded', open);
         navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
       });
-      /* Close nav when a link is tapped */
       document.querySelectorAll('.site-header nav a').forEach(a => {
         a.addEventListener('click', () => {
           document.body.classList.remove('nav-open');
