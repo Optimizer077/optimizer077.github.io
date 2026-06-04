@@ -4,27 +4,29 @@
   <meta charset="UTF-8" />
   <title>Seminars – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Selected seminar talks and invited presentations by Ali Haider — diffusion models, image restoration, reasoning and agentic vision systems." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    .seminar-iframe {
-      width: 100%; height: 480px; border: none;
-      margin: 1rem 0 1.25rem;
-      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    /* ── Page header ── */
+    .seminar-hero { margin-bottom: 1.75rem; }
+    .seminar-hero h1 { margin-bottom: .3rem; }
+    .seminar-hero .subtitle {
+      color: var(--clr-muted); font-style: italic; margin-bottom: 1rem;
     }
-    .seminar-card h2 { font-size: var(--fs-xl); }
-    .seminar-card h3 { font-size: var(--fs-base); font-weight: 600; margin: 1rem 0 .4rem; color: var(--clr-primary); }
+    .seminar-meta { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .seminar-meta .pill {
+      font-size: var(--fs-xs); font-weight: 600;
+      background: var(--clr-accent-light); color: var(--clr-accent-dark);
+      border: 1px solid var(--clr-accent-border);
+      padding: .24rem .75rem; border-radius: 20px; white-space: nowrap;
+    }
 
-    /* Index table */
-    .seminar-index {
-      width: 100%; border-collapse: collapse;
-      font-size: var(--fs-sm);
-    }
-    .seminar-index thead tr {
-      background: var(--clr-accent-light);
-    }
+    /* ── Index table ── */
+    .seminar-index { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+    .seminar-index thead tr { background: var(--clr-accent-light); }
     .seminar-index th {
       text-align: left; padding: .55rem .75rem;
       font-weight: 700; font-size: var(--fs-xs);
@@ -38,11 +40,54 @@
     .seminar-index tr:last-child td { border-bottom: none; }
     .seminar-index tr:hover td { background: var(--clr-accent-light); }
     .seminar-index td:first-child {
-      width: 32px; color: var(--clr-muted); font-weight: 600; text-align: center;
+      width: 32px; color: var(--clr-muted); font-weight: 700; text-align: center;
     }
-
+    .seminar-index td:last-child { color: var(--clr-muted); white-space: nowrap; }
     .seminar-index a { color: var(--clr-accent); font-weight: 500; }
     .seminar-index a:hover { color: var(--clr-accent-dark); }
+
+    /* ── Seminar card ── */
+    .seminar-card {
+      scroll-margin-top: calc(var(--header-h) + 1rem); /* sticky-header anchor offset */
+    }
+    .seminar-card:hover { box-shadow: var(--shadow-md); }
+
+    .seminar-head {
+      display: flex; gap: .85rem; align-items: flex-start;
+      margin-bottom: .65rem;
+    }
+    .seminar-num {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: var(--clr-accent); color: #fff;
+      font-size: var(--fs-sm); font-weight: 700;
+      margin-top: .15rem;
+    }
+    .seminar-venue-tag {
+      font-size: var(--fs-xs); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: var(--clr-muted); margin-bottom: .2rem;
+    }
+    .seminar-card h2 { font-size: var(--fs-xl); margin: 0; }
+    .seminar-card h3 {
+      font-size: var(--fs-base); font-weight: 600;
+      margin: 1rem 0 .4rem; color: var(--clr-primary);
+    }
+    .seminar-card ul { font-size: var(--fs-sm); }
+
+    .seminar-iframe {
+      width: 100%; height: 480px; border: none;
+      margin: 1.1rem 0 1.25rem;
+      border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      background: var(--clr-bg-alt);
+    }
+
+    @media (max-width: 600px) {
+      .seminar-num { width: 26px; height: 26px; font-size: var(--fs-xs); }
+      .seminar-iframe { height: 320px; }
+    }
   </style>
 </head>
 <body>
@@ -53,15 +98,22 @@
     <nav aria-label="Site navigation">
       <a href="index.html">about</a>
       <a href="seminar.html" class="active">🗣 seminars</a>
-      <a href="people.html">👥 people</a>
       <a href="reading.html">📄 paper reading</a>
     </nav>
   </header>
 
   <div class="page-wrap">
 
-    <h1 style="margin-bottom:.35rem;">Seminar Talks</h1>
-    <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1.75rem;">Selected seminar talks and invited presentations</p>
+    <!-- ===== Page header ===== -->
+    <div class="seminar-hero">
+      <h1>🗣 Seminar Talks</h1>
+      <p class="subtitle">Selected seminar talks and invited presentations</p>
+      <div class="seminar-meta">
+        <span class="pill">6 talks</span>
+        <span class="pill">1 invited talk</span>
+        <span class="pill">MLVC Lab &middot; conference recaps</span>
+      </div>
+    </div>
 
     <!-- ===== Index table ===== -->
     <section class="card" style="margin-bottom:2.5rem;">
@@ -109,12 +161,17 @@
       </table>
     </section>
 
-    <!-- ===== Seminar 0 ===== -->
+    <!-- ===== Seminar 1 ===== -->
     <section class="card seminar-card" id="shu-talk">
-      <h2>The Evolving Landscape of Computer Vision: From Diffusion Models to Agentic Systems</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">1</span>
+        <div>
+          <p class="seminar-venue-tag">Salim Habib University &middot; Invited Talk</p>
+          <h2>The Evolving Landscape of Computer Vision: From Diffusion Models to Agentic Systems</h2>
+        </div>
+      </div>
       <p>Invited talk at Salim Habib University covering the progression from diffusion-based generative modeling to reasoning- and agent-driven computer vision systems. The presentation introduces diffusion fundamentals, restoration-oriented diffusion pipelines, reasoning-based restoration methods such as Chain-of-Zoom and Chain-of-Restoration, and agentic workflows including RestoreAgent and 4KAgent.</p>
-      <p><strong>Venue:</strong> Salim Habib University</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1aAdPiTZodkvvlJu_OT030nrPWrKv6cUf/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/1aAdPiTZodkvvlJu_OT030nrPWrKv6cUf/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
       <h3>Topics Covered</h3>
       <ul>
         <li>Diffusion models for generative modeling and image restoration, including StableSR and efficient fine-tuning.</li>
@@ -124,11 +181,17 @@
       </ul>
     </section>
 
-    <!-- ===== Seminar 1 ===== -->
+    <!-- ===== Seminar 2 ===== -->
     <section class="card seminar-card" id="reasoning">
-      <h2>Reasoning Models / Reasoning Image Restoration</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">2</span>
+        <div>
+          <p class="seminar-venue-tag">MLVC Lab Seminar</p>
+          <h2>Reasoning Models / Reasoning Image Restoration</h2>
+        </div>
+      </div>
       <p>Seminar covering the use of large language models and vision-language approaches in visual reasoning and restoration. We explored recent innovations in step-wise reasoning and multimodal agents for complex image tasks.</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/1ju3ynd-XqNbtj0Pob5qd8oU2_5ithoQE/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
       <h3>Referenced Papers</h3>
       <ul>
         <li><a href="https://arxiv.org/abs/2404.07017" target="_blank" rel="noopener noreferrer">Improving Language Model Reasoning with Self-Motivated Learning</a></li>
@@ -137,11 +200,17 @@
       </ul>
     </section>
 
-    <!-- ===== Seminar 2 ===== -->
+    <!-- ===== Seminar 3 ===== -->
     <section class="card seminar-card" id="multitask">
-      <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">3</span>
+        <div>
+          <p class="seminar-venue-tag">MLVC Lab Seminar</p>
+          <h2>Multi-Task Learning Perspective for Diffusion Models</h2>
+        </div>
+      </div>
       <p>Presents a multi-task learning viewpoint on modern diffusion models. It discusses task transferability, negative transfer challenges, and the use of mixture-of-experts to solve denoising in a synergistic fashion.</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/1eyP_RBmBPBbr0TVzHAq4Lj7aFxSKbxw9/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
       <h3>Referenced Papers</h3>
       <ul>
         <li><a href="https://arxiv.org/abs/2306.00354" target="_blank" rel="noopener noreferrer">Addressing Negative Transfer in Diffusion Models</a></li>
@@ -149,11 +218,17 @@
       </ul>
     </section>
 
-    <!-- ===== Seminar 3 ===== -->
+    <!-- ===== Seminar 4 ===== -->
     <section class="card seminar-card" id="taskdiffusion">
-      <h2>Task-Oriented Diffusion for Image Restoration</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">4</span>
+        <div>
+          <p class="seminar-venue-tag">MLVC Lab Seminar</p>
+          <h2>Task-Oriented Diffusion for Image Restoration</h2>
+        </div>
+      </div>
       <p>A deep dive into diffusion-based models tailored for specific restoration tasks, including Ambient Diffusion, ResShift for super-resolution, and DiffBIR's two-stage blind restoration pipeline.</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/16lefYQN6ngeXm7gkZRcXrDm0DyXbOx1Q/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
       <h3>Referenced Papers</h3>
       <ul>
         <li><a href="https://openreview.net/forum?id=wBJBLy9kBY" target="_blank" rel="noopener noreferrer">Ambient Diffusion</a></li>
@@ -162,11 +237,17 @@
       </ul>
     </section>
 
-    <!-- ===== Seminar 4 ===== -->
+    <!-- ===== Seminar 5 ===== -->
     <section class="card seminar-card" id="aaai24">
-      <h2>Any-Size Diffusion &amp; ResDiff (AAAI 2024)</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">5</span>
+        <div>
+          <p class="seminar-venue-tag">AAAI 2024 &middot; Paper Highlights</p>
+          <h2>Any-Size Diffusion &amp; ResDiff</h2>
+        </div>
+      </div>
       <p>Highlights from two AAAI-24 papers: Any-Size-Diffusion (ASD), a two-stage pipeline for text-to-image synthesis at arbitrary resolutions, and ResDiff, which unites CNN priors with diffusion guidance for efficient single-image super-resolution.</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/1BS21B_bhFFKC15rwCTdpDamV7VlQ6YHA/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
       <h3>Referenced Papers</h3>
       <ul>
         <li><a href="https://arxiv.org/abs/2308.16582" target="_blank" rel="noopener noreferrer">Any-Size-Diffusion: Text-Driven Synthesis for Any-Size HD Images</a></li>
@@ -174,11 +255,17 @@
       </ul>
     </section>
 
-    <!-- ===== Seminar 5 ===== -->
+    <!-- ===== Seminar 6 ===== -->
     <section class="card seminar-card" id="neurips">
-      <h2>NeurIPS 2024 Paper Summaries</h2>
+      <div class="seminar-head">
+        <span class="seminar-num">6</span>
+        <div>
+          <p class="seminar-venue-tag">NeurIPS 2024 &middot; Recap Session</p>
+          <h2>NeurIPS 2024 Paper Summaries</h2>
+        </div>
+      </div>
       <p>Summary session from NeurIPS 2024, with analyses of several key papers presented at the conference.</p>
-      <iframe class="seminar-iframe" src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
+      <iframe class="seminar-iframe" loading="lazy" src="https://docs.google.com/presentation/d/1BptkTcyrRveZa6cSIAYh8jdbyCI1k40E/embed?start=false&loop=false&delayms=3000" allowfullscreen></iframe>
     </section>
 
   </div><!-- /page-wrap -->
