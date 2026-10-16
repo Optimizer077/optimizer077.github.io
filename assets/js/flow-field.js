@@ -17,7 +17,7 @@
   var small = window.matchMedia('(max-width: 760px)').matches;
   var COUNT = small ? 70 : 300;
   var CATCH_R = small ? 150 : 230;      // CSS px around the pointer
-  var SPEED = small ? 0.75 : 0.95;
+  var SPEED = small ? 1.5 : 1.9;      // per step at 30 fps
 
   var W = 0, H = 0, scale = 1;          // canvas px per CSS px
   var parts = [];
@@ -38,12 +38,12 @@
     colB = hex(cs.getPropertyValue('--clr-signal'), colB);
     var light = document.documentElement.getAttribute('data-theme') === 'light';
     alpha = small ? 0.2 : (light ? 0.3 : 0.42);
-    fade = light ? 0.085 : 0.07;
+    fade = light ? 0.16 : 0.13;
   }
 
   function resize() {
     // Cap the backing resolution on very wide screens; the pixel look hides it.
-    scale = Math.min(window.devicePixelRatio || 1, 1600 / Math.max(window.innerWidth, 1), 1.5);
+    scale = 0.5;   // half resolution: particles render as 2x2 CSS-pixel blocks, 4x cheaper to fade
     W = Math.round(window.innerWidth * scale);
     H = Math.round(window.innerHeight * scale);
     canvas.width = W;
@@ -77,7 +77,7 @@
     ctx.globalCompositeOperation = 'source-over';
 
     var px = pointer.x * scale, py = pointer.y * scale, R = CATCH_R * scale;
-    var size = Math.max(1.5, 2 * scale);
+    var size = 1;
     var sp = SPEED * scale;
 
     for (var i = 0; i < parts.length; i++) {
@@ -111,10 +111,13 @@
     }
   }
 
+  var lastStep = 0;
   function frame(now) {
+    raf = requestAnimationFrame(frame);
+    if (now - lastStep < 32) return;   // ~30 fps is plenty for an ambient background
+    lastStep = now;
     t = now;
     step();
-    raf = requestAnimationFrame(frame);
   }
 
   function start() { if (!raf) raf = requestAnimationFrame(frame); }

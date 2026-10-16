@@ -372,17 +372,31 @@ li { margin-bottom: .45rem; }
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: .38em;
+  position: relative;
   width: 8px;
   height: 8px;
   background: var(--clr-signal);
-  box-shadow: 0 0 0 0 var(--clr-signal);
-  animation: ping 2.4s infinite;
+}
+/* Pulse ring: transform/opacity only, so it runs on the compositor (no repaint) */
+.eyebrow .dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--clr-signal);
+  animation: ping-ring 2.4s ease-out infinite;
+}
+@keyframes ping-ring {
+  0%   { transform: scale(1);   opacity: .6; }
+  70%  { transform: scale(3.2); opacity: 0; }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 @keyframes ping {
-  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--clr-signal) 60%, transparent); }
-  70%  { box-shadow: 0 0 0 9px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .35; }
 }
+/* Sections scrolled out of view pause their CSS animations (set by site.js) */
+.is-offscreen,
+.is-offscreen * { animation-play-state: paused !important; }
 
 .hero-name {
   font-size: clamp(3.6rem, 10vw, 7.4rem);
@@ -2063,3 +2077,19 @@ html:not(.js) .renoise { display: none; }
   .like-card h3 { font-size: 1.1rem; }
   .like-card p { font-size: .78rem; line-height: 1.45; }
 }
+
+/* Skip link: visible only when focused with the keyboard */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 2000;
+  padding: .5rem .9rem;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  color: var(--clr-on-accent);
+  background: var(--clr-accent);
+  border-radius: var(--radius-sm);
+  transition: top .2s;
+}
+.skip-link:focus { top: .7rem; text-decoration: none; color: var(--clr-on-accent); }

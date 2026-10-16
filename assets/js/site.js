@@ -63,6 +63,16 @@
     });
   }
 
+  /* ---------- Pause CSS animations in sections that are off screen ---------- */
+  if ('IntersectionObserver' in window) {
+    var pauseObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('is-offscreen', !entry.isIntersecting);
+      });
+    }, { rootMargin: '100px 0px' });
+    document.querySelectorAll('.hero, .marquee, .block, .rl-hero').forEach(function (el) { pauseObs.observe(el); });
+  }
+
   /* ---------- Scroll reveal (staggered among siblings) ---------- */
   var reveals = document.querySelectorAll('.reveal');
   var showAll = function () { reveals.forEach(function (el) { el.classList.add('is-in'); }); };
@@ -107,24 +117,48 @@
   }
 
   /* ---------- Live GitHub star counts (progressive enhancement) ---------- */
+  // The API response is ~190 KB, so fetch it only when the section is close
+  // and keep just the star counts in localStorage for 12 hours.
   var repoCards = document.querySelectorAll('[data-repo]');
-  if (repoCards.length && window.fetch) {
+  var STAR_KEY = 'gh-stars-v1', STAR_TTL = 12 * 3600 * 1000;
+  var showStars = function (stars) {
+    repoCards.forEach(function (card) {
+      var n = stars[card.getAttribute('data-repo')];
+      var slot = card.querySelector('.repo-stars');
+      if (slot && n > 0) {
+        slot.textContent = '★ ' + n;
+        slot.hidden = false;
+      }
+    });
+  };
+  var loadStars = function () {
+    try {
+      var cached = JSON.parse(localStorage.getItem(STAR_KEY) || 'null');
+      if (cached && Date.now() - cached.t < STAR_TTL) { showStars(cached.stars); return; }
+    } catch (e) {}
     fetch('https://api.github.com/users/Optimizer077/repos?per_page=100')
       .then(function (res) { return res.ok ? res.json() : []; })
       .then(function (repos) {
         if (!Array.isArray(repos)) return;
         var stars = {};
         repos.forEach(function (r) { stars[r.name] = r.stargazers_count; });
-        repoCards.forEach(function (card) {
-          var n = stars[card.getAttribute('data-repo')];
-          var slot = card.querySelector('.repo-stars');
-          if (slot && n > 0) {
-            slot.textContent = '★ ' + n;
-            slot.hidden = false;
-          }
-        });
+        try { localStorage.setItem(STAR_KEY, JSON.stringify({ t: Date.now(), stars: stars })); } catch (e) {}
+        showStars(stars);
       })
       .catch(function () { /* offline or rate-limited: cards stay as they are */ });
+  };
+  if (repoCards.length && window.fetch) {
+    var repoSection = repoCards[0].closest('section');
+    if (repoSection && 'IntersectionObserver' in window) {
+      var starObs = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        starObs.disconnect();
+        loadStars();
+      }, { rootMargin: '600px 0px' });
+      starObs.observe(repoSection);
+    } else {
+      loadStars();
+    }
   }
 
   /* ---------- Pixel-reveal thumbnails ----------

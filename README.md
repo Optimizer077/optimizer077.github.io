@@ -72,13 +72,22 @@ optimizer077.github.io/
 ├── mri.csv
 ├── hyperspectral.csv
 ├── misc.csv
+├── 404.html              # Custom not-found page (served by GitHub Pages)
+├── favicon.svg, apple-touch-icon.png
+├── robots.txt, sitemap.xml
 ├── assets/
-│   ├── img/              # Profile photo
+│   ├── meta/og-card.png  # Link-preview image (Open Graph / X)
+│   ├── img/              # Profile photo (portrait.webp is what the site loads)
 │   ├── Pub/              # Publication thumbnail images
 │   └── js/
 │       ├── site.js       # Nav, theme toggle, scroll reveal, GitHub stars, pixel-reveal thumbnails
 │       ├── pixel-hero.js # Hero portrait that denoises from pixel noise
-│       └── hill-drive.js # "Off the clock" pixel car scene
+│       ├── hill-drive.js # "Off the clock" pixel car scene
+│       ├── drone-nav.js  # Drone navigation illustration (Projects)
+│       ├── learn-loop.js # Self-improving agent loop (Learning)
+│       ├── mini-demos.js # Diffusion-text and tangent-plot card demos
+│       ├── flow-field.js # Background flow particles
+│       └── reading.js    # Reading page: search, filters, year chart
 └── _includes/
     └── header.html
 ```

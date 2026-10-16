@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Page not found — Ali Haider</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0a0e1a" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .nf {
+      min-height: calc(100vh - var(--header-h) - 80px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .nf canvas {
+      width: min(520px, 90vw);
+      height: auto;
+      aspect-ratio: 2 / 1;
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto 1.6rem;
+    }
+    .nf h1 { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: .6rem; }
+    .nf h1 em { color: var(--clr-accent); }
+    .nf p { color: var(--clr-muted); margin-bottom: 1.6rem; }
+    .nf .t { font-family: var(--font-mono); font-size: .76rem; color: var(--clr-muted); margin-bottom: 1rem; }
+    .nf .t b { color: var(--clr-accent); font-weight: 500; }
+    .nf .actions { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="/"><span class="logo-mark" aria-hidden="true"></span>Ali Haider</a>
+  </header>
+
+  <main class="nf">
+    <div>
+      <canvas id="nf" width="200" height="100" role="img" aria-label="The number 404 forming out of pixel noise"></canvas>
+      <p class="t">reverse diffusion · t = <b id="nf-t">1000</b></p>
+      <h1>This page <em>diffused</em> away.</h1>
+      <p>The link may be old, or the page has moved.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/">← Back home</a>
+        <a class="btn" href="/reading.html">Reading list</a>
+        <a class="btn" href="/seminar.html">Seminars</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var c = document.getElementById('nf'), ctx = c.getContext('2d');
+      var tEl = document.getElementById('nf-t');
+      var W = 100, H = 50, CELL = 2;          // 100x50 grid drawn at 2x
+      var cs = getComputedStyle(document.documentElement);
+      var accent = cs.getPropertyValue('--clr-accent').trim() || '#7c9cff';
+      var signal = cs.getPropertyValue('--clr-signal').trim() || '#ff7aa2';
+      var dim = cs.getPropertyValue('--clr-border').trim() || '#232b45';
+
+      // rasterise "404" to find the target pixels
+      var off = document.createElement('canvas'); off.width = W; off.height = H;
+      var o = off.getContext('2d');
+      o.fillStyle = '#fff';
+      o.font = 'bold 44px monospace';
+      o.textAlign = 'center';
+      o.textBaseline = 'middle';
+      o.fillText('404', W / 2, H / 2 + 2);
+      var data = o.getImageData(0, 0, W, H).data, pts = [];
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        if (data[(y * W + x) * 4 + 3] > 128) pts.push({ tx: x, ty: y, x: Math.random() * W, y: Math.random() * H, d: Math.random() * 0.4, c: Math.random() < 0.15 ? signal : accent });
+      }
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var start = performance.now(), DUR = 2400;
+
+      function draw(now) {
+        var p = reduce ? 1 : Math.min((now - start) / DUR, 1);
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.fillStyle = dim;
+        for (var gy = 1; gy < H; gy += 4) for (var gx = 1; gx < W; gx += 4) ctx.fillRect(gx * CELL, gy * CELL, 1, 1);
+        pts.forEach(function (q) {
+          var e = Math.max(0, Math.min(1, (p - q.d) / 0.6));
+          e = 1 - Math.pow(1 - e, 3);
+          var j = (1 - e) * 3;
+          var x = q.x + (q.tx - q.x) * e + (Math.random() - .5) * j;
+          var y = q.y + (q.ty - q.y) * e + (Math.random() - .5) * j;
+          ctx.fillStyle = q.c;
+          ctx.fillRect(Math.round(x) * CELL, Math.round(y) * CELL, CELL - .3, CELL - .3);
+        });
+        tEl.textContent = String(Math.round(1000 * (1 - p)));
+        if (p < 1) requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
