@@ -18,7 +18,7 @@
   var tVal = document.getElementById('t-val');
   var capEl = document.getElementById('hero-cap');
   var replayBtn = document.getElementById('renoise');
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
   var LEVELS = 10;          // colour steps between noise and the true colour
   var HEAT_SNAPS = [0, 3, 8, 18, 36, 70, 120];   // heat-equation steps stored as blur levels

@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
   function whenVisible(el, onChange) {
     if (!('IntersectionObserver' in window)) { onChange(true); return; }

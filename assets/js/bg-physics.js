@@ -12,7 +12,7 @@
 (function () {
   'use strict';
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (document.documentElement.classList.contains('reduce-motion')) return;
 
   var BUDGET_FRACTION = 0.05;
   var SCENES = [

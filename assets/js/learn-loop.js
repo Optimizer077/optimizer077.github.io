@@ -12,7 +12,7 @@
   var stagesEl = document.getElementById('loop-stages');
   var roundEl = document.getElementById('loop-round');
   var rateEl = document.getElementById('loop-rate');
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
   var PX = 3;
   var K = 8;                      // candidates per round

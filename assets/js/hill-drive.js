@@ -9,7 +9,7 @@
 
   var ctx = canvas.getContext('2d');
   var speedOut = document.getElementById('drive-speed');
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
   var PX = 3;                 // CSS pixels per scene pixel
   var BASE_SPEED = 38;        // scene px / s

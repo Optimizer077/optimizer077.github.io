@@ -8,11 +8,11 @@
   <meta name="theme-color" content="#120d0b" />
   <meta name="color-scheme" content="dark" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <script>document.documentElement.classList.add('js');</script>
+  <script>(function(){var d=document.documentElement,p=null;d.classList.add('js');try{p=localStorage.getItem('motion')}catch(e){}var sys=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);if(sys)d.classList.add('sys-reduce');if(p==='off'||(sys&&p!=='on'))d.classList.add('reduce-motion');})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css?v=327006ec" />
+  <link rel="stylesheet" href="/style.css?v=eb8e4f2f" />
   <style>
     .nf {
       min-height: calc(100vh - var(--header-h) - 80px);
@@ -79,7 +79,7 @@
       for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
         if (data[(y * W + x) * 4 + 3] > 128) pts.push({ tx: x, ty: y, x: Math.random() * W, y: Math.random() * H, d: Math.random() * 0.4, c: Math.random() < 0.15 ? signal : accent });
       }
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var reduce = document.documentElement.classList.contains('reduce-motion');
       var start = performance.now(), DUR = 2400;
 
       function draw(now) {

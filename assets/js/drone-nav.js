@@ -12,7 +12,7 @@
   var promptEl = document.getElementById('drone-prompt');
   var stepsEl = document.getElementById('drone-steps');
   var statusEl = document.getElementById('drone-status');
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
   var PX = 3;               // CSS pixels per scene pixel
   var CRUISE_SPEED = 30;    // scene px / s

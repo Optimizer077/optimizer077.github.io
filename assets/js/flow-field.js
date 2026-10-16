@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (document.documentElement.classList.contains('reduce-motion')) return;
   if (!document.createElement('canvas').getContext) return;
 
   var canvas = document.createElement('canvas');

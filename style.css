@@ -1347,17 +1347,60 @@ html:not(.js) .renoise { display: none; }
 /* ============================================================
    Motion preferences
    ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
-  }
-  .js .reveal { opacity: 1; transform: none; }
-  .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
-  .marquee ul[aria-hidden="true"] { display: none; }
-  .marquee ul { flex-wrap: wrap; padding-left: 1.4rem; }
+/* Calm mode: set by the head script from the OS setting, or by the visitor's choice */
+html.reduce-motion { scroll-behavior: auto; }
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+}
+.js.reduce-motion .reveal { opacity: 1; transform: none; }
+.reduce-motion .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
+.reduce-motion .marquee ul[aria-hidden="true"] { display: none; }
+.reduce-motion .marquee ul { flex-wrap: wrap; padding-left: 1.4rem; }
+
+/* Motion switch (footer) and the notice shown when the OS asks for reduced motion */
+.motion-toggle {
+  margin-left: .6rem;
+  padding: .15rem .55rem;
+  font: inherit;
+  color: var(--clr-accent);
+  background: none;
+  border: 1px solid var(--clr-accent-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.motion-toggle:hover { background: var(--clr-accent-light); }
+.motion-notice {
+  position: fixed;
+  left: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  max-width: calc(100vw - 6rem);
+  padding: .55rem .6rem .55rem .9rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--clr-text);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-accent-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+.motion-notice button {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: .25rem .7rem;
+  font: inherit;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.motion-notice .play { color: var(--clr-on-accent); background: var(--clr-accent); border: 0; }
+.motion-notice .dismiss { color: var(--clr-muted); background: none; border: 1px solid var(--clr-border); }
+@media (max-width: 600px) {
+  .motion-notice { left: .6rem; right: 4rem; bottom: .8rem; max-width: none; flex-wrap: wrap; }
 }
 
 /* ============================================================

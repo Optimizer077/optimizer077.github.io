@@ -4,7 +4,38 @@
   'use strict';
 
   var root = document.documentElement;
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduceMotion = document.documentElement.classList.contains('reduce-motion');
+
+  /* ---------- Motion: footer switch + notice when the OS asks for reduced motion ---------- */
+  var setMotion = function (value) {
+    try { localStorage.setItem('motion', value); } catch (e) {}
+    window.location.reload();                     // every animation decides at start-up
+  };
+  var footer = document.querySelector('.site-footer p');
+  if (footer) {
+    var mt = document.createElement('button');
+    mt.type = 'button';
+    mt.className = 'motion-toggle';
+    mt.textContent = reduceMotion ? '▶ play animations' : '⏸ pause animations';
+    mt.addEventListener('click', function () { setMotion(reduceMotion ? 'on' : 'off'); });
+    footer.appendChild(mt);
+  }
+  var noticeSeen = false;
+  // only when the visitor has not chosen yet (an explicit pause is not 'the system')
+  try { noticeSeen = localStorage.getItem('motion-notice') === 'seen' || localStorage.getItem('motion') !== null; } catch (e) {}
+  if (reduceMotion && root.classList.contains('sys-reduce') && !noticeSeen) {
+    var nb = document.createElement('div');
+    nb.className = 'motion-notice';
+    nb.setAttribute('role', 'status');
+    nb.innerHTML = '<span>Animations are paused by your system’s reduced-motion setting.</span>' +
+      '<button type="button" class="play">▶ Play</button><button type="button" class="dismiss" aria-label="Keep them paused">Keep paused</button>';
+    nb.querySelector('.play').addEventListener('click', function () { setMotion('on'); });
+    nb.querySelector('.dismiss').addEventListener('click', function () {
+      try { localStorage.setItem('motion-notice', 'seen'); } catch (e) {}
+      nb.remove();
+    });
+    document.body.appendChild(nb);
+  }
 
   /* ---------- Mobile nav ---------- */
   var navBtn = document.getElementById('nav-toggle');
