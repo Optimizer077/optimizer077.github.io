@@ -54,7 +54,8 @@
     cssW = frame.clientWidth -
       parseFloat(getComputedStyle(frame).paddingLeft) -
       parseFloat(getComputedStyle(frame).paddingRight);
-    var cols = cssW < 380 ? 54 : 74;
+    // ~4.5 CSS px per tile keeps the face readable on phones without too many tiles
+    var cols = Math.max(60, Math.min(78, Math.round(cssW / 4.5)));
     var rows = Math.round(cols * sh / sw);
     cell = cssW / cols;
     cssH = rows * cell;
@@ -109,7 +110,7 @@
 
   function drawSettled() {
     clear();
-    var size = cell * 0.86;
+    var size = cell * (cell < 5 ? 0.92 : 0.86);
     for (var i = 0; i < particles.length; i++) {
       var q = particles[i];
       ctx.fillStyle = q.colours[LEVELS - 1];

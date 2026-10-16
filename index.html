@@ -28,7 +28,7 @@
       <nav id="site-nav" aria-label="Site navigation">
         <a href="index.html" class="active">about</a>
         <a href="#news">news</a>
-        <a href="#open-source">open source</a>
+        <a href="#side-projects">side projects</a>
         <a href="#publications">publications</a>
         <a href="#patents">patents</a>
         <a href="seminar.html">seminars</a>
@@ -46,7 +46,7 @@
       <div class="hero-text">
         <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span>Ph.D. researcher · MLVC Lab · Kyung Hee University</p>
         <h1 class="hero-name reveal">Ali<br /><em>Haider</em></h1>
-        <p class="hero-lede reveal">I study how neural networks <em>represent</em>, <em>generate</em> and <em>restore</em> images.</p>
+        <p class="hero-lede reveal">I build vision-language models that <em>reason</em> and <em>act</em>, and diffusion models that <em>generate</em> images and language.</p>
 
         <div class="hero-bio reveal">
           <p>
@@ -54,8 +54,8 @@
             <strong>Kyung Hee University Global Campus</strong>, in the
             <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>
             under <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
-            My research covers generative models, implicit neural representations,
-            vision-language models and image restoration.
+            I currently work on vision-language navigation for drones, diffusion models for images and language,
+            and MRI reconstruction. My earlier work covers implicit neural representations and image restoration.
           </p>
           <p>
             I have published at <strong>AAAI</strong> and in <em>Infrared Physics &amp; Technology</em>,
@@ -97,24 +97,24 @@
     <div class="marquee" role="region" aria-label="Research interests">
       <div class="marquee-track">
         <ul>
-          <li>Vision-Language Models</li>
-          <li>Generative Models</li>
+          <li>Vision-Language Navigation</li>
+          <li>Embodied &amp; Aerial Agents</li>
+          <li>Multimodal Reasoning</li>
+          <li>Diffusion Language Models</li>
           <li>Diffusion Models</li>
           <li>Implicit Neural Representations</li>
-          <li>Image Restoration</li>
-          <li>Medical Image Analysis</li>
-          <li>Model Compression</li>
-          <li>Multimodal AI</li>
+          <li>MRI Reconstruction</li>
+          <li>Efficient VLMs</li>
         </ul>
         <ul aria-hidden="true">
-          <li>Vision-Language Models</li>
-          <li>Generative Models</li>
+          <li>Vision-Language Navigation</li>
+          <li>Embodied &amp; Aerial Agents</li>
+          <li>Multimodal Reasoning</li>
+          <li>Diffusion Language Models</li>
           <li>Diffusion Models</li>
           <li>Implicit Neural Representations</li>
-          <li>Image Restoration</li>
-          <li>Medical Image Analysis</li>
-          <li>Model Compression</li>
-          <li>Multimodal AI</li>
+          <li>MRI Reconstruction</li>
+          <li>Efficient VLMs</li>
         </ul>
       </div>
     </div>
@@ -257,12 +257,12 @@
         </div>
       </section>
 
-      <!-- ── 02 Open source ── -->
-      <section class="block" id="open-source">
+      <!-- ── 02 Side projects ── -->
+      <section class="block" id="side-projects">
         <div class="block-head">
           <span class="block-num">02 /</span>
-          <h2>Open source</h2>
-          <p class="block-sub">Recent tools, courses and lists on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+          <h2>Side projects</h2>
+          <p class="block-sub">Tools, courses and fun builds outside my main research. Code on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
         </div>
         <div class="block-body repo-grid">
 
@@ -315,6 +315,10 @@
               A from-scratch course on diffusion models for text. Runnable notebooks tie every equation to its paper:
               MDLM, LLaDA, D3PM, Diffusion-LM and SEDD.
             </p>
+            <div class="dlm-demo" aria-hidden="true">
+              <div class="dlm-head"><span>masked diffusion · parallel unmasking</span><span class="dlm-t">t = <b id="dlm-t">1.00</b></span></div>
+              <p class="dlm-tokens" id="dlm-tokens"></p>
+            </div>
             <ul class="repo-tags"><li>PyTorch</li><li>diffusion LMs</li></ul>
             <div class="repo-links">
               <a href="https://optimizer077.github.io/language-diffusion-models/interactive/" target="_blank" rel="noopener noreferrer">Live playground ↗</a>
@@ -331,6 +335,25 @@
             <ul class="repo-tags"><li>awesome list</li><li>dLLMs</li></ul>
           </article>
 
+          <article class="repo-card is-featured is-app reveal">
+            <div class="repo-main">
+              <div class="repo-top"><span class="repo-kind">side project · web app</span><span class="live-pill">live</span></div>
+              <h3><a href="https://games.opexplore.rocks/#course" target="_blank" rel="noopener noreferrer">Classroom · Calculus</a></h3>
+              <p>
+                A focused calculus classroom for high school and early university: 32 visual lessons across 8 chapters,
+                worked examples, fresh practice questions, shared classes and a lesson tutor.
+              </p>
+              <ul class="repo-tags"><li>web app</li><li>education</li><li>calculus</li></ul>
+              <div class="repo-links">
+                <a href="https://games.opexplore.rocks/#course" target="_blank" rel="noopener noreferrer">Open the classroom ↗</a>
+              </div>
+            </div>
+            <div class="tangent-demo" aria-hidden="true">
+              <canvas id="tangent-demo"></canvas>
+              <p class="tangent-readout">x = <b id="tan-x">0.00</b> &nbsp; f′(x) = <b id="tan-d">0.00</b></p>
+            </div>
+          </article>
+
         </div>
       </section>
 
@@ -345,7 +368,7 @@
 
           <li class="pub-card reveal">
             <a class="pub-thumb" href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <img src="assets/Pub/I-INR.png" alt="" loading="lazy" data-pixel />
+              <img src="assets/Pub/thumbs/I-INR.webp" alt="" loading="lazy" data-pixel />
             </a>
             <div class="pub-body">
               <p class="pub-venue-tag"><span class="chip"><a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a></span></p>
@@ -365,7 +388,7 @@
 
           <li class="pub-card reveal">
             <a class="pub-thumb" href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <img src="assets/Pub/Descan_diffusion.png" alt="" loading="lazy" data-pixel />
+              <img src="assets/Pub/thumbs/Descan_diffusion.webp" alt="" loading="lazy" data-pixel />
             </a>
             <div class="pub-body">
               <p class="pub-venue-tag"><span class="chip"><a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a></span></p>
@@ -384,7 +407,7 @@
 
           <li class="pub-card reveal">
             <a class="pub-thumb" href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <img src="assets/Pub/FCRN.png" alt="" loading="lazy" data-pixel />
+              <img src="assets/Pub/thumbs/FCRN.webp" alt="" loading="lazy" data-pixel />
             </a>
             <div class="pub-body">
               <p class="pub-venue-tag"><span class="chip">Journal</span> Infrared Physics &amp; Technology</p>
@@ -401,7 +424,7 @@
 
           <li class="pub-card reveal">
             <a class="pub-thumb" href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-              <img src="assets/Pub/KMBE.png" alt="" loading="lazy" data-pixel />
+              <img src="assets/Pub/thumbs/KMBE.webp" alt="" loading="lazy" data-pixel />
             </a>
             <div class="pub-body">
               <p class="pub-venue-tag"><span class="chip">KMBE 2024</span></p>
@@ -457,16 +480,31 @@
           <h2>Projects</h2>
           <p class="block-sub">Research and industry projects I have worked on.</p>
         </div>
-        <ul class="block-body project-list">
+        <div class="block-body">
 
-          <li class="project-item reveal">
+          <article class="project-feature reveal">
             <div class="project-title">
-              <strong>Vision-Language Navigation for Autonomous Systems</strong>
+              <strong>Vision-Language Navigation for Drones</strong>
               <span class="badge badge-green">Ongoing</span>
               <span class="badge badge-purple">Research</span>
             </div>
-            <p class="project-desc">Developing a vision-language grounded navigation system for autonomous embodied agents, enabling natural language-guided spatial and semantic reasoning with lightweight VLMs.</p>
-          </li>
+            <p class="project-desc">Developing a vision-language navigation system for drones (UAVs): the aerial agent follows natural-language instructions, with lightweight VLMs for spatial and semantic reasoning.</p>
+
+            <figure class="drone-figure">
+              <div class="drone-frame">
+                <canvas id="drone-nav" role="img"
+                        aria-label="Pixel-art drone taking off, flying over a small city and landing on a helipad while following a written instruction."></canvas>
+              </div>
+              <div class="drone-console">
+                <p class="drone-prompt"><span class="prompt-label">instruction ›</span> <span id="drone-prompt"></span><span class="caret" aria-hidden="true"></span></p>
+                <ol class="drone-steps" id="drone-steps"></ol>
+                <p class="drone-status" id="drone-status"></p>
+              </div>
+              <figcaption>Fig. 3 — illustration of language-guided drone navigation. The dashed box marks the landmark grounded at each step. Not output from the actual model.</figcaption>
+            </figure>
+          </article>
+
+        <ul class="project-list">
 
           <li class="project-item reveal">
             <div class="project-title">
@@ -524,6 +562,7 @@
           </li>
 
         </ul>
+        </div>
       </section>
 
       <!-- ── 06 Honors, languages, certifications ── -->
@@ -595,7 +634,7 @@
             <li class="like-card reveal">
               <span class="like-icon" aria-hidden="true">&lt;/&gt;</span>
               <h3>Building things</h3>
-              <p>Side projects outside the paper pipeline, like <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">UrduPy</a> and <a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">Paper Review Harness</a>.</p>
+              <p>Side projects outside the paper pipeline, like <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">UrduPy</a>, <a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">Paper Review Harness</a> and a <a href="https://games.opexplore.rocks/#course" target="_blank" rel="noopener noreferrer">calculus classroom</a>.</p>
             </li>
             <li class="like-card reveal">
               <span class="like-icon" aria-hidden="true">¶</span>
@@ -621,5 +660,7 @@
   <script src="assets/js/site.js" defer></script>
   <script src="assets/js/pixel-hero.js" defer></script>
   <script src="assets/js/hill-drive.js" defer></script>
+  <script src="assets/js/drone-nav.js" defer></script>
+  <script src="assets/js/mini-demos.js" defer></script>
 </body>
 </html>
