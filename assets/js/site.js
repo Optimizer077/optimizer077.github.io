@@ -22,16 +22,6 @@
     });
   }
 
-  /* ---------- Theme toggle ---------- */
-  var themeBtn = document.getElementById('theme-toggle');
-  if (themeBtn) {
-    themeBtn.addEventListener('click', function () {
-      var current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-      var next = current === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('theme', next); } catch (e) {}
-    });
-  }
 
   /* ---------- Scroll reveal (staggered among siblings) ---------- */
   var reveals = document.querySelectorAll('.reveal');

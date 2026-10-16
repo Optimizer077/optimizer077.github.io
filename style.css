@@ -55,9 +55,9 @@
   color-scheme: light;
 }
 
-/* ----- Tokens: dark ("ink") — the default; light only when chosen ----- */
+/* ----- Tokens: dark ("ink") — the site is dark-only; these override the base set above ----- */
 @media all {
-  :root:not([data-theme="light"]) {
+  :root {
     --clr-bg:            #0a0e1a;
     --clr-bg-alt:        #10162a;
     --clr-surface:       #121a30;
@@ -294,7 +294,7 @@ li { margin-bottom: .45rem; }
 .theme-toggle:active { transform: rotate(180deg); }
 .nav-toggle { display: none; }
 
-@media (max-width: 760px) {
+@media (max-width: 1020px) {
   .nav-toggle { display: inline-flex; }
   .site-header nav {
     display: none;
@@ -1771,4 +1771,109 @@ html:not(.js) .renoise { display: none; }
   z-index: -1;
   pointer-events: none;
   image-rendering: pixelated;
+}
+
+/* ============================================================
+   Learning these days (self-improving agents loop)
+   ============================================================ */
+.learn-card {
+  padding: 1.3rem 1.3rem 1.1rem;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+}
+.learn-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin-bottom: .5rem;
+}
+.learn-title a { color: var(--clr-primary); }
+.learn-title a:hover { color: var(--clr-accent); text-decoration: none; }
+.learn-desc { font-size: var(--fs-sm); max-width: 70ch; }
+
+.loop-figure { margin: 1.1rem 0 1rem; }
+.loop-frame {
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.loop-frame canvas {
+  display: block;
+  width: 100%;
+  height: clamp(180px, 22vw, 230px);
+  image-rendering: pixelated;
+}
+.loop-console {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem 1rem;
+  margin-top: .7rem;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+}
+.loop-stages {
+  display: flex;
+  gap: .35rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: lstage;
+}
+.loop-stages li {
+  counter-increment: lstage;
+  margin: 0;
+  padding: .15rem .6rem;
+  color: var(--clr-muted);
+  border: 1px solid var(--clr-border);
+  border-radius: 3px;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.loop-stages li::before { content: counter(lstage) ". "; }
+.loop-stages li + li::after { content: none; }
+.loop-stages li.is-active {
+  color: var(--clr-on-accent);
+  background: var(--clr-accent);
+  border-color: var(--clr-accent);
+}
+.loop-status { display: flex; gap: 1.2rem; margin: 0 !important; color: var(--clr-muted); }
+.loop-status b { color: var(--clr-primary); font-weight: 500; font-variant-numeric: tabular-nums; }
+.loop-figure figcaption {
+  margin-top: .55rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--clr-muted);
+  line-height: 1.5;
+}
+
+.learn-lectures {
+  border-top: 1px dashed var(--clr-border);
+  padding-top: .8rem;
+}
+.learn-lectures summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  color: var(--clr-accent);
+  list-style: none;
+}
+.learn-lectures summary::-webkit-details-marker { display: none; }
+.learn-lectures summary::before { content: "+ "; }
+.learn-lectures[open] summary::before { content: "− "; }
+.learn-lectures ol {
+  margin: .7rem 0 0;
+  padding-left: 1.4rem;
+  font-size: var(--fs-sm);
+  columns: 2;
+  column-gap: 2rem;
+}
+.learn-lectures li { break-inside: avoid; margin-bottom: .4rem; }
+.learn-lectures li::marker { font-family: var(--font-mono); color: var(--clr-signal); }
+
+@media (max-width: 600px) {
+  .learn-card { padding: 1rem .9rem .9rem; }
+  .learn-title { font-size: 1.5rem; }
+  .learn-lectures ol { columns: 1; }
+  .loop-frame canvas { height: 190px; }
 }

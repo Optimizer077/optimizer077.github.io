@@ -5,16 +5,7 @@
   <title>Ali Haider — AI Researcher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Ali Haider — Ph.D. Researcher in AI at Kyung Hee University. Generative Models, Vision-Language, Implicit Neural Representations." />
-  <script>
-    (function () {
-      var d = document.documentElement;
-      d.classList.add('js');
-      try {
-        var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
-      } catch (e) {}
-    })();
-  </script>
+  <script>document.documentElement.classList.add('js');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -28,13 +19,13 @@
       <nav id="site-nav" aria-label="Site navigation">
         <a href="index.html" class="active">about</a>
         <a href="#news">news</a>
+        <a href="#learning">learning</a>
         <a href="#side-projects">side projects</a>
         <a href="#publications">publications</a>
         <a href="#patents">patents</a>
         <a href="seminar.html">seminars</a>
         <a href="reading.html">reading</a>
       </nav>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme"><span aria-hidden="true">◐</span></button>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-controls="site-nav" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -257,10 +248,62 @@
         </div>
       </section>
 
-      <!-- ── 02 Side projects ── -->
-      <section class="block" id="side-projects">
+      <!-- ── 02 Learning these days ── -->
+      <section class="block" id="learning">
         <div class="block-head">
           <span class="block-num">02 /</span>
+          <h2>Learning these days</h2>
+          <p class="block-sub">What I am studying right now, beyond my own papers.</p>
+        </div>
+        <div class="block-body">
+          <article class="learn-card reveal">
+            <div class="repo-top"><span class="repo-kind">course · Stanford CS 329A</span><span class="live-pill">in progress</span></div>
+            <h3 class="learn-title"><a href="https://jameskle.com/writes/cs329a-self-improving-agents" target="_blank" rel="noopener noreferrer">Self-Improving AI Agents</a></h3>
+            <p class="learn-desc">
+              Working through Stanford's CS 329A, taught by Azalia Mirhoseini and Aakanksha Chowdhery, with
+              <a href="https://jameskle.com/writes/cs329a-self-improving-agents" target="_blank" rel="noopener noreferrer">James Le's write-up</a>
+              of its nine lectures as a guide. The thread running through it: agents improve by generating many candidate
+              answers, verifying them, and learning from the ones that pass.
+            </p>
+
+            <figure class="loop-figure">
+              <div class="loop-frame">
+                <canvas id="learn-loop" role="img"
+                        aria-label="Pixel animation of a self-improvement loop: an agent samples candidate answers, a verifier marks them right or wrong, and the success rate rises over rounds."></canvas>
+              </div>
+              <div class="loop-console">
+                <ol class="loop-stages" id="loop-stages">
+                  <li data-stage="sample">sample</li>
+                  <li data-stage="verify">verify</li>
+                  <li data-stage="learn">learn</li>
+                </ol>
+                <p class="loop-status"><span>round <b id="loop-round">1</b></span><span>success <b id="loop-rate">0%</b></span></p>
+              </div>
+              <figcaption>Fig. 4 — generate → verify → learn. Candidates that pass the verifier update the policy, so the next round samples better answers. Illustration only.</figcaption>
+            </figure>
+
+            <details class="learn-lectures">
+              <summary>The nine lectures</summary>
+              <ol>
+                <li>What makes an agent self-improving; inference-time scaling</li>
+                <li>Test-time compute, repeated sampling and search</li>
+                <li>Verifiers: outcome and process reward models</li>
+                <li>Learning from tool and environment feedback; self-critique</li>
+                <li>Planning, tree search and parallel execution</li>
+                <li>Train-time scaling, reinforcement learning and GRPO</li>
+                <li>Large-scale search and deep-research agents</li>
+                <li>Evaluating agents on long-horizon tasks</li>
+                <li>Open problems: verifiers for hard-to-verify domains, self-generated curricula, intelligence per watt</li>
+              </ol>
+            </details>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── 03 Side projects ── -->
+      <section class="block" id="side-projects">
+        <div class="block-head">
+          <span class="block-num">03 /</span>
           <h2>Side projects</h2>
           <p class="block-sub">Tools, courses and fun builds outside my main research. Code on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
         </div>
@@ -357,10 +400,10 @@
         </div>
       </section>
 
-      <!-- ── 03 Publications ── -->
+      <!-- ── 04 Publications ── -->
       <section class="block" id="publications">
         <div class="block-head">
-          <span class="block-num">03 /</span>
+          <span class="block-num">04 /</span>
           <h2>Publications</h2>
           <p class="block-sub">Selected papers. Full list on <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>.</p>
         </div>
@@ -442,10 +485,10 @@
         </ul>
       </section>
 
-      <!-- ── 04 Patents ── -->
+      <!-- ── 05 Patents ── -->
       <section class="block" id="patents">
         <div class="block-head">
-          <span class="block-num">04 /</span>
+          <span class="block-num">05 /</span>
           <h2>Patents</h2>
           <p class="block-sub">Korean patents, Korean Intellectual Property Office (KIPO).</p>
         </div>
@@ -473,10 +516,10 @@
         </ul>
       </section>
 
-      <!-- ── 05 Projects ── -->
+      <!-- ── 06 Projects ── -->
       <section class="block" id="projects">
         <div class="block-head">
-          <span class="block-num">05 /</span>
+          <span class="block-num">06 /</span>
           <h2>Projects</h2>
           <p class="block-sub">Research and industry projects I have worked on.</p>
         </div>
@@ -565,10 +608,10 @@
         </div>
       </section>
 
-      <!-- ── 06 Honors, languages, certifications ── -->
+      <!-- ── 07 Honors, languages, certifications ── -->
       <section class="block" id="honors">
         <div class="block-head">
-          <span class="block-num">06 /</span>
+          <span class="block-num">07 /</span>
           <h2>Honors &amp; more</h2>
           <p class="block-sub">Awards, languages and certifications.</p>
         </div>
@@ -605,10 +648,10 @@
         </div>
       </section>
 
-      <!-- ── 07 Off the clock ── -->
+      <!-- ── 08 Off the clock ── -->
       <section class="block" id="off-the-clock">
         <div class="block-head">
-          <span class="block-num">07 /</span>
+          <span class="block-num">08 /</span>
           <h2>Off the clock</h2>
           <p class="block-sub">What I like when I'm not training models.</p>
         </div>
@@ -663,5 +706,6 @@
   <script src="assets/js/hill-drive.js" defer></script>
   <script src="assets/js/drone-nav.js" defer></script>
   <script src="assets/js/mini-demos.js" defer></script>
+  <script src="assets/js/learn-loop.js" defer></script>
 </body>
 </html>
