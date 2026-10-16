@@ -5,345 +5,621 @@
   <title>Ali Haider — AI Researcher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Ali Haider — Ph.D. Researcher in AI at Kyung Hee University. Generative Models, Vision-Language, Implicit Neural Representations." />
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header class="site-header">
-    <a class="logo" href="index.html">Ali Haider</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
-    <nav aria-label="Site navigation">
-      <a href="index.html" class="active">about</a>
-      <a href="seminar.html">🗣 seminars</a>
-      <a href="reading.html">📄 paper reading</a>
-    </nav>
+    <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Ali Haider</a>
+    <div class="header-actions">
+      <nav id="site-nav" aria-label="Site navigation">
+        <a href="index.html" class="active">about</a>
+        <a href="#news">news</a>
+        <a href="#open-source">open source</a>
+        <a href="#publications">publications</a>
+        <a href="#patents">patents</a>
+        <a href="seminar.html">seminars</a>
+        <a href="reading.html">reading</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme"><span aria-hidden="true">◐</span></button>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-controls="site-nav" aria-expanded="false">&#9776;</button>
+    </div>
   </header>
 
-  <div class="page-wrap">
-    <div class="page-layout">
+  <main>
 
-      <!-- ── Sidebar ── -->
-      <aside class="sidebar">
-        <img class="sidebar-photo" src="assets/img/download.jpeg" alt="Ali Haider" />
-        <h1 class="sidebar-name">Ali Haider</h1>
-        <p class="sidebar-email">
-          <a href="mailto:Alihaiderfarooq07@gmail.com">alihaiderfarooq07 at gmail dot com</a>
-        </p>
+    <!-- ── Hero ── -->
+    <section class="hero wrap" id="about">
+      <div class="hero-text">
+        <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span>Ph.D. researcher · MLVC Lab · Kyung Hee University</p>
+        <h1 class="hero-name reveal">Ali<br /><em>Haider</em></h1>
+        <p class="hero-lede reveal">I study how neural networks <em>represent</em>, <em>generate</em> and <em>restore</em> images.</p>
 
-        <p class="sidebar-bio">
-          I am a Ph.D. researcher in Artificial Intelligence at
-          <strong>Kyung Hee University Global Campus</strong>, member of the
-          <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>
-          under <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
-        </p>
-
-        <p class="sidebar-bio">
-          Previously a Research Assistant at the
-          <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">Global Center for Innovative Systems and Solutions (CISS-Global)</a>,
-          ITU Lahore, under <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Qasim Mehmood</a>.
-          B.Sc. in Electronics Engineering from
-          <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">UET Taxila</a>.
-        </p>
-
-        <p class="sidebar-bio">
-          My research focuses on generative models, implicit neural representations,
-          vision-language models, and image restoration. I have published at
-          <strong>AAAI</strong> and in <em>Infrared Physics &amp; Technology</em>, with
-          collaborations at Adobe Research and Télécom Paris.
-        </p>
-
-        <p class="sidebar-bio">
-          I enjoy 📖 reading, 🌍 traveling, and 🧑‍💻 building things.
-        </p>
-
-        <div class="sidebar-socials">
-          <a href="mailto:Alihaiderfarooq07@gmail.com" title="Email">✉</a>
-          <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer" title="Google Scholar">🎓 Scholar</a>
-          <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer" title="GitHub">GitHub</a>
-          <a href="https://x.com/007Alihaider" target="_blank" rel="noopener noreferrer" title="Twitter / X">𝕏</a>
+        <div class="hero-bio reveal">
+          <p>
+            I am a Ph.D. researcher in Artificial Intelligence at
+            <strong>Kyung Hee University Global Campus</strong>, in the
+            <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">Machine Learning and Visual Computing (MLVC) Lab</a>
+            under <a href="https://scholar.google.co.kr/citations?hl=ko&user=EULut5oAAAAJ&view_op=list_works&sortby=pubdate" target="_blank" rel="noopener noreferrer">Professor Sung Ho Bae</a>.
+            My research covers generative models, implicit neural representations,
+            vision-language models and image restoration.
+          </p>
+          <p>
+            I have published at <strong>AAAI</strong> and in <em>Infrared Physics &amp; Technology</em>,
+            with collaborations at Adobe Research and Télécom Paris. Previously I was a Research Assistant at
+            <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS-Global</a>, ITU Lahore, under
+            <a href="https://scholar.google.com/citations?user=aYDfdl0AAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Qasim Mehmood</a>,
+            and hold a B.Sc. in Electronics Engineering from
+            <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">UET Taxila</a>.
+            Outside research I enjoy reading, traveling and building things.
+          </p>
         </div>
 
-        <div class="sidebar-interests">
-          <p class="sidebar-interests-label">Research Interests</p>
-          <div class="tags">
-            <span class="tag">Vision-Language Models</span>
-            <span class="tag">Generative Models</span>
-            <span class="tag">Diffusion Models</span>
-            <span class="tag">Implicit Neural Representations</span>
-            <span class="tag">Image Restoration</span>
-            <span class="tag">Medical Image Analysis</span>
-            <span class="tag">Model Compression</span>
-            <span class="tag">Multimodal AI</span>
-          </div>
+        <div class="hero-links reveal">
+          <a class="btn btn-primary" href="mailto:Alihaiderfarooq07@gmail.com">✉ Email</a>
+          <a class="btn" href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar ↗</a>
+          <a class="btn" href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a class="btn" href="https://x.com/007Alihaider" target="_blank" rel="noopener noreferrer">𝕏 ↗</a>
         </div>
-      </aside>
+      </div>
 
-      <!-- ── Main content ── -->
-      <main class="main-content">
-
-        <!-- Updates -->
-        <section id="news">
-          <h2>Updates</h2>
-          <table class="updates-table">
-            <tbody>
-              <tr>
-                <td class="upd-year">2026:</td>
-                <td>Will be attending <a href="https://icml.cc/Conferences/2026" target="_blank" rel="noopener noreferrer">ICML 2026</a>, Seoul, South Korea.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2026:</td>
-                <td>Gave an invited talk at <strong>Salim Habib University</strong>, Karachi, at the invitation of <a href="https://scholar.google.com/citations?user=7j9pveMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Rizwan Qureshi</a>.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2026:</td>
-                <td>Presented <strong>I-INR</strong> at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>, Singapore.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2025:</td>
-                <td><strong>I-INR</strong> accepted at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>. Congratulations to the co-authors.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2025:</td>
-                <td>Submitted 2 papers to top AI conferences.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2025:</td>
-                <td><strong>I-INR</strong> preprint available on <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2024:</td>
-                <td>Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a>, Vancouver.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2024:</td>
-                <td>Presented <em>Descanning</em> at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a>, Vancouver.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2024:</td>
-                <td>AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model.</em></td>
-              </tr>
-              <tr>
-                <td class="upd-year">2022:</td>
-                <td>Joined <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a>, Kyung Hee University as a Ph.D. student.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2021:</td>
-                <td>First-author paper published in <em>Infrared Physics &amp; Technology</em>.</td>
-              </tr>
-              <tr>
-                <td class="upd-year">2019:</td>
-                <td>Joined <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS-Global</a>, ITU Lahore as a Research Assistant.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <!-- Selected Publications -->
-        <section id="publications">
-          <h2>Selected Publications</h2>
-          <ul class="pub-list">
-
-            <li class="pub-card">
-              <img class="pub-thumb" src="assets/Pub/I-INR.png" alt="I-INR" />
-              <div class="pub-body">
-                <p class="pub-venue-tag"><a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a></p>
-                <p class="pub-title">
-                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a>
-                </p>
-                <p class="pub-authors"><em>Ali Haider</em>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae</p>
-                <p class="pub-venue">AAAI Conference on Artificial Intelligence, 2026 &middot; Singapore</p>
-                <p class="pub-note">In collaboration with LTCI, Télécom Paris &amp; Adobe Research</p>
-                <div class="pub-links">
-                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">PDF</a>
-                  <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>
-                </div>
-              </div>
-            </li>
-
-            <li class="pub-card">
-              <img class="pub-thumb" src="assets/Pub/Descan_diffusion.png" alt="Descanning" />
-              <div class="pub-body">
-                <p class="pub-venue-tag"><a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a></p>
-                <p class="pub-title">
-                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">Descanning: From Scanned to the Original Images with a Color Correction Diffusion Model</a>
-                </p>
-                <p class="pub-authors">Junghun Cha<sup>*</sup>, <em>Ali Haider</em><sup>*</sup>, Seoyun Yang, Hoeyeong Jin, Subin Yang, A.&nbsp;F.&nbsp;M. Shahab Uddin, Jaehyoung Kim, Soo Ye Kim, Sung-Ho Bae</p>
-                <p class="pub-venue">AAAI, Vol.&nbsp;38 No.&nbsp;2, 2024</p>
-                <p class="pub-note">In collaboration with Adobe Research</p>
-                <div class="pub-links">
-                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">HTML</a>
-                  <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">PDF</a>
-                </div>
-              </div>
-            </li>
-
-            <li class="pub-card">
-              <img class="pub-thumb" src="assets/Pub/FCRN.png" alt="FCRN" />
-              <div class="pub-body">
-                <p class="pub-venue-tag">Journal &middot; Infrared Physics &amp; Technology</p>
-                <p class="pub-title">
-                  <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">Human Detection in Aerial Thermal Imaging using a Fully Convolutional Regression Network</a>
-                </p>
-                <p class="pub-authors"><em>Ali Haider</em>, Furqan Shaukat, Junaid Mir</p>
-                <p class="pub-venue">Infrared Physics &amp; Technology 116 (2021) &middot; Impact Factor: 3.4</p>
-                <div class="pub-links">
-                  <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">HTML</a>
-                </div>
-              </div>
-            </li>
-
-            <li class="pub-card">
-              <img class="pub-thumb" src="assets/Pub/KMBE.png" alt="KMBE" />
-              <div class="pub-body">
-                <p class="pub-venue-tag">KMBE 2024</p>
-                <p class="pub-title">
-                  <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">Improving Implicit Neural Representations with Robust Loss Function</a>
-                </p>
-                <p class="pub-authors"><em>Ali Haider</em>, Sung Ho Bae</p>
-                <p class="pub-venue">Korea Broadcasting Media Engineering Conference, 2024: 998–1001</p>
-                <div class="pub-links">
-                  <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">PDF</a>
-                </div>
-              </div>
-            </li>
-
-          </ul>
-        </section>
-
-        <!-- Projects -->
-        <section class="card" id="projects">
-          <h2>Project Involvement</h2>
-          <ul class="project-list">
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Vision-Language Navigation for Autonomous Systems</strong>
-                <span class="badge badge-green">Ongoing</span>
-                <span class="badge badge-purple">Research</span>
-              </div>
-              <p class="project-desc">Developing a vision-language grounded navigation system for autonomous embodied agents, enabling natural language-guided spatial and semantic reasoning with lightweight VLMs.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>MRI Acceleration and Reconstruction</strong>
-                <span class="badge badge-green">Ongoing</span>
-                <span class="badge badge-purple">Research</span>
-              </div>
-              <p class="project-desc">In collaboration with <strong>AiLive</strong> and <strong>NYU</strong> — diffusion models and multi-modal frameworks for faster, accurate clinical MRI diagnostics.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Video Quality Assessment for Streaming Media</strong>
-              </div>
-              <p class="project-desc">With <strong>KEI Media</strong> — perceptual video quality benchmarking and no-reference quality assessment metrics for streaming platforms.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Microscopic Malaria Detection</strong>
-                <span class="badge badge-purple">Research</span>
-              </div>
-              <p class="project-desc">Low-cost AI diagnostic system with <strong>Lahore General Hospital</strong> (CISS-Global) — virtual staining, image enhancement, and low-resource detection.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>AI-based Sports Card Grading</strong>
-                <span class="badge badge-blue">Acquired by Beckett Media</span>
-              </div>
-              <p class="project-desc">Algorithm lead at <strong>Due Dilly</strong> — automated PSA/Beckett-standard grading via large-scale data curation and visual centering networks. Startup acquired by Beckett Media.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Track-following Robot (PID)</strong>
-                <span class="badge badge-amber">🏆 1st Place · AirTech 2017</span>
-              </div>
-              <p class="project-desc">PID-controlled line-following robot on ATMEGA328P-PU. 1st place nationally at AirTech 2017.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Embedded Vehicular Security System</strong>
-                <span class="badge badge-amber">🏆 2nd Prize · DICE-IET 2019</span>
-              </div>
-              <p class="project-desc">Face recognition with liveness detection on a low-cost SoC. 2nd Prize at All Pakistan DICE-IET 2019.</p>
-            </li>
-
-            <li class="project-item">
-              <div class="project-title">
-                <strong>Real-time Traffic Light Control System</strong>
-              </div>
-              <p class="project-desc"><strong>NIE Islamabad</strong> internship — inductive loop sensors with adaptive signal control based on vehicle speed and time-of-day.</p>
-            </li>
-
-          </ul>
-        </section>
-
-    <!-- Honors + Languages + Certifications -->
-    <section class="card" id="honors">
-      <h2>Honors &amp; Awards</h2>
-      <ul class="two-col">
-        <li>Presidential Scholarship — Kyung Hee University</li>
-        <li>2nd Prize — All Pakistan DICE-IET Competition 2019</li>
-        <li>1st Position — National Robotics Competition, AirTech 2017</li>
-        <li>Top Semester Positions — UET Taxila (Merit Scholarships)</li>
-        <li>Winner — Circuit Mania, ElectroMinds Gala Expo 2016</li>
-        <li>Recipient — Prime Minister's Laptop Scheme</li>
-      </ul>
+      <figure class="hero-figure reveal">
+        <div class="hero-frame">
+          <canvas id="pixel-hero"
+                  data-src="assets/img/download.jpeg"
+                  data-crop="150,70,480,520"
+                  role="img"
+                  aria-label="Portrait of Ali Haider, drawn as pixels that denoise into place"></canvas>
+          <img class="hero-fallback" src="assets/img/download.jpeg" alt="Portrait of Ali Haider" />
+        </div>
+        <figcaption>
+          <span>Fig. 1 — reverse diffusion, x<sub>T</sub> → x<sub>0</sub></span>
+          <span class="t-readout">t = <b id="t-val">0</b></span>
+          <button class="renoise" id="renoise" type="button">↻ re-noise</button>
+        </figcaption>
+      </figure>
     </section>
 
-    <div class="grid-2">
-      <section class="card" id="languages" style="margin-bottom:0;">
-        <h2>Languages</h2>
-        <ul style="list-style:none;padding:0;">
-          <li><strong>English</strong> — Fluent <span class="badge badge-blue">IELTS 7.5</span></li>
-          <li style="margin-top:.5rem;"><strong>Urdu</strong> — Native</li>
+    <!-- ── Research interests ── -->
+    <div class="marquee" role="region" aria-label="Research interests">
+      <div class="marquee-track">
+        <ul>
+          <li>Vision-Language Models</li>
+          <li>Generative Models</li>
+          <li>Diffusion Models</li>
+          <li>Implicit Neural Representations</li>
+          <li>Image Restoration</li>
+          <li>Medical Image Analysis</li>
+          <li>Model Compression</li>
+          <li>Multimodal AI</li>
         </ul>
-      </section>
-      <section class="card" id="courses" style="margin-bottom:0;">
-        <h2>Certifications</h2>
-        <ul style="font-size:var(--fs-sm);">
-          <li>Deep Neural Networks with PyTorch — IBM / Coursera</li>
-          <li>Machine Learning Specialization — Coursera</li>
-          <li>Generative Adversarial Networks — DeepLearning.AI</li>
-          <li>Data Science Fundamentals — IBM</li>
-          <li>Neural Networks &amp; Deep Learning — DeepLearning.AI</li>
-          <li>TensorFlow Developer Certificate</li>
+        <ul aria-hidden="true">
+          <li>Vision-Language Models</li>
+          <li>Generative Models</li>
+          <li>Diffusion Models</li>
+          <li>Implicit Neural Representations</li>
+          <li>Image Restoration</li>
+          <li>Medical Image Analysis</li>
+          <li>Model Compression</li>
+          <li>Multimodal AI</li>
         </ul>
-      </section>
+      </div>
     </div>
 
-      </main>
-    </div><!-- /page-layout -->
-  </div><!-- /page-wrap -->
+    <div class="wrap">
+
+      <!-- ── 01 News ── -->
+      <section class="block" id="news">
+        <div class="block-head">
+          <span class="block-num">01 /</span>
+          <h2>News</h2>
+          <p class="block-sub">Papers, talks, and things I've recently put on GitHub.</p>
+        </div>
+        <div class="block-body">
+          <ol class="news-list is-collapsed" id="news-list">
+            <li class="news-item is-new reveal">
+              <time class="news-date" datetime="2026-10">Oct 2026</time>
+              <p class="news-text"><span class="news-tag t-release">release</span>
+                Released <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer"><strong>UrduPy</strong></a>
+                (<span lang="ur" dir="rtl">اردو پائی</span>), an Urdu-first Python frontend.
+                You write programs with Urdu keywords and names, and they run on the real CPython interpreter,
+                with NumPy, OpenCV and PyTorch working as usual.<span class="new-flag">NEW</span>
+              </p>
+            </li>
+            <li class="news-item is-new reveal">
+              <time class="news-date" datetime="2026-10">Oct 2026</time>
+              <p class="news-text"><span class="news-tag t-release">release</span>
+                Released <a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer"><strong>Paper Review Harness</strong></a>.
+                It turns a paper PDF into independent simulated reviews from 30 reviewer personas covering CVPR, ICLR, ICML and NeurIPS,
+                with section scores and a prioritized revision plan. Each criticism is tracked across later drafts.<span class="new-flag">NEW</span>
+              </p>
+            </li>
+            <li class="news-item is-new reveal">
+              <time class="news-date" datetime="2026-10">Oct 2026</time>
+              <p class="news-text"><span class="news-tag t-course">course</span>
+                Published the <a href="https://github.com/Optimizer077/jev-learning-course" target="_blank" rel="noopener noreferrer"><strong>Jev learning course</strong></a>,
+                a self-paced notebook course on Jev (TypeSafe AI): typed AI decisions, calibration and related models.
+                Eleven notebooks and four assignments that run on CPU or in Colab.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2026-07">Jul 2026</time>
+              <p class="news-text"><span class="news-tag t-course">course</span>
+                Published <a href="https://github.com/Optimizer077/language-diffusion-models" target="_blank" rel="noopener noreferrer"><strong>Language Diffusion Models, from scratch</strong></a>:
+                runnable notebooks that build MDLM, LLaDA, D3PM, Diffusion-LM and SEDD step by step, plus an
+                <a href="https://optimizer077.github.io/language-diffusion-models/interactive/" target="_blank" rel="noopener noreferrer">interactive in-browser playground</a>.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2026-07">Jul 2026</time>
+              <p class="news-text"><span class="news-tag t-release">release</span>
+                Started <a href="https://github.com/Optimizer077/awesome-language-diffusion" target="_blank" rel="noopener noreferrer"><strong>Awesome Language Diffusion</strong></a>,
+                a curated list of 356 verified papers, models and resources on diffusion models for language.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2026">2026</time>
+              <p class="news-text"><span class="news-tag t-event">event</span>
+                Will be attending <a href="https://icml.cc/Conferences/2026" target="_blank" rel="noopener noreferrer">ICML 2026</a>, Seoul, South Korea.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2026">2026</time>
+              <p class="news-text"><span class="news-tag t-talk">talk</span>
+                Gave an invited talk at <strong>Salim Habib University</strong>, Karachi, at the invitation of
+                <a href="https://scholar.google.com/citations?user=7j9pveMAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Dr. Rizwan Qureshi</a>.
+                <a href="seminar.html#shu-talk">Slides →</a>
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2026">2026</time>
+              <p class="news-text"><span class="news-tag t-talk">talk</span>
+                Presented <strong>I-INR</strong> at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>, Singapore.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2025">2025</time>
+              <p class="news-text"><span class="news-tag">paper</span>
+                <strong>I-INR</strong> accepted at <a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a>. Congratulations to the co-authors.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2025">2025</time>
+              <p class="news-text"><span class="news-tag">paper</span>
+                Submitted 2 papers to top AI conferences.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2025">2025</time>
+              <p class="news-text"><span class="news-tag">paper</span>
+                <strong>I-INR</strong> preprint available on <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2024">2024</time>
+              <p class="news-text"><span class="news-tag t-event">event</span>
+                Attended <a href="https://nips.cc/Conferences/2024" target="_blank" rel="noopener noreferrer">NeurIPS 2024</a>, Vancouver.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2024-11">Nov 2024</time>
+              <p class="news-text"><span class="news-tag t-career">patent</span>
+                Korean patent on machine-learning-based image restoration with Prof. Sung-Ho Bae and Junghun Cha:
+                <a href="https://doi.org/10.8080/1020240169006" target="_blank" rel="noopener noreferrer"><em>Apparatus and Method for Image Restoration Based on Machine Learning</em></a>
+                (KIPO 10-2024-0169006).
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2024">2024</time>
+              <p class="news-text"><span class="news-tag t-talk">talk</span>
+                Presented <em>Descanning</em> at <a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a>, Vancouver.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2024">2024</time>
+              <p class="news-text"><span class="news-tag">paper</span>
+                AAAI paper accepted: <em>Descanning: From scanned to the original images with a color correction diffusion model.</em>
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2022">2022</time>
+              <p class="news-text"><span class="news-tag t-career">career</span>
+                Joined <a href="https://mlvc.khu.ac.kr/home" target="_blank" rel="noopener noreferrer">MLVC Lab</a>, Kyung Hee University as a Ph.D. student.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2021">2021</time>
+              <p class="news-text"><span class="news-tag">paper</span>
+                First-author paper published in <em>Infrared Physics &amp; Technology</em>.
+              </p>
+            </li>
+            <li class="news-item reveal">
+              <time class="news-date" datetime="2019">2019</time>
+              <p class="news-text"><span class="news-tag t-career">career</span>
+                Joined <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS-Global</a>, ITU Lahore as a Research Assistant.
+              </p>
+            </li>
+          </ol>
+          <button class="btn btn-more" id="news-more" type="button" aria-controls="news-list" aria-expanded="false">Show all updates ↓</button>
+        </div>
+      </section>
+
+      <!-- ── 02 Open source ── -->
+      <section class="block" id="open-source">
+        <div class="block-head">
+          <span class="block-num">02 /</span>
+          <h2>Open source</h2>
+          <p class="block-sub">Recent tools, courses and lists on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+        </div>
+        <div class="block-body repo-grid">
+
+          <article class="repo-card is-featured reveal" data-repo="paper-review-harness">
+            <div class="repo-main">
+              <div class="repo-top"><span class="repo-kind">tool · featured</span><span class="repo-stars" hidden></span></div>
+              <h3><a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">paper-review-harness</a></h3>
+              <p>
+                Give your paper a demanding first audience. The harness turns a PDF into independent simulated reviews,
+                section scores and a prioritized revision plan. Thirty personas cover CVPR, ICLR, ICML and NeurIPS,
+                reviewers inspect the rendered figures, and each open criticism is tracked through later drafts.
+              </p>
+              <ul class="repo-tags"><li>Python</li><li>LLM agents</li><li>peer review</li><li>CVPR · ICLR · ICML · NeurIPS</li></ul>
+            </div>
+            <div class="persona-grid" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <p class="persona-caption">30 reviewer personas</p>
+            </div>
+          </article>
+
+          <article class="repo-card reveal" data-repo="urdupy">
+            <div class="repo-top"><span class="repo-kind">language</span><span class="repo-stars" hidden></span></div>
+            <h3><a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">urdupy</a></h3>
+            <p>
+              <span class="urdu" lang="ur" dir="rtl">اردو پائی</span> — an Urdu-first Python frontend. You write code with Urdu
+              keywords, names and file names, and it runs on real CPython with any pip package.
+            </p>
+            <ul class="repo-tags"><li>CPython 3.12+</li><li>PyTorch · NumPy · OpenCV</li></ul>
+          </article>
+
+          <article class="repo-card reveal" data-repo="jev-learning-course">
+            <div class="repo-top"><span class="repo-kind">course</span><span class="repo-stars" hidden></span></div>
+            <h3><a href="https://github.com/Optimizer077/jev-learning-course" target="_blank" rel="noopener noreferrer">jev-learning-course</a></h3>
+            <p>
+              A self-paced notebook course on Jev: typed AI decisions, calibration and related models.
+              It has eleven notebooks and four assignments, and runs on CPU only.
+            </p>
+            <ul class="repo-tags"><li>Jupyter</li><li>calibration</li><li>decision models</li></ul>
+            <div class="repo-links">
+              <a href="https://colab.research.google.com/github/Optimizer077/jev-learning-course/blob/main/notebooks/00_start_here.ipynb" target="_blank" rel="noopener noreferrer">Open in Colab ↗</a>
+            </div>
+          </article>
+
+          <article class="repo-card reveal" data-repo="language-diffusion-models">
+            <div class="repo-top"><span class="repo-kind">course</span><span class="repo-stars" hidden></span></div>
+            <h3><a href="https://github.com/Optimizer077/language-diffusion-models" target="_blank" rel="noopener noreferrer">language-diffusion-models</a></h3>
+            <p>
+              A from-scratch course on diffusion models for text. Runnable notebooks tie every equation to its paper:
+              MDLM, LLaDA, D3PM, Diffusion-LM and SEDD.
+            </p>
+            <ul class="repo-tags"><li>PyTorch</li><li>diffusion LMs</li></ul>
+            <div class="repo-links">
+              <a href="https://optimizer077.github.io/language-diffusion-models/interactive/" target="_blank" rel="noopener noreferrer">Live playground ↗</a>
+            </div>
+          </article>
+
+          <article class="repo-card reveal" data-repo="awesome-language-diffusion">
+            <div class="repo-top"><span class="repo-kind">curated list</span><span class="repo-stars" hidden></span></div>
+            <h3><a href="https://github.com/Optimizer077/awesome-language-diffusion" target="_blank" rel="noopener noreferrer">awesome-language-diffusion</a></h3>
+            <p>
+              356 verified papers, models and resources on language diffusion, from foundations and discrete-diffusion theory
+              to 7B–100B diffusion LLMs, reasoning, inference and evaluation.
+            </p>
+            <ul class="repo-tags"><li>awesome list</li><li>dLLMs</li></ul>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ── 03 Publications ── -->
+      <section class="block" id="publications">
+        <div class="block-head">
+          <span class="block-num">03 /</span>
+          <h2>Publications</h2>
+          <p class="block-sub">Selected papers. Full list on <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>.</p>
+        </div>
+        <ul class="block-body pub-list">
+
+          <li class="pub-card reveal">
+            <a class="pub-thumb" href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <img src="assets/Pub/I-INR.png" alt="" loading="lazy" data-pixel />
+            </a>
+            <div class="pub-body">
+              <p class="pub-venue-tag"><span class="chip"><a href="https://aaai.org/conference/aaai/aaai-26/" target="_blank" rel="noopener noreferrer">AAAI 2026</a></span></p>
+              <h3 class="pub-title">
+                <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">I-INR: Iterative Implicit Neural Representations</a>
+              </h3>
+              <p class="pub-authors"><span class="me">Ali Haider</span>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae</p>
+              <p class="pub-venue">AAAI Conference on Artificial Intelligence, 2026 &middot; Singapore</p>
+              <p class="pub-note">In collaboration with LTCI, Télécom Paris &amp; Adobe Research</p>
+              <div class="pub-links">
+                <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">PDF</a>
+                <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>
+                <a href="https://github.com/mlvc-lab/iterative-inr" target="_blank" rel="noopener noreferrer">Code</a>
+              </div>
+            </div>
+          </li>
+
+          <li class="pub-card reveal">
+            <a class="pub-thumb" href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <img src="assets/Pub/Descan_diffusion.png" alt="" loading="lazy" data-pixel />
+            </a>
+            <div class="pub-body">
+              <p class="pub-venue-tag"><span class="chip"><a href="https://aaai.org/conference/aaai/aaai-24/" target="_blank" rel="noopener noreferrer">AAAI 2024</a></span></p>
+              <h3 class="pub-title">
+                <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">Descanning: From Scanned to the Original Images with a Color Correction Diffusion Model</a>
+              </h3>
+              <p class="pub-authors">Junghun Cha<sup>*</sup>, <span class="me">Ali Haider</span><sup>*</sup>, Seoyun Yang, Hoeyeong Jin, Subin Yang, A.&nbsp;F.&nbsp;M. Shahab Uddin, Jaehyoung Kim, Soo Ye Kim, Sung-Ho Bae</p>
+              <p class="pub-venue">AAAI, Vol.&nbsp;38 No.&nbsp;2, 2024</p>
+              <p class="pub-note">In collaboration with Adobe Research</p>
+              <div class="pub-links">
+                <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">HTML</a>
+                <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">PDF</a>
+              </div>
+            </div>
+          </li>
+
+          <li class="pub-card reveal">
+            <a class="pub-thumb" href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <img src="assets/Pub/FCRN.png" alt="" loading="lazy" data-pixel />
+            </a>
+            <div class="pub-body">
+              <p class="pub-venue-tag"><span class="chip">Journal</span> Infrared Physics &amp; Technology</p>
+              <h3 class="pub-title">
+                <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">Human Detection in Aerial Thermal Imaging using a Fully Convolutional Regression Network</a>
+              </h3>
+              <p class="pub-authors"><span class="me">Ali Haider</span>, Furqan Shaukat, Junaid Mir</p>
+              <p class="pub-venue">Infrared Physics &amp; Technology 116 (2021) &middot; Impact Factor: 3.4</p>
+              <div class="pub-links">
+                <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">HTML</a>
+              </div>
+            </div>
+          </li>
+
+          <li class="pub-card reveal">
+            <a class="pub-thumb" href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <img src="assets/Pub/KMBE.png" alt="" loading="lazy" data-pixel />
+            </a>
+            <div class="pub-body">
+              <p class="pub-venue-tag"><span class="chip">KMBE 2024</span></p>
+              <h3 class="pub-title">
+                <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">Improving Implicit Neural Representations with Robust Loss Function</a>
+              </h3>
+              <p class="pub-authors"><span class="me">Ali Haider</span>, Sung Ho Bae</p>
+              <p class="pub-venue">Korea Broadcasting Media Engineering Conference, 2024: 998–1001</p>
+              <div class="pub-links">
+                <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">PDF</a>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- ── 04 Patents ── -->
+      <section class="block" id="patents">
+        <div class="block-head">
+          <span class="block-num">04 /</span>
+          <h2>Patents</h2>
+          <p class="block-sub">Korean patents, Korean Intellectual Property Office (KIPO).</p>
+        </div>
+        <ul class="block-body pub-list">
+
+          <li class="pub-card reveal">
+            <a class="pub-thumb is-patent" href="https://doi.org/10.8080/1020240169006" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+              <span class="patent-mark">KR</span>
+              <span class="patent-no">10-2024-0169006</span>
+            </a>
+            <div class="pub-body">
+              <p class="pub-venue-tag"><span class="chip">Patent</span> Korean Intellectual Property Office</p>
+              <h3 class="pub-title">
+                <a href="https://doi.org/10.8080/1020240169006" target="_blank" rel="noopener noreferrer">Apparatus and Method for Image Restoration Based on Machine Learning</a>
+              </h3>
+              <p class="pub-authors">Sung-Ho Bae, Junghun Cha, <span class="me">Ali Haider</span></p>
+              <p class="pub-venue">KIPO &middot; No.&nbsp;10-2024-0169006 &middot; 2024</p>
+              <p class="pub-note">With AI Factory (인공지능팩토리)</p>
+              <div class="pub-links">
+                <a href="https://doi.org/10.8080/1020240169006" target="_blank" rel="noopener noreferrer">DOI</a>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- ── 05 Projects ── -->
+      <section class="block" id="projects">
+        <div class="block-head">
+          <span class="block-num">05 /</span>
+          <h2>Projects</h2>
+          <p class="block-sub">Research and industry projects I have worked on.</p>
+        </div>
+        <ul class="block-body project-list">
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Vision-Language Navigation for Autonomous Systems</strong>
+              <span class="badge badge-green">Ongoing</span>
+              <span class="badge badge-purple">Research</span>
+            </div>
+            <p class="project-desc">Developing a vision-language grounded navigation system for autonomous embodied agents, enabling natural language-guided spatial and semantic reasoning with lightweight VLMs.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>MRI Acceleration and Reconstruction</strong>
+              <span class="badge badge-green">Ongoing</span>
+              <span class="badge badge-purple">Research</span>
+            </div>
+            <p class="project-desc">In collaboration with <strong>AiLive</strong> and <strong>NYU</strong> — diffusion models and multi-modal frameworks for faster, accurate clinical MRI diagnostics.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Video Quality Assessment for Streaming Media</strong>
+            </div>
+            <p class="project-desc">With <strong>KEI Media</strong> — perceptual video quality benchmarking and no-reference quality assessment metrics for streaming platforms.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Microscopic Malaria Detection</strong>
+              <span class="badge badge-purple">Research</span>
+            </div>
+            <p class="project-desc">Low-cost AI diagnostic system with <strong>Lahore General Hospital</strong> (CISS-Global) — virtual staining, image enhancement, and low-resource detection.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>AI-based Sports Card Grading</strong>
+              <span class="badge badge-blue">Acquired by Beckett Media</span>
+            </div>
+            <p class="project-desc">Algorithm lead at <strong>Due Dilly</strong> — automated PSA/Beckett-standard grading via large-scale data curation and visual centering networks. Startup acquired by Beckett Media.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Track-following Robot (PID)</strong>
+              <span class="badge badge-amber">🏆 1st Place · AirTech 2017</span>
+            </div>
+            <p class="project-desc">PID-controlled line-following robot on ATMEGA328P-PU. 1st place nationally at AirTech 2017.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Embedded Vehicular Security System</strong>
+              <span class="badge badge-amber">🏆 2nd Prize · DICE-IET 2019</span>
+            </div>
+            <p class="project-desc">Face recognition with liveness detection on a low-cost SoC. 2nd Prize at All Pakistan DICE-IET 2019.</p>
+          </li>
+
+          <li class="project-item reveal">
+            <div class="project-title">
+              <strong>Real-time Traffic Light Control System</strong>
+            </div>
+            <p class="project-desc"><strong>NIE Islamabad</strong> internship — inductive loop sensors with adaptive signal control based on vehicle speed and time-of-day.</p>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- ── 06 Honors, languages, certifications ── -->
+      <section class="block" id="honors">
+        <div class="block-head">
+          <span class="block-num">06 /</span>
+          <h2>Honors &amp; more</h2>
+          <p class="block-sub">Awards, languages and certifications.</p>
+        </div>
+        <div class="block-body facts-grid">
+          <div class="card reveal">
+            <h3>Honors &amp; Awards</h3>
+            <ul>
+              <li>Presidential Scholarship — Kyung Hee University</li>
+              <li>2nd Prize — All Pakistan DICE-IET Competition 2019</li>
+              <li>1st Position — National Robotics Competition, AirTech 2017</li>
+              <li>Top Semester Positions — UET Taxila (Merit Scholarships)</li>
+              <li>Winner — Circuit Mania, ElectroMinds Gala Expo 2016</li>
+              <li>Recipient — Prime Minister's Laptop Scheme</li>
+            </ul>
+          </div>
+          <div class="card reveal">
+            <h3>Languages</h3>
+            <ul>
+              <li><strong>English</strong> — Fluent <span class="badge badge-blue">IELTS 7.5</span></li>
+              <li><strong>Urdu</strong> — Native</li>
+            </ul>
+          </div>
+          <div class="card reveal">
+            <h3>Certifications</h3>
+            <ul>
+              <li>Deep Neural Networks with PyTorch — IBM / Coursera</li>
+              <li>Machine Learning Specialization — Coursera</li>
+              <li>Generative Adversarial Networks — DeepLearning.AI</li>
+              <li>Data Science Fundamentals — IBM</li>
+              <li>Neural Networks &amp; Deep Learning — DeepLearning.AI</li>
+              <li>TensorFlow Developer Certificate</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 07 Off the clock ── -->
+      <section class="block" id="off-the-clock">
+        <div class="block-head">
+          <span class="block-num">07 /</span>
+          <h2>Off the clock</h2>
+          <p class="block-sub">What I like when I'm not training models.</p>
+        </div>
+        <div class="block-body">
+          <figure class="drive-figure reveal">
+            <div class="drive-frame">
+              <canvas id="hill-drive" tabindex="0"
+                      aria-label="Pixel-art car driving across rolling hills. Press Space or click to jump; hold to speed up."></canvas>
+            </div>
+            <figcaption>
+              <span>Fig. 2 — weekend mode</span>
+              <span class="drive-hint">click / tap / space to jump · hold to boost</span>
+              <span class="t-readout">v = <b id="drive-speed">38</b> px/s</span>
+            </figcaption>
+          </figure>
+
+          <ul class="likes-grid">
+            <li class="like-card reveal">
+              <span class="like-icon" aria-hidden="true">▶</span>
+              <h3>Playing games</h3>
+              <p>I like games, and the scene above is a small one. Click it and the car jumps.</p>
+            </li>
+            <li class="like-card reveal">
+              <span class="like-icon" aria-hidden="true">&lt;/&gt;</span>
+              <h3>Building things</h3>
+              <p>Side projects outside the paper pipeline, like <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">UrduPy</a> and <a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">Paper Review Harness</a>.</p>
+            </li>
+            <li class="like-card reveal">
+              <span class="like-icon" aria-hidden="true">¶</span>
+              <h3>Reading</h3>
+              <p>Papers and more than papers. My <a href="reading.html">paper reading list</a> is public and updated weekly.</p>
+            </li>
+            <li class="like-card reveal">
+              <span class="like-icon" aria-hidden="true">✈</span>
+              <h3>Traveling</h3>
+              <p>Conferences have taken me to Vancouver and Singapore so far.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+    </div><!-- /wrap -->
+  </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider.</p>
+    <p>&copy; 2026 Ali Haider &nbsp;·&nbsp; <a href="#about">back to top ↑</a></p>
   </footer>
 
-  <script>
-    const navBtn = document.getElementById('nav-toggle');
-    if (navBtn) {
-      navBtn.addEventListener('click', () => {
-        const open = document.body.classList.toggle('nav-open');
-        navBtn.setAttribute('aria-expanded', open);
-        navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
-      });
-      document.querySelectorAll('.site-header nav a').forEach(a => {
-        a.addEventListener('click', () => {
-          document.body.classList.remove('nav-open');
-          navBtn.setAttribute('aria-expanded', 'false');
-          navBtn.innerHTML = '&#9776;';
-        });
-      });
-    }
-  </script>
-
+  <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/pixel-hero.js" defer></script>
+  <script src="assets/js/hill-drive.js" defer></script>
 </body>
 </html>

@@ -74,7 +74,11 @@ optimizer077.github.io/
 ├── misc.csv
 ├── assets/
 │   ├── img/              # Profile photo
-│   └── Pub/              # Publication thumbnail images
+│   ├── Pub/              # Publication thumbnail images
+│   └── js/
+│       ├── site.js       # Nav, theme toggle, scroll reveal, GitHub stars, pixel-reveal thumbnails
+│       ├── pixel-hero.js # Hero portrait that denoises from pixel noise
+│       └── hill-drive.js # "Off the clock" pixel car scene
 └── _includes/
     └── header.html
 ```

@@ -5,9 +5,19 @@
   <title>Seminars – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Selected seminar talks and invited presentations by Ali Haider — diffusion models, image restoration, reasoning and agentic vision systems." />
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
     /* ── Page header ── */
@@ -93,13 +103,20 @@
 <body>
 
   <header class="site-header">
-    <a class="logo" href="index.html">Ali Haider</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation" aria-expanded="false">&#9776;</button>
-    <nav aria-label="Site navigation">
-      <a href="index.html">about</a>
-      <a href="seminar.html" class="active">🗣 seminars</a>
-      <a href="reading.html">📄 paper reading</a>
-    </nav>
+    <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Ali Haider</a>
+    <div class="header-actions">
+      <nav id="site-nav" aria-label="Site navigation">
+        <a href="index.html">about</a>
+        <a href="index.html#news">news</a>
+        <a href="index.html#open-source">open source</a>
+        <a href="index.html#publications">publications</a>
+        <a href="index.html#patents">patents</a>
+        <a href="seminar.html" class="active">seminars</a>
+        <a href="reading.html">reading</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme"><span aria-hidden="true">◐</span></button>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open navigation" aria-controls="site-nav" aria-expanded="false">&#9776;</button>
+    </div>
   </header>
 
   <div class="page-wrap">
@@ -274,24 +291,6 @@
     <p>&copy; 2026 Ali Haider.</p>
   </footer>
 
-  <script>
-    /* Mobile nav toggle */
-    const navBtn = document.getElementById('nav-toggle');
-    if (navBtn) {
-      navBtn.addEventListener('click', () => {
-        const open = document.body.classList.toggle('nav-open');
-        navBtn.setAttribute('aria-expanded', open);
-        navBtn.innerHTML = open ? '&#10005;' : '&#9776;';
-      });
-      document.querySelectorAll('.site-header nav a').forEach(a => {
-        a.addEventListener('click', () => {
-          document.body.classList.remove('nav-open');
-          navBtn.setAttribute('aria-expanded', 'false');
-          navBtn.innerHTML = '&#9776;';
-        });
-      });
-    }
-  </script>
-
+  <script src="assets/js/site.js" defer></script>
 </body>
 </html>
