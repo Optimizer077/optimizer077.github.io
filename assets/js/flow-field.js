@@ -115,7 +115,7 @@
   function frame(now) {
     raf = requestAnimationFrame(frame);
     if (now - lastStep < 32) return;   // ~30 fps is plenty for an ambient background
-    if (document.documentElement.classList.contains('gpu-on')) return;   // GPU mode draws instead
+    if (document.documentElement.classList.contains('bg-gl')) return;   // GPU background (bg-physics.js) is running
     lastStep = now;
     t = now;
     step();

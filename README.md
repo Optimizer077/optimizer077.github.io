@@ -86,8 +86,8 @@ optimizer077.github.io/
 │       ├── drone-nav.js  # Drone navigation illustration (Projects)
 │       ├── learn-loop.js # Self-improving agent loop (Learning)
 │       ├── mini-demos.js # Diffusion-text and tangent-plot card demos
-│       ├── flow-field.js # Background flow particles
-│       ├── gpu-mode.js   # Opt-in WebGL2 particle sim, governed to ~75% of the GPU frame budget
+│       ├── flow-field.js # 2D-canvas fallback background (no WebGL2)
+│       ├── bg-physics.js # GPU background (WebGL2): random physics scenes, ~5% GPU budget
 │       ├── gemma-chat.js # Opt-in on-device Gemma 4 E2B chat (MediaPipe LLM Inference / WebGPU)
 │       └── reading.js    # Reading page: search, filters, year chart
 └── _includes/
@@ -96,20 +96,28 @@ optimizer077.github.io/
 
 ---
 
-## GPU mode and on-device Gemma
+## Background physics and on-device Gemma
 
-The ⚡ **GPU mode** button (homepage, bottom-right) loads `assets/js/gpu-mode.js` on demand. It runs a WebGL2
-particle flow simulation and adjusts its size every 0.4 s so GPU time stays near **75% of the frame budget**:
+`assets/js/bg-physics.js` draws the page background on the GPU (WebGL2). Every 20–30 s it switches at random
+between four scenes, with a small caption naming the equation:
 
-- With `EXT_disjoint_timer_query_webgl2`, GPU time per frame is measured directly.
-- Without it, the load grows until frames drop, then holds at 75% of that level.
-- Past the particle cap (≈0.5M on phones, ≈4.2M on desktop) it adds simulation substeps instead of memory.
-- It pauses when the tab is hidden, stops itself if the device struggles, and frees all GPU memory on stop.
+| Scene | What the particles do |
+|---|---|
+| Flow | follow a curl-noise velocity field (they swirl around the cursor) |
+| Diffusion | a shape (ring, two moons or spiral) is noised, `xₜ = √ᾱₜ x₀ + √(1−ᾱₜ) ε`, then denoised back |
+| Heat equation | Brownian particles coloured by an analytic solution of `∂T/∂t = α∇²T`; the cursor adds heat |
+| Lorenz system | particles relax onto the Lorenz attractor (σ = 10, ρ = 28, β = 8/3) |
 
-From the GPU mode panel, **Chat with Gemma 4 on this GPU** loads `assets/js/gemma-chat.js`, which runs
+Its GPU cost is kept near **5% of the frame budget**: with `EXT_disjoint_timer_query_webgl2` the particle count is
+steered by measured GPU time (cap ≈1M on desktop, ≈262k on phones); without it a modest fixed count is used and
+reduced if frames drop. It pauses when the tab is hidden, and `flow-field.js` (2D canvas) takes over if WebGL2 is
+unavailable. In the browser console, `__bg.stats()` shows the current scene, particle count and GPU share.
+
+The **✦ Ask Gemma** button (homepage, bottom-right) loads `assets/js/gemma-chat.js`, which runs
 [`litert-community/gemma-4-E2B-it-litert-lm`](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm)
-(`gemma-4-E2B-it-web.task`, ~2.0 GB, Apache-2.0) with `@mediapipe/tasks-genai@0.10.29` on WebGPU. The model is
-downloaded from Hugging Face only after the visitor confirms, cached in Cache Storage, and runs fully in the browser.
+(`gemma-4-E2B-it-web.task`, ~2.0 GB, Apache-2.0) with `@mediapipe/tasks-genai@0.10.29` on WebGPU. Before anything
+is downloaded it warns about size, battery and memory (with extra warnings on phones and metered connections). The
+model is saved in the Origin Private File System after the first download and runs entirely in the browser.
 
 ---
 

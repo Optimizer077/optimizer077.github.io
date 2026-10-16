@@ -63,6 +63,30 @@
     return prompt;
   }
 
+  /* ---------- device checks ---------- */
+  function isPhone() {
+    return Math.min(screen.width, screen.height) < 700 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  }
+  // Warnings shown before anything is downloaded. Hints come from the browser where available.
+  function deviceWarnings(cached) {
+    var out = [];
+    var conn = navigator.connection || {};
+    var ram = navigator.deviceMemory;                 // GB, rounded; Chrome/Edge/Android only
+    if (isPhone()) {
+      out.push('You seem to be on a phone or tablet. This runs a 2 GB language model (LiteRT) on your device: ' +
+               'it is heavy on battery and memory, and the tab may crash on phones with little RAM.');
+    }
+    if (!cached && (conn.saveData || /(^|-)2g|3g/.test(conn.effectiveType || '') || conn.type === 'cellular')) {
+      out.push('Your connection looks metered or slow. The download is ' + gb(MODEL_BYTES) + ' — use Wi-Fi if you can.');
+    } else if (!cached && isPhone()) {
+      out.push('The download is ' + gb(MODEL_BYTES) + ' — use Wi-Fi rather than mobile data.');
+    }
+    if (ram && ram < 6) {
+      out.push('This device reports about ' + ram + ' GB of RAM; the model needs roughly 2 GB free, so it may fail to load.');
+    }
+    return out;
+  }
+
   /* ---------- UI ---------- */
   function buildPanel() {
     panel = el('div', 'gemma-panel');
@@ -122,8 +146,9 @@
     ].forEach(function (t) { ul.appendChild(el('li', null, t)); });
     box.appendChild(ul);
     if (!gpuOk) box.appendChild(el('p', 'gemma-warn', gpuNote));
+    deviceWarnings(cached).forEach(function (w) { box.appendChild(el('p', 'gemma-warn', '⚠ ' + w)); });
     var row = el('div', 'gemma-actions');
-    var go = el('button', 'btn btn-primary', cached ? 'Load Gemma' : 'Download & run (' + gb(MODEL_BYTES) + ')');
+    var go = el('button', 'btn btn-primary', cached ? 'Load Gemma' : (isPhone() ? 'I understand — download ' : 'Download & run (') + gb(MODEL_BYTES) + (isPhone() ? '' : ')'));
     go.type = 'button';
     go.disabled = !gpuOk;
     go.addEventListener('click', function () { load(); });
@@ -267,9 +292,6 @@
     els.body.appendChild(prog);
     els.body.appendChild(el('p', 'gemma-note', 'Keep this tab open. The first download can take a few minutes.'));
     setStatus('Preparing…');
-
-    // GPU mode would compete for the same GPU: hand it over to the model.
-    if (window.GPUMode && window.GPUMode.running) window.GPUMode.stop();
 
     var t0 = performance.now();
     Promise.all([
