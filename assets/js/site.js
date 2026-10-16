@@ -23,6 +23,46 @@
   }
 
 
+  /* ---------- Bio "more about me" (phones only; CSS hides the button elsewhere) ---------- */
+  var bioBtn = document.getElementById('bio-toggle');
+  if (bioBtn) {
+    bioBtn.addEventListener('click', function () {
+      var open = bioBtn.parentElement.classList.toggle('is-open');
+      bioBtn.setAttribute('aria-expanded', String(open));
+      bioBtn.textContent = open ? 'Show less ↑' : 'More about me ↓';
+    });
+  }
+
+  /* ---------- Mobile section tabs: show after the hero, highlight current section ---------- */
+  var tabs = document.getElementById('section-tabs');
+  if (tabs && 'IntersectionObserver' in window) {
+    var hero = document.querySelector('.hero');
+    if (hero) {
+      new IntersectionObserver(function (entries) {
+        tabs.classList.toggle('is-visible', !entries[0].isIntersecting);
+      }, { rootMargin: '-120px 0px 0px 0px' }).observe(hero);
+    }
+    var links = {};
+    tabs.querySelectorAll('a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+    var current = null;
+    var sectionObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var a = links[entry.target.id];
+        if (!a || a === current) return;
+        if (current) current.classList.remove('is-active');
+        a.classList.add('is-active');
+        current = a;
+        // keep the active tab in view without moving the page
+        tabs.scrollTo({ left: a.offsetLeft - tabs.clientWidth / 2 + a.clientWidth / 2, behavior: 'smooth' });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    Object.keys(links).forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (sec) sectionObserver.observe(sec);
+    });
+  }
+
   /* ---------- Scroll reveal (staggered among siblings) ---------- */
   var reveals = document.querySelectorAll('.reveal');
   var showAll = function () { reveals.forEach(function (el) { el.classList.add('is-in'); }); };

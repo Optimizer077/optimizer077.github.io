@@ -15,7 +15,7 @@
   var ctx = canvas.getContext('2d');
 
   var small = window.matchMedia('(max-width: 760px)').matches;
-  var COUNT = small ? 120 : 300;
+  var COUNT = small ? 70 : 300;
   var CATCH_R = small ? 150 : 230;      // CSS px around the pointer
   var SPEED = small ? 0.75 : 0.95;
 
@@ -37,7 +37,7 @@
     colA = hex(cs.getPropertyValue('--clr-accent'), colA);
     colB = hex(cs.getPropertyValue('--clr-signal'), colB);
     var light = document.documentElement.getAttribute('data-theme') === 'light';
-    alpha = light ? 0.3 : 0.42;
+    alpha = small ? 0.2 : (light ? 0.3 : 0.42);
     fade = light ? 0.085 : 0.07;
   }
 

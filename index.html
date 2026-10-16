@@ -30,6 +30,17 @@
     </div>
   </header>
 
+  <nav class="section-tabs" id="section-tabs" aria-label="Page sections">
+    <a href="#news">News</a>
+    <a href="#learning">Learning</a>
+    <a href="#side-projects">Side projects</a>
+    <a href="#publications">Papers</a>
+    <a href="#patents">Patents</a>
+    <a href="#projects">Projects</a>
+    <a href="#honors">Honors</a>
+    <a href="#off-the-clock">Fun</a>
+  </nav>
+
   <main>
 
     <!-- ── Hero ── -->
@@ -48,7 +59,7 @@
             I currently work on vision-language navigation for drones, diffusion models for images and language,
             and MRI reconstruction. My earlier work covers implicit neural representations and image restoration.
           </p>
-          <p>
+          <p class="bio-extra" id="bio-extra">
             I have published at <strong>AAAI</strong> and in <em>Infrared Physics &amp; Technology</em>,
             with collaborations at Adobe Research and Télécom Paris. Previously I was a Research Assistant at
             <a href="https://cissglobal.org" target="_blank" rel="noopener noreferrer">CISS-Global</a>, ITU Lahore, under
@@ -57,6 +68,7 @@
             <a href="https://www.uettaxila.edu.pk/" target="_blank" rel="noopener noreferrer">UET Taxila</a>.
             Outside research I enjoy reading, traveling and building things.
           </p>
+          <button class="bio-toggle" id="bio-toggle" type="button" aria-controls="bio-extra" aria-expanded="false">More about me ↓</button>
         </div>
 
         <div class="hero-links reveal">
@@ -306,6 +318,7 @@
           <span class="block-num">03 /</span>
           <h2>Side projects</h2>
           <p class="block-sub">Tools, courses and fun builds outside my main research. Code on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+          <p class="swipe-hint" aria-hidden="true">swipe →</p>
         </div>
         <div class="block-body repo-grid">
 
