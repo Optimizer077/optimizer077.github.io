@@ -19,7 +19,10 @@
     { name: 'flow',      caption: 'curl-noise flow · ẋ = ∇ × ψ(x, t)' },
     { name: 'diffusion', caption: 'forward / reverse diffusion · xₜ = √ᾱₜ x₀ + √(1−ᾱₜ) ε' },
     { name: 'heat',      caption: 'heat equation · ∂T/∂t = α ∇²T  (move the cursor to add heat)' },
-    { name: 'lorenz',    caption: 'Lorenz system · σ = 10, ρ = 28, β = 8/3' }
+    { name: 'lorenz',    caption: 'Lorenz system · σ = 10, ρ = 28, β = 8/3' },
+    { name: 'flowmatch', caption: 'flow matching · xₜ = (1−t) ε + t x₁  (straight paths, noise ↔ data)' },
+    { name: 'langevin',  caption: 'Langevin dynamics on a loss landscape · dx = −∇U(x) dt + √(2T) dW' },
+    { name: 'wave',      caption: 'wave equation · ∂²u/∂t² = c² ∇²u' }
   ];
 
   var canvas = document.createElement('canvas');
@@ -38,7 +41,13 @@
   var COMMON = [
     'float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }',
     'vec2 gauss(vec2 s){ float u1 = max(hash(s), 1e-4), u2 = hash(s + 17.3);',
-    '  return sqrt(-2.*log(u1)) * vec2(cos(6.2831853*u2), sin(6.2831853*u2)); }'
+    '  return sqrt(-2.*log(u1)) * vec2(cos(6.2831853*u2), sin(6.2831853*u2)); }',
+    // loss landscape for the Langevin scene: a wide bowl with five Gaussian wells
+    'const vec2 WELLS[5] = vec2[5](vec2(-.95, .35), vec2(.85, -.3), vec2(.05, .58), vec2(.32, -.55), vec2(-.45, -.45));',
+    'float lossU(vec2 p){ float u = .12*dot(p, p);',
+    '  for (int i = 0; i < 5; i++) { vec2 d = p - WELLS[i]; u -= exp(-dot(d, d)/.08); } return u; }',
+    'vec2 lossGrad(vec2 p){ vec2 g = .24*p;',
+    '  for (int i = 0; i < 5; i++) { vec2 d = p - WELLS[i]; g += exp(-dot(d, d)/.08)*2.*d/.08; } return g; }'
   ].join('\n') + '\n';
 
   var FS_INIT = '#version 300 es\nprecision highp float;\nuniform float uAspect, uSeed;\nout vec4 o;\n' + COMMON +
@@ -87,6 +96,20 @@
     '    p += nT*sqrt(2.*.004*uDt);\n' +            // Brownian motion, D = 0.004
     '    if (hash(fij + uSeed) < .001) p = vec2(9.);\n' +
     '    z = vec2(0.);\n' +
+    '  } else if (uScene == 4) {\n' +           // flow matching: straight-line paths between noise and data
+    '    float c = mod(uSceneT, 12.);\n' +
+    '    float tt = c < 1.5 ? 0. : c < 5.5 ? (c-1.5)/4. : c < 7.5 ? 1. : c < 11.5 ? 1. - (c-7.5)/4. : 0.;\n' +
+    '    vec2 tgt = mix(eps*vec2(.5*uAspect, .5), shape(uShape, h), tt);\n' +
+    '    p += (tgt - p)*(1. - exp(-uDt*9.));\n' +
+    '    z = vec2(1. - tt, 0.); bounded = false;\n' +
+    '  } else if (uScene == 5) {\n' +           // Langevin dynamics: gradient descent on lossU plus noise
+    '    p += -lossGrad(p)*uDt*.25 + nT*sqrt(2.*.03*uDt);\n' +   // warmer: particles explore instead of collapsing
+    '    if (hash(fij + uSeed) < .008) p = vec2(9.);\n' +   // steady turnover keeps the descent itself visible
+    '    z = vec2(clamp((lossU(p) + 1.)/1.4, 0., 1.), 0.);\n' +
+    '  } else if (uScene == 6) {\n' +           // wave: particles rest on a jittered field; render adds the ripple
+    '    vec2 home = vec2((h.x*2.-1.)*uAspect, h.y*2.-1.);\n' +
+    '    p += (home - p)*(1. - exp(-uDt*3.));\n' +
+    '    z = vec2(0.); bounded = false;\n' +
     '  } else {\n' +
     '    float K = .034;\n' +                       // screen = (x*K, (z-25)*K); y stored in s.z
     '    vec3 L = vec3(clamp(p.x/K, -25., 25.), z.x, clamp(p.y/K + 25., 0., 55.));\n' +
@@ -108,7 +131,13 @@
     'void main(){\n' +
     '  ivec2 ij = ivec2(gl_VertexID % uSide, gl_VertexID / uSide);\n' +
     '  vec4 s = texelFetch(uState, ij, 0);\n' +
-    '  gl_Position = vec4(s.x/uAspect, s.y, 0., 1.);\n' +
+    '  vec2 pos = s.xy; float ripple = 0.;\n' +
+    // wave equation: expanding ring pulses from point sources (2D, damped), Huygens-style
+    '  if (uScene == 6) { for (int i = 0; i < 3; i++) { vec4 w = uHeat[i]; float age = uTime - w.z;\n' +
+    '      if (age < 0. || age > 6.) continue; vec2 d = pos - w.xy; float r = length(d) + 1e-4;\n' +
+    '      float ring = w.w*exp(-pow((r - .42*age)/.06, 2.))*exp(-age*.45);\n' +
+    '      ripple += ring; pos += d/r*ring*.045; } }\n' +
+    '  gl_Position = vec4(pos.x/uAspect, pos.y, 0., 1.);\n' +
     '  gl_PointSize = 1.;\n' +
     '  vec3 col = uA; float a = 1.;\n' +
     // colour maps: amber -> orange -> coral for speed / noise level
@@ -129,7 +158,13 @@
     '    vec3 h0 = vec3(.16, .08, .38), h1 = vec3(.71, .21, .48), h2 = vec3(.98, .55, .14), h3 = vec3(.99, 1., .64);\n' +
     '    col = T < .33 ? mix(h0, h1, T/.33) : T < .66 ? mix(h1, h2, (T - .33)/.33) : mix(h2, h3, (T - .66)/.34);\n' +
     '    a = .5 + T*7.;\n' +
-    '  } else col = mix(uA, uB, step(0., s.z));\n' +
+    '  } else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 1. + 2.2*v; }\n' +
+    '  else if (uScene == 5) { float v = s.z;\n' +              // Langevin: low loss = accent, high loss = coral
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .35 + 2.6*v; }\n' +   // bright while descending, dim once settled in a minimum
+    '  else if (uScene == 6) { float v = clamp(ripple, 0., 1.);\n' +
+    '    col = mix(uA*.55, mix(violet, vec3(1., .93, .78), v), v); a = .55 + v*5.; }\n' +
+    '  else col = mix(uA, uB, step(0., s.z));\n' +
     // readability: particles behind the text column are dimmed; the side margins stay bright
     '  a *= mix(uCenterDim, 1., smoothstep(uInner, uOuter, abs(gl_Position.x)));\n' +
     '  vCol = vec4(col, a);\n}';
@@ -229,12 +264,24 @@
   var shapeKind = 0, sceneStart = 0, sceneLen = 25;
   var heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]], nextHeat = 0, heatSlot = 0;
 
+  // Scenes come from a shuffled bag, so every process appears before any repeats.
+  var bag = [];
+  function nextScene() {
+    if (!bag.length) {
+      bag = SCENES.map(function (_, k) { return k; }).filter(function (k) { return k !== scene; });
+      for (var k = bag.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var tmp = bag[k]; bag[k] = bag[j]; bag[j] = tmp; }
+    }
+    return bag.shift();
+  }
+
   function setScene(i, now) {
     scene = i;
     sceneStart = now;
-    sceneLen = i === 1 ? 28 : 20 + Math.random() * 10;      // diffusion: two full noise/denoise cycles
+    // one full cycle for the cyclic scenes, 13-17 s for the others
+    sceneLen = i === 1 ? 14 : i === 4 ? 12 : 13 + Math.random() * 4;
     shapeKind = Math.floor(Math.random() * 3);
     nextHeat = 0;
+    heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]];
     caption.textContent = SCENES[i].caption;
     window.dispatchEvent(new CustomEvent('bgscene', { detail: { name: SCENES[i].name } }));
     caption.classList.remove('is-on');
@@ -300,17 +347,14 @@
     last = now;
     if (gl.isContextLost()) return;
 
-    if (now - sceneStart > sceneLen * 1000) {
-      var next;
-      do { next = Math.floor(Math.random() * SCENES.length); } while (next === scene);
-      setScene(next, now);
-    }
+    if (now - sceneStart > sceneLen * 1000) setScene(nextScene(), now);
     var t = (now - t0) / 1000, st = (now - sceneStart) / 1000;
-    if (scene === 2 && t > nextHeat) {                       // re-ignite one heat source every ~2.2 s
+    if ((scene === 2 || scene === 6) && t > nextHeat) {      // heat sources / wave sources
       var aspect0 = canvas.width / canvas.height;
-      heat[heatSlot] = [(Math.random() * 1.6 - 0.8) * aspect0, Math.random() * 1.4 - 0.7, t, 0.8 + Math.random() * 0.4];
+      heat[heatSlot] = [(Math.random() * 1.6 - 0.8) * aspect0, Math.random() * 1.4 - 0.7, t,
+                        scene === 6 ? 0.7 + Math.random() * 0.5 : 0.8 + Math.random() * 0.4];
       heatSlot = (heatSlot + 1) % 3;
-      nextHeat = t + 2.2;
+      nextHeat = t + (scene === 6 ? 1.4 : 2.2);
     }
 
     var query = null;
@@ -394,6 +438,7 @@
       return { scene: SCENES[scene].name, particles: Math.round(rows) * SIDE, gpuMs: +gpuMs.toFixed(3),
                budgetMs: +budget.toFixed(1), gpuShare: gpuMs ? +(gpuMs / budget * 100).toFixed(2) + '%' : 'n/a (no timer)' };
     },
-    scene: function (i) { setScene(i, performance.now()); }
+    scene: function (i) { setScene(i, performance.now()); },
+    next: function () { setScene(nextScene(), performance.now()); }
   };
 })();

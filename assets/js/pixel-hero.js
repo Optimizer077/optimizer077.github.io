@@ -33,8 +33,16 @@
     heat:      { out: 2000, hold: 600, back: 2200, label: 'αt',
                  cap: 'Fig. 1 — heat equation on the image, ∂u/∂t = α∇²u, run back' },
     lorenz:    { out: 2200, hold: 700, back: 2600, label: 't',
-                 cap: 'Fig. 1 — pixels pulled onto the Lorenz attractor and back' }
+                 cap: 'Fig. 1 — pixels pulled onto the Lorenz attractor and back' },
+    flowmatch: { out: 1800, hold: 500, back: 1800, label: 't',
+                 cap: 'Fig. 1 — flow matching: straight paths x<sub>0</sub> ↔ ε' },
+    langevin:  { out: 2400, hold: 500, back: 2200, label: 'step',
+                 cap: 'Fig. 1 — Langevin descent into the minima of a loss landscape, then back' },
+    wave:      { out: 1400, hold: 1800, back: 1400, label: 't',
+                 cap: 'Fig. 1 — wave equation: ripples travelling through the pixels' }
   };
+  var LANGEVIN_STEPS = 28;
+  var WELLS = [[-0.55, 0.45], [0.5, 0.5], [0, -0.1], [-0.45, -0.6], [0.55, -0.55]];   // minima, in [-1, 1]²
   var NAMES = Object.keys(EFFECTS);
 
   var crop = (canvas.getAttribute('data-crop') || '').split(',').map(Number);
@@ -170,9 +178,33 @@
     return pts;
   }
 
+  // Gradient of the loss landscape U(p) = 0.12|p|² − Σ exp(−|p − wᵢ|² / 0.06)
+  function lossGrad(x, y) {
+    var gx = 0.24 * x, gy = 0.24 * y;
+    for (var i = 0; i < WELLS.length; i++) {
+      var dx = x - WELLS[i][0], dy = y - WELLS[i][1], e = Math.exp(-(dx * dx + dy * dy) / 0.06);
+      gx += e * 2 * dx / 0.06; gy += e * 2 * dy / 0.06;
+    }
+    return [gx, gy];
+  }
+
   function prepare(name) {
     var i, q;
-    if (name === 'diffusion') {
+    if (name === 'langevin') {
+      for (i = 0; i < particles.length; i++) {
+        q = particles[i];
+        var x = q.tx / cssW * 2 - 1, y = q.ty / cssH * 2 - 1, path = new Float32Array(LANGEVIN_STEPS * 2);
+        for (var s = 0; s < LANGEVIN_STEPS; s++) {
+          path[s * 2] = (x + 1) / 2 * cssW; path[s * 2 + 1] = (y + 1) / 2 * cssH;
+          var g = lossGrad(x, y);
+          x += -g[0] * 0.012 + (Math.random() - 0.5) * 0.012;      // gradient step + Langevin noise
+          y += -g[1] * 0.012 + (Math.random() - 0.5) * 0.012;
+        }
+        q.path = path;
+      }
+      return;
+    }
+    if (name === 'diffusion' || name === 'flowmatch') {
       for (i = 0; i < particles.length; i++) {
         q = particles[i];
         q.nx = Math.random() * (cssW - cell);
@@ -240,7 +272,8 @@
     ctx.clearRect(0, 0, cssW, cssH);
     for (var i = 0; i < particles.length; i++) {
       var q = particles[i];
-      var ui = Math.min(1, Math.max(0, (u - q.delay * STAGGER) / (1 - STAGGER)));
+      // flow matching moves every pixel in lock-step along a straight line (no stagger, no jitter)
+      var ui = fx.name === 'flowmatch' ? u : Math.min(1, Math.max(0, (u - q.delay * STAGGER) / (1 - STAGGER)));
       var x = q.tx, y = q.ty, col = q.colours[LEVELS - 1];
       if (fx.name === 'diffusion') {
         var jit = ui * cell * 2.4;
@@ -253,6 +286,25 @@
         y = q.path[k0 * 2 + 1] + (q.path[k1 * 2 + 1] - q.path[k0 * 2 + 1]) * w;
       } else if (fx.name === 'heat') {
         col = q.heat[Math.round(u * (HEAT_SNAPS.length - 1))];   // whole image diffuses together
+      } else if (fx.name === 'flowmatch') {
+        x = q.tx + (q.nx - q.tx) * ui;
+        y = q.ty + (q.ny - q.ty) * ui;
+        col = q.colours[Math.round((1 - ui) * (LEVELS - 1))];
+      } else if (fx.name === 'langevin') {
+        var lf = ui * (LANGEVIN_STEPS - 1), l0 = Math.floor(lf), l1 = Math.min(LANGEVIN_STEPS - 1, l0 + 1), lw = lf - l0;
+        x = q.path[l0 * 2] + (q.path[l1 * 2] - q.path[l0 * 2]) * lw;
+        y = q.path[l0 * 2 + 1] + (q.path[l1 * 2 + 1] - q.path[l0 * 2 + 1]) * lw;
+      } else if (fx.name === 'wave') {
+        // two damped circular waves: displacement along the radius, u scales the amplitude
+        var tt = (now - fx.start) / 1000;
+        var cx1 = cssW * 0.3, cy1 = cssH * 0.35, cx2 = cssW * 0.72, cy2 = cssH * 0.7;
+        var dx1 = q.tx - cx1, dy1 = q.ty - cy1, r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) + 1e-3;
+        var dx2 = q.tx - cx2, dy2 = q.ty - cy2, r2 = Math.sqrt(dx2 * dx2 + dy2 * dy2) + 1e-3;
+        var a1 = Math.sin(r1 * 0.09 - tt * 7) * Math.exp(-r1 / cssW * 1.2);
+        var a2 = Math.sin(r2 * 0.09 - tt * 7 + 1.5) * Math.exp(-r2 / cssW * 1.2);
+        var amp = u * cell * 2.6;
+        x = q.tx + (dx1 / r1 * a1 + dx2 / r2 * a2) * amp;
+        y = q.ty + (dy1 / r1 * a1 + dy2 / r2 * a2) * amp;
       } else if (fx.name === 'lorenz') {
         var bend = Math.sin(Math.PI * ui) * cell * 5;
         x = q.tx + (q.ax - q.tx) * ui + bend;
@@ -346,8 +398,8 @@
   /* Follow the background's scene; if there is none, choose at random. */
   function onScene(name) {
     if (!EFFECTS[name]) return;
-    if (!visible || phase === 'effect') { pending = name; return; }
-    play(name);
+    if (!visible) { pending = name; return; }
+    play(name);                      // interrupts a running effect so the portrait stays in sync
   }
 
   function scheduleRandom() {
@@ -375,7 +427,12 @@
     });
     canvas.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') pointer.active = false; });
 
-    if (replayBtn) replayBtn.addEventListener('click', function () { play(current); });
+    // "next": advance the background (the portrait follows its event); without it, pick another effect
+    if (replayBtn) replayBtn.addEventListener('click', function () {
+      if (window.__bg && window.__bg.next) { window.__bg.next(); return; }
+      var others = NAMES.filter(function (n) { return n !== current; });
+      play(others[Math.floor(Math.random() * others.length)]);
+    });
 
     window.addEventListener('bgscene', function (e) { onScene(e.detail && e.detail.name); });
     if (!window.__bg) scheduleRandom();

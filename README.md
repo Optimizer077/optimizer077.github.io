@@ -98,8 +98,9 @@ optimizer077.github.io/
 
 ## Background physics and on-device Gemma
 
-`assets/js/bg-physics.js` draws the page background on the GPU (WebGL2). Every 20–30 s it switches at random
-between four scenes, with a small caption naming the equation:
+`assets/js/bg-physics.js` draws the page background on the GPU (WebGL2). Each visit opens on diffusion; then every
+12–17 s it moves to the next of seven scenes (shuffled, no repeats until all have played), with a caption naming the
+equation. The portrait plays a matching effect, and its **↻ next** button skips to the next process:
 
 | Scene | What the particles do |
 |---|---|
@@ -107,6 +108,9 @@ between four scenes, with a small caption naming the equation:
 | Diffusion | a shape (ring, two moons or spiral) is noised, `xₜ = √ᾱₜ x₀ + √(1−ᾱₜ) ε`, then denoised back |
 | Heat equation | Brownian particles coloured by an analytic solution of `∂T/∂t = α∇²T`; the cursor adds heat |
 | Lorenz system | particles relax onto the Lorenz attractor (σ = 10, ρ = 28, β = 8/3) |
+| Flow matching | straight-line paths between noise and a shape, `xₜ = (1−t) ε + t x₁` |
+| Langevin dynamics | noisy gradient descent into the minima of a loss landscape, `dx = −∇U dt + √(2T) dW` |
+| Wave equation | expanding ripples from point sources, `∂²u/∂t² = c²∇²u` |
 
 Its GPU cost is kept near **5% of the frame budget**: with `EXT_disjoint_timer_query_webgl2` the particle count is
 steered by measured GPU time (cap ≈1M on desktop, ≈262k on phones); without it a modest fixed count is used and
