@@ -126,11 +126,11 @@
     var colours = function () {
       var cs = getComputedStyle(document.documentElement);
       return {
-        bg: cs.getPropertyValue('--clr-bg-alt').trim() || '#ebe7dc',
-        axis: cs.getPropertyValue('--clr-border').trim() || '#dad4c5',
-        curve: cs.getPropertyValue('--clr-primary').trim() || '#141613',
-        accent: cs.getPropertyValue('--clr-accent').trim() || '#0b7a6c',
-        signal: cs.getPropertyValue('--clr-signal').trim() || '#c27a12'
+        bg: cs.getPropertyValue('--clr-bg-alt').trim() || '#10162a',
+        axis: cs.getPropertyValue('--clr-border').trim() || '#232b45',
+        curve: cs.getPropertyValue('--clr-primary').trim() || '#eef1fb',
+        accent: cs.getPropertyValue('--clr-accent').trim() || '#7c9cff',
+        signal: cs.getPropertyValue('--clr-signal').trim() || '#ff7aa2'
       };
     };
     var c = colours();

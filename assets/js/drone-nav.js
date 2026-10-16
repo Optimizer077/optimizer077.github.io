@@ -35,9 +35,9 @@
       skyTop: '#dfe6fb', skyBottom: '#f5f6fa', far: '#cdd4ea',
       bldg: ['#4a5372', '#5a6485', '#414a66'], win: '#c3cbe6', winLit: '#ffc56b',
       ground: '#2a3042', tree: '#4caf8a', trunk: '#2a3042',
-      tower: '#e0457b', pad: '#3550e8', padMark: '#ffffff',
+      tower: '#c22a60', pad: '#3550e8', padMark: '#ffffff',
       drone: '#0f1426', rotor: '#7d849a', led: '#ff3b30',
-      trail: '#3550e8', box: '#e0457b', star: null
+      trail: '#3550e8', box: '#c22a60', star: null
     },
     dark: {
       skyTop: '#070a14', skyBottom: '#121a30', far: '#141c36',

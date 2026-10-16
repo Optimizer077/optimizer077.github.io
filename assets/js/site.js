@@ -128,9 +128,11 @@
       // object-fit: contain on a white panel, at low resolution
       var s = Math.min(tw / img.naturalWidth, th / img.naturalHeight);
       var dw = img.naturalWidth * s, dh = img.naturalHeight * s;
-      tctx.fillStyle = '#fff';
+      tctx.fillStyle = getComputedStyle(box).backgroundColor || '#f3f5fb';
       tctx.fillRect(0, 0, tw, th);
+      tctx.globalCompositeOperation = 'multiply';   // match the CSS blend on the <img>
       tctx.drawImage(img, (tw - dw) / 2, (th - dh) / 2, dw, dh);
+      tctx.globalCompositeOperation = 'source-over';
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(tiny, 0, 0, tw, th, 0, 0, tw * b, th * b);
     }
