@@ -59,9 +59,10 @@
       settle();
       return;
     }
-    if (window.__bg && window.__bg.stats) current = window.__bg.stats().scene;
-    if (!EFFECTS[current]) current = 'diffusion';
-    play(current, true);             // first view: start fully "out" and come back
+    // First view is always the signature effect: the portrait denoises out of pixel noise.
+    // After that it follows the background's random scenes.
+    current = 'diffusion';
+    play(current, true);             // start fully noised (x_T) and denoise to x_0
     bindEvents();
   }
 

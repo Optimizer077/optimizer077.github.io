@@ -225,7 +225,7 @@
   })();
 
   /* ---------------- scenes ---------------- */
-  var scene = Math.floor(Math.random() * SCENES.length);
+  var scene = 1;   // every visit opens on diffusion (matches the portrait); later scenes are random
   var shapeKind = 0, sceneStart = 0, sceneLen = 25;
   var heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]], nextHeat = 0, heatSlot = 0;
 
