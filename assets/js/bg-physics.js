@@ -227,6 +227,7 @@
     shapeKind = Math.floor(Math.random() * 3);
     nextHeat = 0;
     caption.textContent = SCENES[i].caption;
+    window.dispatchEvent(new CustomEvent('bgscene', { detail: { name: SCENES[i].name } }));
     caption.classList.remove('is-on');
     void caption.offsetWidth;                                // restart the fade
     caption.classList.add('is-on');
