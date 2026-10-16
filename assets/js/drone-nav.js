@@ -32,27 +32,26 @@
 
   var PALETTES = {
     light: {
-      skyTop: '#dfe9ea', skyBottom: '#f4eee2', far: '#cfd9d5',
-      bldg: ['#5d6b68', '#6c7a76', '#53605d'], win: '#c4d8d4', winLit: '#f2b84b',
-      ground: '#3c4644', tree: '#3aa894', trunk: '#3c4644',
-      tower: '#c8372d', pad: '#0b7a6c', padMark: '#f3fffc',
-      drone: '#1d201e', rotor: '#7d817a', led: '#ff3b30',
-      trail: '#0b7a6c', box: '#c27a12', star: null
+      skyTop: '#dfe6fb', skyBottom: '#f5f6fa', far: '#cdd4ea',
+      bldg: ['#4a5372', '#5a6485', '#414a66'], win: '#c3cbe6', winLit: '#ffc56b',
+      ground: '#2a3042', tree: '#4caf8a', trunk: '#2a3042',
+      tower: '#e0457b', pad: '#3550e8', padMark: '#ffffff',
+      drone: '#0f1426', rotor: '#7d849a', led: '#ff3b30',
+      trail: '#3550e8', box: '#e0457b', star: null
     },
     dark: {
-      skyTop: '#0b1110', skyBottom: '#14201d', far: '#17221f',
-      bldg: ['#1f2a27', '#25322f', '#1b2523'], win: '#2b3734', winLit: '#f2b84b',
-      ground: '#0e1513', tree: '#1f6b5c', trunk: '#0e1513',
-      tower: '#ff5a4f', pad: '#3dd6b5', padMark: '#03130f',
-      drone: '#ece6d8', rotor: '#8d9189', led: '#ff5a4f',
-      trail: '#3dd6b5', box: '#f2b84b', star: '#e8e2d2'
+      skyTop: '#070a14', skyBottom: '#121a30', far: '#141c36',
+      bldg: ['#1b2442', '#212b4e', '#18203b'], win: '#26304f', winLit: '#ffc56b',
+      ground: '#080b16', tree: '#2a7a63', trunk: '#080b16',
+      tower: '#ff7aa2', pad: '#7c9cff', padMark: '#0a0e1a',
+      drone: '#eef1fb', rotor: '#8a92a9', led: '#ff5a7a',
+      trail: '#7c9cff', box: '#ff7aa2', star: '#e6e9f5'
     }
   };
 
   function currentTheme() {
     var t = document.documentElement.getAttribute('data-theme');
-    if (t === 'light' || t === 'dark') return t;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return t === 'light' ? 'light' : 'dark';   // dark is the site default
   }
   function applyTheme() {
     palette = PALETTES[currentTheme()];
@@ -126,7 +125,7 @@
 
   /* ---------- Episodes ---------- */
   var VIAS = {
-    tower:   { phrase: 'fly past the red tower',              step: 'fly past the red tower' },
+    tower:   { phrase: 'fly past the pink tower',             step: 'fly past the pink tower' },
     antenna: { phrase: 'pass the building with the antenna',  step: 'pass the antenna building' }
   };
 

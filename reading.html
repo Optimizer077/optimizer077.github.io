@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Paper Reading – Ali Haider</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Ali Haider's paper reading list — vision-language navigation, VLMs, reasoning, diffusion, INRs, MRI and more, synced from Zotero." />
   <script>
     (function () {
       var d = document.documentElement;
@@ -18,33 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .topic-pills { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 2rem; }
-    .topic-pills a {
-      font-size: var(--fs-sm); font-weight: 500;
-      padding: .3rem .85rem;
-      border: 1px solid var(--clr-border); border-radius: 20px;
-      color: var(--clr-text); background: var(--clr-bg-alt);
-      text-decoration: none; transition: all .18s;
-    }
-    .topic-pills a:hover {
-      background: var(--clr-accent); color: #fff;
-      border-color: var(--clr-accent); text-decoration: none;
-    }
-    .reading-section { margin-bottom: 2.5rem; }
-    .reading-section h2 {
-      font-size: var(--fs-xl); color: var(--clr-primary);
-      padding-bottom: .45rem; margin-bottom: 1rem;
-      border-bottom: 2px solid var(--clr-accent);
-    }
-    .reading-section ul { padding-left: 1.25rem; }
-    .reading-section li { margin-bottom: .55rem; font-size: var(--fs-sm); }
-    .reading-section li a { color: var(--clr-accent); }
-    .reading-section li a:hover { color: var(--clr-accent-dark); }
-    .reading-section li span { color: var(--clr-muted); }
-  </style>
 </head>
-<body>
+<body class="page-reading">
 
   <header class="site-header">
     <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Ali Haider</a>
@@ -63,124 +39,74 @@
     </div>
   </header>
 
-  <div class="page-wrap">
+  <main class="rl-wrap">
 
-    <h1 style="margin-bottom:.35rem;">📚 Paper Reading List</h1>
-    <p style="color:var(--clr-muted);font-style:italic;margin-bottom:1.5rem;">Updated weekly &mdash; newest papers first, grouped by topic</p>
+    <!-- ── Intro ── -->
+    <section class="rl-hero">
+      <div class="rl-hero-text">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Reading list · synced from Zotero</p>
+        <h1>Paper <em>Reading</em> List</h1>
+        <p class="rl-lede">Papers I am reading across vision-language navigation, multimodal models, reasoning, diffusion,
+          implicit neural representations and medical imaging.</p>
+        <dl class="rl-stats">
+          <div><dt>papers</dt><dd id="st-papers">—</dd></div>
+          <div><dt>topics</dt><dd id="st-topics">—</dd></div>
+          <div><dt>added · 30 days</dt><dd id="st-recent">—</dd></div>
+          <div><dt>last sync</dt><dd id="st-sync">—</dd></div>
+        </dl>
+      </div>
+      <figure class="rl-chart">
+        <figcaption><span>papers by year</span><span class="rl-chart-hint">click a bar to filter</span></figcaption>
+        <div class="rl-bars" id="rl-bars" role="group" aria-label="Filter by publication year"></div>
+      </figure>
+    </section>
 
-    <!-- Topic pills -->
-    <nav class="topic-pills" aria-label="Quick links">
-      <a href="#vln-vla">VLN / VLA</a>
-      <a href="#vlm">VLM</a>
-      <a href="#reasoning">Reasoning</a>
-      <a href="#token">Token Reduction</a>
-      <a href="#diffusion">Diffusion</a>
-      <a href="#inr">INR</a>
-      <a href="#retrieval">Retrieval</a>
-      <a href="#mri">MRI</a>
-      <a href="#hyperspectral">Hyperspectral</a>
-      <a href="#misc">Others</a>
-    </nav>
+    <!-- ── Controls ── -->
+    <div class="rl-controls" id="rl-controls">
+      <div class="rl-controls-row">
+        <div class="rl-search">
+          <label for="rl-q" class="visually-hidden">Search papers</label>
+          <span class="rl-search-icon" aria-hidden="true">⌕</span>
+          <input id="rl-q" type="search" placeholder="Search titles, authors, arXiv IDs…" autocomplete="off" spellcheck="false" />
+          <kbd class="rl-kbd" aria-hidden="true">/</kbd>
+        </div>
+        <label for="rl-sort" class="visually-hidden">Sort</label>
+        <select id="rl-sort" class="rl-sort">
+          <option value="year">Newest year</option>
+          <option value="added">Recently added</option>
+          <option value="title">Title A–Z</option>
+        </select>
+      </div>
+      <div class="rl-topics" id="rl-topics" role="group" aria-label="Filter by topic"></div>
+      <p class="rl-summary" id="rl-summary" aria-live="polite"></p>
+    </div>
 
-    <!-- Sections -->
-    <section class="reading-section" id="vln-vla"><h2>Vision-Language Navigation / Vision-Language Action (VLN &middot; VLA)</h2><ul id="vln-vla-list"></ul></section>
-    <section class="reading-section" id="vlm"><h2>Vision-Language / Multi-Modal Models (VLM)</h2><ul id="vlm-list"></ul></section>
-    <section class="reading-section" id="reasoning"><h2>Reasoning Models</h2><ul id="reasoning-list"></ul></section>
-    <section class="reading-section" id="token"><h2>Token Reduction Techniques</h2><ul id="token-list"></ul></section>
-    <section class="reading-section" id="diffusion"><h2>Diffusion Models</h2><ul id="diffusion-list"></ul></section>
-    <section class="reading-section" id="inr"><h2>Implicit Neural Representations (INR)</h2><ul id="inr-list"></ul></section>
-    <section class="reading-section" id="retrieval"><h2>Instance Retrieval</h2><ul id="retrieval-list"></ul></section>
-    <section class="reading-section" id="mri"><h2>MRI-related Papers</h2><ul id="mri-list"></ul></section>
-    <section class="reading-section" id="hyperspectral"><h2>Hyperspectral Imaging</h2><ul id="hyperspectral-list"></ul></section>
-    <section class="reading-section" id="misc"><h2>Other Interesting Papers</h2><ul id="misc-list"></ul></section>
+    <!-- ── Recently added ── -->
+    <section class="rl-recent" id="rl-recent" hidden>
+      <h2 class="rl-h2"><span class="block-num">new /</span> Recently added</h2>
+      <ol class="rl-recent-grid" id="rl-recent-list"></ol>
+    </section>
 
-  <script>
-    /* ---------- CSV parser & helpers ---------- */
-    function parseCSV(text){
-      const rows=[],row=[];let field='',i=0,inQ=false;
-      while(i<text.length){const ch=text[i];
-        if(inQ){
-          if(ch==='"'&&text[i+1]==='"'){field+='"';i+=2;continue;}
-          if(ch==='"'){inQ=false;i++;continue;}
-          field+=ch;i++;continue;
-        }
-        if(ch==='"'){inQ=true;i++;continue;}
-        if(ch===','){row.push(field);field='';i++;continue;}
-        if(ch==='\n'||ch==='\r'){
-          if(ch==='\r'&&text[i+1]==='\n')i++;
-          row.push(field);rows.push(row.slice());row.length=0;field='';i++;continue;
-        }
-        field+=ch;i++;
-      }
-      if(field!==''||row.length){row.push(field);rows.push(row);}return rows;
-    }
-    const lc=s=>(s||'').toLowerCase();
-    function colIdx(header,keys){keys=Array.isArray(keys)?keys:[keys];
-      for(const k of keys){const idx=header.indexOf(lc(k));if(idx!==-1)return idx;}
-      for(const k of keys){const idx=header.findIndex(h=>h.includes(lc(k)));if(idx!==-1)return idx;}
-      return -1;
-    }
-    function authorsEt(a){if(!a)return'Unknown';const first=a.split(';')[0].trim();if(!first)return'Unknown';const surname=first.includes(',')?first.split(',')[0].trim():first.split(' ').slice(-1)[0];return surname+' et al.';}
+    <!-- ── Topic sections (rendered by assets/js/reading.js) ── -->
+    <div id="rl-sections">
+      <p class="rl-loading" id="rl-loading">Loading papers…</p>
+    </div>
 
-    /* Deduplicate across all sections */
-    const seen=new Set();
-    function add(ul,{url,title,authors,year}){
-      const key=url||title;if(!key||seen.has(key))return;seen.add(key);
-      const li=document.createElement('li');
-      const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=title;
-      const meta=document.createElement('span');meta.innerHTML=` (${[authors||'Unknown',year||''].filter(Boolean).join(', ')})`;
-      li.appendChild(link);li.appendChild(meta);ul.appendChild(li);
-    }
+    <div class="rl-empty" id="rl-empty" hidden>
+      <p>No papers match these filters.</p>
+      <button type="button" class="btn" id="rl-clear">Clear filters</button>
+    </div>
 
-    async function load(base,id){
-      const ul=document.getElementById(id);if(!ul)return;const arr=[];
-      /* CSV attempt */
-      try{
-        const res=await fetch(`${base}.csv`);
-        if(res.ok){
-          const rows=parseCSV((await res.text()).trim());
-          if(rows.length){
-            const h=rows[0].map(v=>lc(v.trim()));
-            const iu=colIdx(h,['url','link']),it=colIdx(h,'title'),ia=colIdx(h,['author','authors']),iy=colIdx(h,['publication year','year']);
-            rows.slice(1).forEach(r=>{
-              const url=r[iu]?.trim(),title=r[it]?.trim();if(!url||!title)return;
-              arr.push({url,title,authors:authorsEt(r[ia]),year:r[iy]?.trim()});
-            });
-          }
-        }
-      }catch(e){}
-      /* TXT fallback */
-      if(!arr.length){
-        try{
-          const res=await fetch(`${base}.txt`);
-          if(res.ok){
-            (await res.text()).trim().split(/\r?\n/).forEach(line=>{
-              if(!line||line.startsWith('#'))return;
-              const [url,title,authors,year]=line.split('|').map(s=>s?.trim());if(!url||!title)return;
-              arr.push({url,title,authors,year});
-            });
-          }
-        }catch(e){}
-      }
-      arr.sort((a,b)=>(parseInt(b.year)||0)-(parseInt(a.year)||0));
-      arr.forEach(o=>add(ul,o));
-    }
-
-    /* Load each section */
-    const sections=[
-      ['vlm','vlm-list'],['reasoning','reasoning-list'],['token','token-list'],['diffusion','diffusion-list'],
-      ['inr','inr-list'],['retrieval','retrieval-list'],['mri','mri-list'],['hyperspectral','hyperspectral-list'],
-      ['Autonomous_Drive','vln-vla-list'],['misc','misc-list']
-    ];
-    sections.forEach(([base,id])=>load(base,id));
-  </script>
-
-  </div><!-- /page-wrap -->
+    <noscript>
+      <p class="rl-loading">The reading list needs JavaScript to load the CSV files.</p>
+    </noscript>
+  </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Ali Haider &nbsp;&middot;&nbsp; Updated weekly</p>
+    <p>&copy; 2026 Ali Haider &nbsp;·&nbsp; synced from Zotero</p>
   </footer>
 
   <script src="assets/js/site.js" defer></script>
+  <script src="assets/js/reading.js" defer></script>
 </body>
 </html>

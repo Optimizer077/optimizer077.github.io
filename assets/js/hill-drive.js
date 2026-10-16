@@ -33,23 +33,22 @@
   /* ---------- Palettes follow the site theme ---------- */
   var PALETTES = {
     light: {
-      skyTop: '#e7efe9', skyBottom: '#f6efe0', sun: '#f2b84b', cloud: '#fffdf8',
-      far: '#c9d9d1', mid: '#8fc3b6', ground: '#0b7a6c', grass: '#3aa894', dust: '#cfe6dd',
-      body: '#d9622b', window: '#fdf6e8', wheel: '#1d201e', hub: '#8d9189',
+      skyTop: '#dfe6fb', skyBottom: '#f5f6fa', sun: '#ffb547', cloud: '#ffffff',
+      far: '#c8d0ea', mid: '#9fb0e6', ground: '#3550e8', grass: '#7c9cff', dust: '#d5ddf8',
+      body: '#e0457b', window: '#fdf2f6', wheel: '#0f1426', hub: '#8a92a9',
       light: '#ffd36b', tail: '#a32020', star: null
     },
     dark: {
-      skyTop: '#0b1110', skyBottom: '#14201d', sun: '#f2e7c9', cloud: '#1c2624',
-      far: '#16241f', mid: '#1b3f37', ground: '#145c50', grass: '#3dd6b5', dust: '#2a6e60',
-      body: '#f2b84b', window: '#a8eedd', wheel: '#050606', hub: '#6b706a',
+      skyTop: '#070a14', skyBottom: '#121a30', sun: '#f2ecd8', cloud: '#1a2340',
+      far: '#151d38', mid: '#1d2a55', ground: '#2b3f9e', grass: '#7c9cff', dust: '#3a4f9e',
+      body: '#ff7aa2', window: '#cfd9ff', wheel: '#04060c', hub: '#6b7390',
       light: '#fff2b0', tail: '#ff5a4f', star: '#e8e2d2'
     }
   };
 
   function currentTheme() {
     var t = document.documentElement.getAttribute('data-theme');
-    if (t === 'light' || t === 'dark') return t;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return t === 'light' ? 'light' : 'dark';   // dark is the site default
   }
 
   /* 18×7 car, facing right. b body, w window, l headlight, k tail light */

@@ -31,7 +31,7 @@ Papers are loaded from CSV files in the repo root. Each CSV maps to one section 
 | `hyperspectral.csv` | Hyperspectral Imaging |
 | `misc.csv` | Misc / Interesting Papers |
 
-The JS in `reading.html` fetches each CSV at page load, parses it, deduplicates by URL+title, sorts newest-first, and renders the list — no build step required.
+`assets/js/reading.js` fetches each CSV at page load, merges papers that appear in several topics, and renders a searchable list with topic chips, a papers-per-year chart (click a bar to filter), a "recently added" strip (from Zotero's `Date Added`), and abs/PDF/DOI links. Filters are kept in the URL hash, e.g. `reading.html#q=diffusion&topic=vlm`. No build step required.
 
 ---
 
