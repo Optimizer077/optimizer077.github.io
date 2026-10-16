@@ -22,7 +22,10 @@
     { name: 'lorenz',    caption: 'Lorenz system · σ = 10, ρ = 28, β = 8/3' },
     { name: 'flowmatch', caption: 'flow matching · xₜ = (1−t) ε + t x₁  (straight paths, noise ↔ data)' },
     { name: 'langevin',  caption: 'Langevin dynamics on a loss landscape · dx = −∇U(x) dt + √(2T) dW' },
-    { name: 'wave',      caption: 'wave equation · ∂²u/∂t² = c² ∇²u' }
+    { name: 'wave',      caption: 'wave equation · ∂²u/∂t² = c² ∇²u' },
+    { name: 'vortex',    caption: 'point vortices · u = Σ Γᵢ (−y, x) / 2π r²  (Biot–Savart)' },
+    { name: 'gravity',   caption: 'Newtonian gravity · r̈ = −GM r / |r|³  (orbits)' },
+    { name: 'kmeans',    caption: 'k-means clustering · each point joins its nearest centroid' }
   ];
 
   var canvas = document.createElement('canvas');
@@ -106,6 +109,30 @@
     '    p += -lossGrad(p)*uDt*.25 + nT*sqrt(2.*.03*uDt);\n' +   // warmer: particles explore instead of collapsing
     '    if (hash(fij + uSeed) < .008) p = vec2(9.);\n' +   // steady turnover keeps the descent itself visible
     '    z = vec2(clamp((lossU(p) + 1.)/1.4, 0., 1.), 0.);\n' +
+    '  } else if (uScene == 7) {\n' +           // three point vortices advect the particles (Biot-Savart)
+    '    vec2 u = vec2(0.);\n' +
+    '    for (int i = 0; i < 3; i++) { float fi = float(i);\n' +
+    '      vec2 c = vec2(cos(uTime*.11 + fi*2.1)*.55*uAspect, sin(uTime*.09 + fi*2.7)*.45);\n' +
+    '      float G = (i == 1 ? -1. : 1.)*.09; vec2 d = p - c; float r2 = dot(d, d) + .01;\n' +
+    '      u += G*vec2(-d.y, d.x)/r2; }\n' +
+    '    z = mix(z, u, .2); p += z*uDt;\n' +
+    '    if (hash(fij + uSeed) < .002) p = vec2(9.);\n' +
+    '  } else if (uScene == 8) {\n' +           // Newtonian gravity: orbits around a central mass (leapfrog)
+    '    float GM = .12;\n' +
+    '    if (uSceneT < .08 || dot(p, p) > 6.) { float r = .25 + h.x*.8, th = h.y*6.2831853;\n' +
+    '      p = vec2(cos(th)*uAspect*.75, sin(th)*.85)*r; float rr = length(p);\n' +
+    '      z = vec2(-p.y, p.x)/rr*sqrt(GM/rr)*(.8 + .35*hash(fij + .5)); }\n' +
+    '    for (int i = 0; i < 2; i++) { float r2 = dot(p, p) + .004;\n' +
+    '      z += -GM*p/(r2*sqrt(r2))*uDt*.5; p += z*uDt*.5; }\n' +
+    '    bounded = false;\n' +
+    '  } else if (uScene == 9) {\n' +           // k-means: points drift toward their nearest of 5 moving centroids
+    '    vec2 home = vec2((h.x*2.-1.)*uAspect, h.y*2.-1.);\n' +
+    '    float best = 1e9, id = 0.; vec2 bc = home;\n' +
+    '    for (int i = 0; i < 5; i++) { float fi = float(i);\n' +
+    '      vec2 c = vec2(sin(uTime*.13 + fi*1.7)*.7*uAspect, cos(uTime*.1 + fi*2.3)*.7);\n' +
+    '      float dd = dot(home - c, home - c); if (dd < best) { best = dd; bc = c; id = fi; } }\n' +
+    '    p += (mix(home, bc, .3) - p)*(1. - exp(-uDt*3.));\n' +
+    '    z = vec2(id/4., 0.); bounded = false;\n' +
     '  } else if (uScene == 6) {\n' +           // wave: particles rest on a jittered field; render adds the ripple
     '    vec2 home = vec2((h.x*2.-1.)*uAspect, h.y*2.-1.);\n' +
     '    p += (home - p)*(1. - exp(-uDt*3.));\n' +
@@ -142,8 +169,9 @@
     '  vec3 col = uA; float a = 1.;\n' +
     // colour maps: amber -> orange -> coral for speed / noise level
     '  vec3 violet = vec3(.98, .57, .24);\n' +
-    '  if (uScene == 0) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); }\n' +
+    '  if (uScene == 0 || uScene == 7 || uScene == 8) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
+    '    if (uScene == 7) a = 2.2; else if (uScene == 8) a = 3.; }\n' +   // spread-out scenes need more light
     '  else if (uScene == 1) { float v = s.z;\n' +
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
     '    a = 1. + 2.2*v; }\n' +   // spread-out noise needs a little more light per particle
@@ -158,7 +186,9 @@
     '    vec3 h0 = vec3(.16, .08, .38), h1 = vec3(.71, .21, .48), h2 = vec3(.98, .55, .14), h3 = vec3(.99, 1., .64);\n' +
     '    col = T < .33 ? mix(h0, h1, T/.33) : T < .66 ? mix(h1, h2, (T - .33)/.33) : mix(h2, h3, (T - .66)/.34);\n' +
     '    a = .5 + T*7.;\n' +
-    '  } else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
+    '  } else if (uScene == 9) { float v = s.z;\n' +          // k-means: one colour per cluster
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 2.; }\n' +
+    '  else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 1. + 2.2*v; }\n' +
     '  else if (uScene == 5) { float v = s.z;\n' +              // Langevin: low loss = accent, high loss = coral
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .35 + 2.6*v; }\n' +   // bright while descending, dim once settled in a minimum
@@ -260,7 +290,11 @@
   })();
 
   /* ---------------- scenes ---------------- */
-  var scene = 1;   // every visit opens on diffusion (matches the portrait); later scenes are random
+  // Each visit opens on a random scene, never the one the visitor saw last.
+  var lastSeen = -1;
+  try { var ls = localStorage.getItem('bg-scene'); if (ls !== null) lastSeen = +ls; } catch (e) {}
+  var scene;
+  do { scene = Math.floor(Math.random() * SCENES.length); } while (scene === lastSeen && SCENES.length > 1);
   var shapeKind = 0, sceneStart = 0, sceneLen = 25;
   var heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]], nextHeat = 0, heatSlot = 0;
 
@@ -282,6 +316,7 @@
     shapeKind = Math.floor(Math.random() * 3);
     nextHeat = 0;
     heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]];
+    try { localStorage.setItem('bg-scene', String(i)); } catch (e) {}
     caption.textContent = SCENES[i].caption;
     window.dispatchEvent(new CustomEvent('bgscene', { detail: { name: SCENES[i].name } }));
     caption.classList.remove('is-on');

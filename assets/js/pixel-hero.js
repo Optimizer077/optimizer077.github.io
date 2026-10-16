@@ -39,7 +39,13 @@
     langevin:  { out: 2400, hold: 500, back: 2200, label: 'step',
                  cap: 'Fig. 1 — Langevin descent into the minima of a loss landscape, then back' },
     wave:      { out: 1400, hold: 1800, back: 1400, label: 't',
-                 cap: 'Fig. 1 — wave equation: ripples travelling through the pixels' }
+                 cap: 'Fig. 1 — wave equation: ripples travelling through the pixels' },
+    vortex:    { out: 2000, hold: 600, back: 2200, label: 't',
+                 cap: 'Fig. 1 — a vortex twists the image, then unwinds' },
+    gravity:   { out: 2000, hold: 900, back: 2000, label: 'M',
+                 cap: 'Fig. 1 — gravitational lensing: a point mass bends the image into an Einstein ring' },
+    kmeans:    { out: 1800, hold: 1000, back: 1800, label: 'iter',
+                 cap: 'Fig. 1 — k-means (k = 6) on pixel colours: each pixel joins its cluster' }
   };
   var LANGEVIN_STEPS = 28;
   var WELLS = [[-0.55, 0.45], [0.5, 0.5], [0, -0.1], [-0.45, -0.6], [0.55, -0.55]];   // minima, in [-1, 1]²
@@ -67,10 +73,18 @@
       settle();
       return;
     }
-    // First view is always the signature effect: the portrait denoises out of pixel noise.
-    // After that it follows the background's random scenes.
-    current = 'diffusion';
-    play(current, true);             // start fully noised (x_T) and denoise to x_0
+    // First view matches the background's opening scene (random, different from the last visit).
+    // Without the GPU background, pick one here the same way.
+    if (window.__bg && window.__bg.stats) {
+      current = window.__bg.stats().scene;
+    } else {
+      var lastP = null;
+      try { lastP = localStorage.getItem('hero-effect'); } catch (e) {}
+      var opts = NAMES.filter(function (n) { return n !== lastP; });
+      current = opts[Math.floor(Math.random() * opts.length)];
+    }
+    if (!EFFECTS[current]) current = 'diffusion';
+    play(current, true);             // start fully "out" and settle back into the portrait
     bindEvents();
   }
 
@@ -103,6 +117,7 @@
     var data = octx.getImageData(0, 0, cols, rows).data;
 
     var heat = heatLevels(data);
+    var km = kmeans(data, 6);
     particles = new Array(cols * rows);
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
@@ -119,11 +134,46 @@
           tx: tx, ty: ty, x: tx, y: ty, vx: 0, vy: 0,
           colours: colours,
           heat: heat.map(function (lvl) { return lvl[i]; }),
+          klev: km.levels(i, R, G, B),
+          kx: km.cx[km.label[i]] * cell, ky: km.cy[km.label[i]] * cell,
           delay: Math.random(),
           nx: 0, ny: 0, ax: 0, ay: 0, path: null
         };
       }
     }
+  }
+
+  /* k-means (Lloyd's algorithm) on pixel colours. Returns per-pixel labels, the spatial centroid of
+     each cluster (in grid units), and colour levels from the true colour to the cluster colour. */
+  function kmeans(data, k) {
+    var n = cols * rows, label = new Uint8Array(n), C = [], it, i, j;
+    for (j = 0; j < k; j++) {                         // spread initial centroids over the image
+      var s = Math.floor((j + 0.5) / k * n) * 4;
+      C.push([data[s], data[s + 1], data[s + 2]]);
+    }
+    for (it = 0; it < 10; it++) {
+      var sum = C.map(function () { return [0, 0, 0, 0]; });
+      for (i = 0; i < n; i++) {
+        var r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2], best = 1e12, bj = 0;
+        for (j = 0; j < k; j++) {
+          var dr = r - C[j][0], dg = g - C[j][1], db = b - C[j][2], d = dr * dr + dg * dg + db * db;
+          if (d < best) { best = d; bj = j; }
+        }
+        label[i] = bj; sum[bj][0] += r; sum[bj][1] += g; sum[bj][2] += b; sum[bj][3]++;
+      }
+      for (j = 0; j < k; j++) if (sum[j][3]) C[j] = [sum[j][0] / sum[j][3], sum[j][1] / sum[j][3], sum[j][2] / sum[j][3]];
+    }
+    var cx = new Array(k).fill(0), cy = new Array(k).fill(0), cnt = new Array(k).fill(0);
+    for (i = 0; i < n; i++) { cx[label[i]] += i % cols; cy[label[i]] += Math.floor(i / cols); cnt[label[i]]++; }
+    for (j = 0; j < k; j++) { cx[j] = cnt[j] ? cx[j] / cnt[j] : cols / 2; cy[j] = cnt[j] ? cy[j] / cnt[j] : rows / 2; }
+    return {
+      label: label, cx: cx, cy: cy,
+      levels: function (idx, R, G, B) {
+        var c = C[label[idx]], out = [];
+        for (var s2 = 0; s2 < 6; s2++) { var f = s2 / 5; out.push(rgb(R + (c[0] - R) * f, G + (c[1] - G) * f, B + (c[2] - B) * f)); }
+        return out;
+      }
+    };
   }
 
   /* Explicit heat-equation steps on the colour grid (u += α∇²u, insulated edges);
@@ -246,6 +296,7 @@
     if (!EFFECTS[name]) return;
     if (raf) cancelAnimationFrame(raf);
     current = name;
+    try { localStorage.setItem('hero-effect', name); } catch (e) {}
     prepare(name);
     setCaption(name);
     var e = EFFECTS[name];
@@ -305,6 +356,24 @@
         var amp = u * cell * 2.6;
         x = q.tx + (dx1 / r1 * a1 + dx2 / r2 * a2) * amp;
         y = q.ty + (dy1 / r1 * a1 + dy2 / r2 * a2) * amp;
+      } else if (fx.name === 'vortex') {
+        // Gaussian vortex: rotation angle falls off with distance from the core
+        var vx0 = q.tx - cssW / 2, vy0 = q.ty - cssH / 2, R0 = cssW * 0.36;
+        var ang = ui * 5.5 * Math.exp(-(vx0 * vx0 + vy0 * vy0) / (R0 * R0));
+        var ca = Math.cos(ang), sa = Math.sin(ang);
+        x = cssW / 2 + vx0 * ca - vy0 * sa;
+        y = cssH / 2 + vx0 * sa + vy0 * ca;
+      } else if (fx.name === 'gravity') {
+        // point-mass lens equation: an image point at radius b appears at (b + sqrt(b² + 4 θE²)) / 2
+        var lx = q.tx - cssW * 0.5, ly = q.ty - cssH * 0.42, b = Math.sqrt(lx * lx + ly * ly) + 1e-3;
+        var thE = cssW * 0.2, rl = (b + Math.sqrt(b * b + 4 * thE * thE)) / 2;
+        var rr = b + (rl - b) * ui;
+        x = cssW * 0.5 + lx / b * rr;
+        y = cssH * 0.42 + ly / b * rr;
+      } else if (fx.name === 'kmeans') {
+        col = q.klev[Math.round(ui * 5)];
+        x = q.tx + (q.kx - q.tx) * ui * 0.35;
+        y = q.ty + (q.ky - q.ty) * ui * 0.35;
       } else if (fx.name === 'lorenz') {
         var bend = Math.sin(Math.PI * ui) * cell * 5;
         x = q.tx + (q.ax - q.tx) * ui + bend;

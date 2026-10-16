@@ -98,8 +98,8 @@ optimizer077.github.io/
 
 ## Background physics and on-device Gemma
 
-`assets/js/bg-physics.js` draws the page background on the GPU (WebGL2). Each visit opens on diffusion; then every
-12–17 s it moves to the next of seven scenes (shuffled, no repeats until all have played), with a caption naming the
+`assets/js/bg-physics.js` draws the page background on the GPU (WebGL2). Each visit opens on a random scene (never the one shown
+last, remembered in localStorage); then every 12–17 s it moves to the next of ten scenes (shuffled, no repeats until all have played), with a caption naming the
 equation. The portrait plays a matching effect, and its **↻ next** button skips to the next process:
 
 | Scene | What the particles do |
@@ -111,6 +111,9 @@ equation. The portrait plays a matching effect, and its **↻ next** button skip
 | Flow matching | straight-line paths between noise and a shape, `xₜ = (1−t) ε + t x₁` |
 | Langevin dynamics | noisy gradient descent into the minima of a loss landscape, `dx = −∇U dt + √(2T) dW` |
 | Wave equation | expanding ripples from point sources, `∂²u/∂t² = c²∇²u` |
+| Point vortices | particles advected by three moving vortices (Biot–Savart); the portrait twists and unwinds |
+| Gravity | orbits around a central mass; the portrait is bent into an Einstein ring (point-mass lens equation) |
+| k-means | points join their nearest of five moving centroids; the portrait's colours are clustered (k = 6, Lloyd's algorithm) |
 
 Its GPU cost is kept near **5% of the frame budget**: with `EXT_disjoint_timer_query_webgl2` the particle count is
 steered by measured GPU time (cap ≈1M on desktop, ≈262k on phones); without it a modest fixed count is used and
