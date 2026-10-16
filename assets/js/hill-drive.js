@@ -39,9 +39,9 @@
       light: '#ffd36b', tail: '#a32020', star: null
     },
     dark: {
-      skyTop: '#05070e', skyBottom: '#101830', sun: '#fde68a', cloud: '#17203a',
-      far: '#131b34', mid: '#16304a', ground: '#0e7490', grass: '#22d3ee', dust: '#1f6f86',
-      body: '#f472b6', window: '#cffafe', wheel: '#02040a', hub: '#64748b',
+      skyTop: '#0d0806', skyBottom: '#2a1a12', sun: '#fde68a', cloud: '#2a1d16',
+      far: '#1f1611', mid: '#3a2416', ground: '#7c3f12', grass: '#fbbf24', dust: '#a16207',
+      body: '#fb7185', window: '#fff7ed', wheel: '#0a0605', hub: '#a8a29e',
       light: '#fff2b0', tail: '#ff5a4f', star: '#e8e2d2'
     }
   };

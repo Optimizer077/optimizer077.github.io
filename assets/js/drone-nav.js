@@ -40,12 +40,12 @@
       trail: '#3550e8', box: '#c22a60', star: null
     },
     dark: {
-      skyTop: '#05070e', skyBottom: '#101830', far: '#121a32',
-      bldg: ['#18213d', '#1d2747', '#151d36'], win: '#232d4c', winLit: '#fbbf24',
-      ground: '#05070e', tree: '#0f766e', trunk: '#05070e',
-      tower: '#f472b6', pad: '#22d3ee', padMark: '#04121a',
-      drone: '#f1f5ff', rotor: '#94a3b8', led: '#fb7185',
-      trail: '#22d3ee', box: '#f472b6', star: '#e2e8f0'
+      skyTop: '#0d0806', skyBottom: '#22160f', far: '#1c140f',
+      bldg: ['#2a1f19', '#33261e', '#241a15'], win: '#3a2c22', winLit: '#fbbf24',
+      ground: '#0d0806', tree: '#4d7c0f', trunk: '#0d0806',
+      tower: '#fb7185', pad: '#fbbf24', padMark: '#1a1004',
+      drone: '#fff7ed', rotor: '#a8a29e', led: '#fb7185',
+      trail: '#fbbf24', box: '#fb7185', star: '#fef3c7'
     }
   };
 

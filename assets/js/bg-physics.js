@@ -111,8 +111,8 @@
     '  gl_Position = vec4(s.x/uAspect, s.y, 0., 1.);\n' +
     '  gl_PointSize = 1.;\n' +
     '  vec3 col = uA; float a = 1.;\n' +
-    // colour maps: cyan -> violet -> magenta for speed / noise level
-    '  vec3 violet = vec3(.55, .36, .96);\n' +
+    // colour maps: amber -> orange -> coral for speed / noise level
+    '  vec3 violet = vec3(.98, .57, .24);\n' +
     '  if (uScene == 0) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); }\n' +
     '  else if (uScene == 1) { float v = s.z;\n' +
