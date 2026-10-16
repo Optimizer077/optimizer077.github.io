@@ -104,15 +104,20 @@
 
   var VS_RENDER = '#version 300 es\nprecision highp float;\n' +
     'uniform sampler2D uState;\nuniform int uSide, uScene;\nuniform float uAspect, uTime, uPointerOn;\n' +
-    'uniform vec2 uPointer;\nuniform vec4 uHeat[3];\nuniform vec3 uA, uB;\nout vec4 vCol;\n' +
+    'uniform vec2 uPointer;\nuniform vec4 uHeat[3];\nuniform vec3 uA, uB;\nuniform float uCenterDim, uInner, uOuter;\nout vec4 vCol;\n' +
     'void main(){\n' +
     '  ivec2 ij = ivec2(gl_VertexID % uSide, gl_VertexID / uSide);\n' +
     '  vec4 s = texelFetch(uState, ij, 0);\n' +
     '  gl_Position = vec4(s.x/uAspect, s.y, 0., 1.);\n' +
     '  gl_PointSize = 1.;\n' +
     '  vec3 col = uA; float a = 1.;\n' +
-    '  if (uScene == 0) col = mix(uA, uB, clamp(length(s.zw)*1.8, 0., 1.));\n' +
-    '  else if (uScene == 1) { col = mix(uA, uB, s.z); a = 1. + 3.5*s.z; }\n' +   // spread-out noise needs more light per particle
+    // colour maps: cyan -> violet -> magenta for speed / noise level
+    '  vec3 violet = vec3(.55, .36, .96);\n' +
+    '  if (uScene == 0) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); }\n' +
+    '  else if (uScene == 1) { float v = s.z;\n' +
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
+    '    a = 1. + 2.2*v; }\n' +   // spread-out noise needs a little more light per particle
     '  else if (uScene == 2) {\n' +
     // analytic solution of the 2D heat equation for instantaneous point sources: T ~ exp(-r^2/4at)/t
     '    float T = 0.;\n' +
@@ -120,13 +125,17 @@
     '      vec2 d = s.xy - hs.xy; T += hs.w*exp(-dot(d, d)/(4.*.02*t))*min(1., .9/(t + .3)); }\n' +
     '    if (uPointerOn > .5) { vec2 d = s.xy - uPointer; T += .8*exp(-dot(d, d)/.006); }\n' +
     '    T = clamp(T, 0., 1.);\n' +
-    '    col = mix(uA*.5, mix(uB, vec3(1., .86, .62), smoothstep(.55, 1., T)), smoothstep(0., .5, T));\n' +
+    // heat colour scale (inferno-like): deep violet -> magenta -> orange -> pale yellow
+    '    vec3 h0 = vec3(.16, .08, .38), h1 = vec3(.71, .21, .48), h2 = vec3(.98, .55, .14), h3 = vec3(.99, 1., .64);\n' +
+    '    col = T < .33 ? mix(h0, h1, T/.33) : T < .66 ? mix(h1, h2, (T - .33)/.33) : mix(h2, h3, (T - .66)/.34);\n' +
     '    a = .5 + T*7.;\n' +
     '  } else col = mix(uA, uB, step(0., s.z));\n' +
+    // readability: particles behind the text column are dimmed; the side margins stay bright
+    '  a *= mix(uCenterDim, 1., smoothstep(uInner, uOuter, abs(gl_Position.x)));\n' +
     '  vCol = vec4(col, a);\n}';
 
-  var FS_RENDER = '#version 300 es\nprecision highp float;\nuniform float uAlpha;\nin vec4 vCol;\nout vec4 o;\n' +
-    'void main(){ float a = uAlpha*vCol.a; o = vec4(vCol.rgb*a, a); }';
+  var FS_RENDER = '#version 300 es\nprecision highp float;\nuniform float uAlpha, uCap;\nin vec4 vCol;\nout vec4 o;\n' +
+    'void main(){ float a = min(uAlpha*vCol.a, uCap); o = vec4(vCol.rgb*a, a); }';   // no single particle glows too bright
 
   /* ---------------- GL setup ---------------- */
   function compile(type, src) {
@@ -351,6 +360,13 @@
     gl.uniform3fv(progRender.u.uB, colB);
     // background: keep it calm and roughly constant in brightness whatever the count
     gl.uniform1f(progRender.u.uAlpha, Math.min(0.4, Math.max(0.02, 28000 / count)) * (small ? 0.75 : 1));
+    // Keep text readable: cap each particle's brightness and dim the column where text sits.
+    var contentHalf = Math.min(1140, window.innerWidth) / 2 - 32;     // matches .wrap max-width and gutter
+    var narrow = window.innerWidth <= 760;                            // phones: text spans the full width
+    gl.uniform1f(progRender.u.uCap, narrow ? 0.12 : 0.16);
+    gl.uniform1f(progRender.u.uCenterDim, narrow ? 0.3 : 0.32);
+    gl.uniform1f(progRender.u.uInner, narrow ? 2 : 0.92 * contentHalf / (window.innerWidth / 2));
+    gl.uniform1f(progRender.u.uOuter, narrow ? 3 : Math.min(1, contentHalf / (window.innerWidth / 2) + 0.12));
     gl.drawArrays(gl.POINTS, 0, count);
 
     if (query) { gl.endQuery(timerExt.TIME_ELAPSED_EXT); queries.push(query); }

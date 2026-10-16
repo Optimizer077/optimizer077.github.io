@@ -58,24 +58,24 @@
 /* ----- Tokens: dark ("ink") — the site is dark-only; these override the base set above ----- */
 @media all {
   :root {
-    --clr-bg:            #0a0e1a;
-    --clr-bg-alt:        #10162a;
-    --clr-surface:       #121a30;
-    --clr-primary:       #eef1fb;
-    --clr-text:          #c3c9da;
-    --clr-muted:         #8a92a9;
-    --clr-border:        #232b45;
-    --clr-grid:          rgba(238, 241, 251, .05);
-    --clr-accent:        #7c9cff;
-    --clr-accent-dark:   #a9bbff;
-    --clr-accent-light:  rgba(124, 156, 255, .12);
-    --clr-accent-border: rgba(124, 156, 255, .38);
-    --clr-signal:        #ff7aa2;
-    --clr-on-accent:     #0a0e1a;
-    --clr-header:        rgba(10, 14, 26, .8);
-  --clr-glow:          rgba(124, 156, 255, .16);
-  --clr-thumb:         #d9deeb;
-  --clr-glow-2:        rgba(255, 122, 162, .09);
+    --clr-bg:            #070a12;
+    --clr-bg-alt:        #0c1120;
+    --clr-surface:       #10172a;
+    --clr-primary:       #f1f5ff;
+    --clr-text:          #c9d1e4;
+    --clr-muted:         #9aa4bc;
+    --clr-border:        #1e2840;
+    --clr-grid:          rgba(241, 245, 255, .05);
+    --clr-accent:        #22d3ee;
+    --clr-accent-dark:   #67e8f9;
+    --clr-accent-light:  rgba(34, 211, 238, .12);
+    --clr-accent-border: rgba(34, 211, 238, .4);
+    --clr-signal:        #f472b6;
+    --clr-on-accent:     #04121a;
+    --clr-header:        rgba(7, 10, 18, .82);
+  --clr-glow:          rgba(34, 211, 238, .13);
+  --clr-thumb:         #d9e2f0;
+  --clr-glow-2:        rgba(244, 114, 182, .11);
     --clr-badge-green-text:  #74e3a0;
     --clr-badge-blue-text:   #8db4ff;
     --clr-badge-purple-text: #d3a6ff;
@@ -87,24 +87,24 @@
   }
 }
 :root[data-theme="dark"] {
-  --clr-bg:            #0a0e1a;
-  --clr-bg-alt:        #10162a;
-  --clr-surface:       #121a30;
-  --clr-primary:       #eef1fb;
-  --clr-text:          #c3c9da;
-  --clr-muted:         #8a92a9;
-  --clr-border:        #232b45;
-  --clr-grid:          rgba(238, 241, 251, .05);
-  --clr-accent:        #7c9cff;
-  --clr-accent-dark:   #a9bbff;
-  --clr-accent-light:  rgba(124, 156, 255, .12);
-  --clr-accent-border: rgba(124, 156, 255, .38);
-  --clr-signal:        #ff7aa2;
-  --clr-on-accent:     #0a0e1a;
-  --clr-header:        rgba(10, 14, 26, .8);
-  --clr-glow:          rgba(124, 156, 255, .16);
-  --clr-thumb:         #d9deeb;
-  --clr-glow-2:        rgba(255, 122, 162, .09);
+  --clr-bg:            #070a12;
+  --clr-bg-alt:        #0c1120;
+  --clr-surface:       #10172a;
+  --clr-primary:       #f1f5ff;
+  --clr-text:          #c9d1e4;
+  --clr-muted:         #9aa4bc;
+  --clr-border:        #1e2840;
+  --clr-grid:          rgba(241, 245, 255, .05);
+  --clr-accent:        #22d3ee;
+  --clr-accent-dark:   #67e8f9;
+  --clr-accent-light:  rgba(34, 211, 238, .12);
+  --clr-accent-border: rgba(34, 211, 238, .4);
+  --clr-signal:        #f472b6;
+  --clr-on-accent:     #04121a;
+  --clr-header:        rgba(7, 10, 18, .82);
+  --clr-glow:          rgba(34, 211, 238, .13);
+  --clr-thumb:         #d9e2f0;
+  --clr-glow-2:        rgba(244, 114, 182, .11);
   --clr-badge-green-text:  #74e3a0;
   --clr-badge-blue-text:   #8db4ff;
   --clr-badge-purple-text: #d3a6ff;
@@ -2274,3 +2274,37 @@ html:not(.js) .renoise { display: none; }
 @media (max-width: 600px) {
   .gemma-panel { right: .5rem; left: .5rem; width: auto; bottom: 3.6rem; height: calc(100vh - 8rem); }
 }
+
+/* Phones: the Ask Gemma button shrinks to an icon so it covers less text */
+@media (max-width: 600px) {
+  .ai-fab { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; font-size: 1rem; }
+  .ai-fab-label {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+
+/* Readability over the moving background: a halo in the page colour behind text that sits
+   directly on the background (cards and chips are opaque and do not need it). Invisible on a
+   plain background; it only shows where particles pass behind the letters. */
+main :where(h1, h2, h3, p, li, a, span, time, em, strong, b, sub, small, figcaption, button, dt, dd),
+.site-footer, .bg-caption {
+  text-shadow: 0 0 2px var(--clr-bg), 0 0 6px var(--clr-bg), 0 0 12px var(--clr-bg);
+}
+main :where(.card, .repo-card, .like-card, .learn-card, .project-feature, .rl-recent-card, .chip, .badge,
+            .btn, .btn-primary, .news-tag, .rl-topic, .rl-chip, .pub-venue-tag .chip) :where(*),
+main :where(.card, .repo-card, .like-card, .learn-card, .project-feature, .rl-recent-card, .chip, .badge,
+            .btn, .btn-primary, .news-tag, .rl-topic, .rl-chip) {
+  text-shadow: none;
+}
+
+/* Small UI text that sits on the moving background gets an opaque backing */
+.pub-links a, .repo-links a { background: var(--clr-surface); }
+.news-tag            { background: linear-gradient(var(--clr-badge-blue), var(--clr-badge-blue)), var(--clr-surface); }
+.news-tag.t-release  { background: linear-gradient(var(--clr-accent-light), var(--clr-accent-light)), var(--clr-surface); }
+.news-tag.t-course   { background: linear-gradient(var(--clr-badge-amber), var(--clr-badge-amber)), var(--clr-surface); }
+.news-tag.t-talk     { background: linear-gradient(var(--clr-badge-purple), var(--clr-badge-purple)), var(--clr-surface); }
+.news-tag.t-event    { background: linear-gradient(var(--clr-badge-rose), var(--clr-badge-rose)), var(--clr-surface); }
+.news-tag.t-career   { background: linear-gradient(var(--clr-badge-green), var(--clr-badge-green)), var(--clr-surface); }
+.hero-figure figcaption { padding: .35rem .5rem; background: var(--clr-bg); border-radius: var(--radius-sm); }
+.news-date { color: var(--clr-text); }
