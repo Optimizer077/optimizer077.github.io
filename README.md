@@ -87,10 +87,29 @@ optimizer077.github.io/
 │       ├── learn-loop.js # Self-improving agent loop (Learning)
 │       ├── mini-demos.js # Diffusion-text and tangent-plot card demos
 │       ├── flow-field.js # Background flow particles
+│       ├── gpu-mode.js   # Opt-in WebGL2 particle sim, governed to ~75% of the GPU frame budget
+│       ├── gemma-chat.js # Opt-in on-device Gemma 4 E2B chat (MediaPipe LLM Inference / WebGPU)
 │       └── reading.js    # Reading page: search, filters, year chart
 └── _includes/
     └── header.html
 ```
+
+---
+
+## GPU mode and on-device Gemma
+
+The ⚡ **GPU mode** button (homepage, bottom-right) loads `assets/js/gpu-mode.js` on demand. It runs a WebGL2
+particle flow simulation and adjusts its size every 0.4 s so GPU time stays near **75% of the frame budget**:
+
+- With `EXT_disjoint_timer_query_webgl2`, GPU time per frame is measured directly.
+- Without it, the load grows until frames drop, then holds at 75% of that level.
+- Past the particle cap (≈0.5M on phones, ≈4.2M on desktop) it adds simulation substeps instead of memory.
+- It pauses when the tab is hidden, stops itself if the device struggles, and frees all GPU memory on stop.
+
+From the GPU mode panel, **Chat with Gemma 4 on this GPU** loads `assets/js/gemma-chat.js`, which runs
+[`litert-community/gemma-4-E2B-it-litert-lm`](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm)
+(`gemma-4-E2B-it-web.task`, ~2.0 GB, Apache-2.0) with `@mediapipe/tasks-genai@0.10.29` on WebGPU. The model is
+downloaded from Hugging Face only after the visitor confirms, cached in Cache Storage, and runs fully in the browser.
 
 ---
 

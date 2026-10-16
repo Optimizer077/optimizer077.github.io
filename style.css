@@ -2093,3 +2093,228 @@ html:not(.js) .renoise { display: none; }
   transition: top .2s;
 }
 .skip-link:focus { top: .7rem; text-decoration: none; color: var(--clr-on-accent); }
+
+/* ============================================================
+   GPU mode (assets/js/gpu-mode.js)
+   ============================================================ */
+#gpu-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+.gpu-on #flow-bg { display: none; }
+
+.gpu-fab {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 42px;
+  padding: .45rem .95rem;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  color: var(--clr-primary);
+  background: color-mix(in srgb, var(--clr-surface) 88%, transparent);
+  border: 1px solid var(--clr-accent-border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform .25s var(--ease-out), background .2s, color .2s;
+}
+.gpu-fab:hover { transform: translateY(-2px); }
+.gpu-fab.is-on {
+  color: var(--clr-on-accent);
+  background: var(--clr-signal);
+  border-color: var(--clr-signal);
+}
+.gpu-fab:disabled { opacity: .7; cursor: progress; }
+
+.gpu-hud {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 4.2rem;
+  z-index: 300;
+  width: min(300px, calc(100vw - 2.2rem));
+  padding: .7rem .8rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  line-height: 1.5;
+  color: var(--clr-text);
+  background: color-mix(in srgb, var(--clr-bg) 90%, transparent);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  white-space: pre-line;
+}
+.gpu-hud-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: .45rem; }
+.gpu-hud-row b { color: var(--clr-primary); font-weight: 500; }
+.gpu-hud-dot { width: 7px; height: 7px; background: var(--clr-signal); animation: ping 1.2s infinite; }
+.gpu-hud-bar {
+  position: relative;
+  height: 6px;
+  margin-bottom: .45rem;
+  background: var(--clr-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.gpu-hud-bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(90deg, var(--clr-accent), var(--clr-signal));
+  transition: width .4s var(--ease-out);
+}
+.gpu-hud-bar i {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--clr-primary);
+}
+.gpu-hud-text { margin: 0 !important; color: var(--clr-muted); }
+
+@media (max-width: 600px) {
+  .gpu-fab { right: .8rem; bottom: .8rem; min-height: 38px; padding: .35rem .8rem; font-size: .7rem; }
+  .gpu-hud { right: .8rem; bottom: 3.6rem; }
+}
+
+.gpu-hud-gemma {
+  display: block;
+  width: 100%;
+  margin-top: .6rem;
+  padding: .45rem .6rem;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  color: var(--clr-on-accent);
+  background: var(--clr-accent);
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+.gpu-hud-gemma:hover { background: var(--clr-accent-dark); }
+
+/* ============================================================
+   Gemma on-device chat (assets/js/gemma-chat.js)
+   ============================================================ */
+.gemma-panel {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 4.2rem;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, calc(100vw - 2.2rem));
+  height: min(560px, calc(100vh - 7rem));
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-accent-border);
+  border-radius: var(--radius);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .8);
+  overflow: hidden;
+}
+.gemma-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem .9rem;
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface);
+}
+.gemma-title { display: flex; flex-direction: column; }
+.gemma-title b { font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; color: var(--clr-primary); }
+.gemma-sub { font-family: var(--font-mono); font-size: .66rem; color: var(--clr-signal); }
+.gemma-close {
+  width: 34px; height: 34px;
+  font-size: 1.2rem;
+  color: var(--clr-primary);
+  background: none;
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.gemma-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.gemma-intro { font-size: .86rem; }
+.gemma-intro ul { margin: .6rem 0 1rem; padding-left: 1.1rem; color: var(--clr-muted); font-size: .8rem; }
+.gemma-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.gemma-warn { color: var(--clr-signal); font-size: .82rem; }
+.gemma-note { font-family: var(--font-mono); font-size: .72rem; color: var(--clr-muted); }
+.gemma-progress { height: 8px; background: var(--clr-border); border-radius: 4px; overflow: hidden; }
+.gemma-progress span {
+  display: block; width: 0; height: 100%;
+  background: linear-gradient(90deg, var(--clr-accent), var(--clr-signal));
+  transition: width .2s;
+}
+.gemma-msg {
+  max-width: 88%;
+  padding: .55rem .75rem;
+  font-size: .86rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border-radius: 10px;
+}
+.gemma-msg.is-user {
+  align-self: flex-end;
+  color: var(--clr-on-accent);
+  background: var(--clr-accent);
+  border-bottom-right-radius: 3px;
+}
+.gemma-msg.is-model {
+  align-self: flex-start;
+  color: var(--clr-text);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-bottom-left-radius: 3px;
+}
+.gemma-msg.is-typing::after {
+  content: "";
+  display: inline-block;
+  width: .5em; height: 1em;
+  margin-left: 2px;
+  vertical-align: -.15em;
+  background: var(--clr-accent);
+  animation: blink 1s steps(2, start) infinite;
+}
+.gemma-status {
+  margin: 0 !important;
+  padding: .35rem .9rem;
+  min-height: 1.6em;
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  color: var(--clr-muted);
+  border-top: 1px solid var(--clr-border);
+}
+.gemma-form { display: flex; gap: .5rem; padding: .7rem .9rem .9rem; }
+.gemma-form textarea {
+  flex: 1;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  padding: .55rem .7rem;
+  font: inherit;
+  font-size: .86rem;
+  color: var(--clr-primary);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+}
+.gemma-form textarea:focus { outline: none; border-color: var(--clr-accent); }
+
+@media (max-width: 600px) {
+  .gemma-panel { right: .5rem; left: .5rem; width: auto; bottom: 3.6rem; height: calc(100vh - 8rem); }
+}

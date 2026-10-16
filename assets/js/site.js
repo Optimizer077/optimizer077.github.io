@@ -63,6 +63,42 @@
     });
   }
 
+  /* ---------- GPU mode: opt-in, script loaded on first click ---------- */
+  var gpuBtn = document.getElementById('gpu-fab');
+  if (gpuBtn) {
+    var gpuLabel = gpuBtn.querySelector('.gpu-fab-label');
+    var setGpuBtn = function (on) {
+      gpuBtn.setAttribute('aria-pressed', String(on));
+      gpuBtn.classList.toggle('is-on', on);
+      gpuLabel.textContent = on ? 'Stop GPU mode' : 'GPU mode';
+    };
+    var toast = function (msg) {
+      var t = document.createElement('div');
+      t.className = 'gpu-hud';
+      t.setAttribute('role', 'status');
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function () { t.remove(); }, 5000);
+    };
+    var runGpu = function () {
+      var G = window.GPUMode;
+      G.onchange = function (on) { setGpuBtn(on); };
+      if (G.running) { G.stop(); return; }
+      var res = G.start();
+      if (res !== true) toast(res);
+    };
+    gpuBtn.addEventListener('click', function () {
+      if (window.GPUMode) { runGpu(); return; }
+      gpuBtn.disabled = true;
+      gpuLabel.textContent = 'Loading…';
+      var s = document.createElement('script');
+      s.src = 'assets/js/gpu-mode.js';
+      s.onload = function () { gpuBtn.disabled = false; setGpuBtn(false); runGpu(); };
+      s.onerror = function () { gpuBtn.disabled = false; setGpuBtn(false); toast('Could not load GPU mode.'); };
+      document.head.appendChild(s);
+    });
+  }
+
   /* ---------- Pause CSS animations in sections that are off screen ---------- */
   if ('IntersectionObserver' in window) {
     var pauseObs = new IntersectionObserver(function (entries) {
