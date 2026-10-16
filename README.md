@@ -133,4 +133,8 @@ Then open `http://localhost:8080`. (Direct `file://` access may block CSV fetche
 
 ## Deployment
 
-Push to the `main` branch — GitHub Pages serves the site automatically.
+1. If you changed `style.css` or anything in `assets/js/`, run `python stamp_assets.py`. It adds a content
+   fingerprint (`?v=…`) to those links so phones and browsers download the new files immediately instead of
+   using a cached copy.
+2. Push to the `main` branch — GitHub Pages serves the site automatically (desktop and mobile are the same
+   responsive pages).
