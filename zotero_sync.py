@@ -29,6 +29,9 @@ SECTIONS = {
     'misc':             ('Misc / Interesting Papers',        ['Interesting_papers']),
 }
 
+# Private or draft links that must never be published on the reading page
+EXCLUDE_URL_PARTS = ('overleaf.com',)
+
 HEADERS = ['Key', 'Item Type', 'Publication Year', 'Author', 'Title',
            'Publication Title', 'DOI', 'Url', 'Conference Name', 'Date Added']
 
@@ -77,6 +80,8 @@ def export_section(cur, col_names, csv_path):
         doi = field(cur, iid, 'DOI')
         if not url and doi:
             url = 'https://doi.org/' + doi
+        if any(part in url for part in EXCLUDE_URL_PARTS):
+            continue
         date = field(cur, iid, 'date')
         m = re.search(r'\b(19|20)\d{2}\b', date)
         year = m.group(0) if m else ''
