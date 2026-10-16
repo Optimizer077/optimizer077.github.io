@@ -30,7 +30,7 @@ SECTIONS = {
 }
 
 HEADERS = ['Key', 'Item Type', 'Publication Year', 'Author', 'Title',
-           'Publication Title', 'DOI', 'Url', 'Conference Name']
+           'Publication Title', 'DOI', 'Url', 'Conference Name', 'Date Added']
 
 # ── DB helpers ────────────────────────────────────────────────────────────────
 def field(cur, iid, name):
@@ -60,7 +60,7 @@ def export_section(cur, col_names, csv_path):
     if not col_ids:
         return 0
     q2 = ','.join('?' * len(col_ids))
-    cur.execute(f"""SELECT DISTINCT i.itemID, it.typeName
+    cur.execute(f"""SELECT DISTINCT i.itemID, it.typeName, i.dateAdded
         FROM collectionItems ci
         JOIN items i ON ci.itemID=i.itemID
         JOIN itemTypes it ON i.itemTypeID=it.itemTypeID
@@ -90,8 +90,9 @@ def export_section(cur, col_names, csv_path):
             'DOI': doi,
             'Url': url,
             'Conference Name': field(cur, iid, 'conferenceName') or '',
+            'Date Added': (item['dateAdded'] or '')[:10],
         })
-    rows.sort(key=lambda r: r['Publication Year'] or '0', reverse=True)
+    rows.sort(key=lambda r: (r['Publication Year'] or '0', r['Date Added']), reverse=True)
     with open(csv_path, 'w', newline='', encoding='utf-8') as f:
         csv.DictWriter(f, fieldnames=HEADERS).writeheader()
         csv.DictWriter(f, fieldnames=HEADERS).writerows(rows)
