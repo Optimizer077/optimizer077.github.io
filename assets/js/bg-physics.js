@@ -184,8 +184,9 @@
     '    T = clamp(T, 0., 1.);\n' +
     // heat colour scale (inferno-like): deep violet -> magenta -> orange -> pale yellow
     '    vec3 h0 = vec3(.78, .66, .45), h1 = vec3(.60, .42, .07), h2 = vec3(.63, .19, .12), h3 = vec3(.15, .11, .12);\n' +   // dye ramp: paper -> ochre -> madder -> iron-black
-    '    col = T < .33 ? mix(h0, h1, T/.33) : T < .66 ? mix(h1, h2, (T - .33)/.33) : mix(h2, h3, (T - .66)/.34);\n' +
-    '    a = .1 + T*8.;\n' +   // cold particles nearly invisible on paper; hot spots show as dye
+    '    float Tv = sqrt(T);\n' +   // lift moderate temperatures so the spreading heat stays visible
+    '    col = Tv < .33 ? mix(h0, h1, Tv/.33) : Tv < .66 ? mix(h1, h2, (Tv - .33)/.33) : mix(h2, h3, (Tv - .66)/.34);\n' +
+    '    a = .08 + Tv*16.;\n' +   // cold particles nearly invisible on paper; warm regions show as dye
     '  } else if (uScene == 9) { float v = s.z;\n' +          // k-means: one colour per cluster
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 2.; }\n' +
     '  else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
@@ -317,6 +318,15 @@
     shapeKind = Math.floor(Math.random() * 3);
     nextHeat = 0;
     heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]];
+    if (i === 2) {
+      // start with three sources already burning (staggered ages) so the scene is visible at once
+      var tNow = (now - t0) / 1000, asp = canvas.width / canvas.height;
+      for (var hs = 0; hs < 3; hs++) {
+        heat[hs] = [(Math.random() * 1.6 - 0.8) * asp, Math.random() * 1.4 - 0.7, tNow - hs * 0.8, 0.9 + Math.random() * 0.3];
+      }
+      heatSlot = 0;
+      nextHeat = tNow + 1.4;
+    }
     try { localStorage.setItem('bg-scene', String(i)); } catch (e) {}
     caption.textContent = SCENES[i].caption;
     window.dispatchEvent(new CustomEvent('bgscene', { detail: { name: SCENES[i].name } }));
