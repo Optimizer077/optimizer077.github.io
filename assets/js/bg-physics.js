@@ -168,13 +168,13 @@
     '  gl_PointSize = 1.;\n' +
     '  vec3 col = uA; float a = 1.;\n' +
     // colour maps: amber -> orange -> coral for speed / noise level
-    '  vec3 violet = vec3(.98, .57, .24);\n' +
+    '  vec3 violet = vec3(.48, .33, .05);\n' +   // ochre: the third Ajrak dye, between madder (uA) and indigo (uB)
     '  if (uScene == 0 || uScene == 7 || uScene == 8) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
     '    if (uScene == 7) a = 2.2; else if (uScene == 8) a = 3.; }\n' +   // spread-out scenes need more light
     '  else if (uScene == 1) { float v = s.z;\n' +
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
-    '    a = 1. + 2.2*v; }\n' +   // spread-out noise needs a little more light per particle
+    '    a = .9 - .6*v; }\n' +   // ink on paper: scattered noise stays faint, the shape stays crisp
     '  else if (uScene == 2) {\n' +
     // analytic solution of the 2D heat equation for instantaneous point sources: T ~ exp(-r^2/4at)/t
     '    float T = 0.;\n' +
@@ -183,17 +183,17 @@
     '    if (uPointerOn > .5) { vec2 d = s.xy - uPointer; T += .8*exp(-dot(d, d)/.006); }\n' +
     '    T = clamp(T, 0., 1.);\n' +
     // heat colour scale (inferno-like): deep violet -> magenta -> orange -> pale yellow
-    '    vec3 h0 = vec3(.16, .08, .38), h1 = vec3(.71, .21, .48), h2 = vec3(.98, .55, .14), h3 = vec3(.99, 1., .64);\n' +
+    '    vec3 h0 = vec3(.78, .66, .45), h1 = vec3(.60, .42, .07), h2 = vec3(.63, .19, .12), h3 = vec3(.15, .11, .12);\n' +   // dye ramp: paper -> ochre -> madder -> iron-black
     '    col = T < .33 ? mix(h0, h1, T/.33) : T < .66 ? mix(h1, h2, (T - .33)/.33) : mix(h2, h3, (T - .66)/.34);\n' +
-    '    a = .5 + T*7.;\n' +
+    '    a = .1 + T*8.;\n' +   // cold particles nearly invisible on paper; hot spots show as dye
     '  } else if (uScene == 9) { float v = s.z;\n' +          // k-means: one colour per cluster
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 2.; }\n' +
     '  else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 1. + 2.2*v; }\n' +
+    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .9 - .6*v; }\n' +
     '  else if (uScene == 5) { float v = s.z;\n' +              // Langevin: low loss = accent, high loss = coral
     '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .35 + 2.6*v; }\n' +   // bright while descending, dim once settled in a minimum
     '  else if (uScene == 6) { float v = clamp(ripple, 0., 1.);\n' +
-    '    col = mix(uA*.55, mix(violet, vec3(1., .93, .78), v), v); a = .55 + v*5.; }\n' +
+    '    col = mix(uB, uA, v); a = .45 + v*5.; }\n' +   // wave crests in madder over indigo
     '  else col = mix(uA, uB, step(0., s.z));\n' +
     // readability: particles behind the text column are dimmed; the side margins stay bright
     '  a *= mix(uCenterDim, 1., smoothstep(uInner, uOuter, abs(gl_Position.x)));\n' +
@@ -285,8 +285,9 @@
       var n = parseInt(m[1], 16);
       return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
     };
-    colA = rgb(cs.getPropertyValue('--clr-accent'), colA);
-    colB = rgb(cs.getPropertyValue('--clr-signal'), colB);
+    // particles use the deeper dye shades so they read as ink, not pastel tint
+    colA = rgb(cs.getPropertyValue('--clr-accent-dark'), colA);
+    colB = rgb(cs.getPropertyValue('--clr-signal-dark') || cs.getPropertyValue('--clr-signal'), colB);
   })();
 
   /* ---------------- scenes ---------------- */
@@ -424,7 +425,7 @@
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);   // ink on paper: dense areas darken, never glow
     gl.useProgram(progRender);
     gl.bindTexture(gl.TEXTURE_2D, tex[cur].t);
     gl.uniform1i(progRender.u.uState, 0);
@@ -438,11 +439,11 @@
     gl.uniform3fv(progRender.u.uA, colA);
     gl.uniform3fv(progRender.u.uB, colB);
     // background: keep it calm and roughly constant in brightness whatever the count
-    gl.uniform1f(progRender.u.uAlpha, Math.min(0.4, Math.max(0.02, 28000 / count)) * (small ? 0.75 : 1));
+    gl.uniform1f(progRender.u.uAlpha, Math.min(0.4, Math.max(0.02, 28000 / count)) * (small ? 0.75 : 1) * 1.0);
     // Keep text readable: cap each particle's brightness and dim the column where text sits.
     var contentHalf = Math.min(1140, window.innerWidth) / 2 - 32;     // matches .wrap max-width and gutter
     var narrow = window.innerWidth <= 760;                            // phones: text spans the full width
-    gl.uniform1f(progRender.u.uCap, narrow ? 0.12 : 0.16);
+    gl.uniform1f(progRender.u.uCap, narrow ? 0.2 : 0.26);              // fewer, darker ink marks rather than faint dust
     gl.uniform1f(progRender.u.uCenterDim, narrow ? 0.3 : 0.32);
     gl.uniform1f(progRender.u.uInner, narrow ? 2 : 0.92 * contentHalf / (window.innerWidth / 2));
     gl.uniform1f(progRender.u.uOuter, narrow ? 3 : Math.min(1, contentHalf / (window.innerWidth / 2) + 0.12));

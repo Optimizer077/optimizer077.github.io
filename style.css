@@ -5,42 +5,48 @@
    denoise into place (diffusion, INRs, restoration).
    ============================================================ */
 
-/* ----- Tokens: light ("paper") ----- */
+/* ----- Tokens: "Ajrak on hanji" ----------------------------------------
+   Ajrak is the block-printed cloth of Sindh (madder red, indigo, iron-black on
+   undyed cotton); hanji is Korean mulberry paper. Light paper ground, one ink
+   accent used sparingly, indigo for secondary marks. */
 :root {
   --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
   --font-body:    "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
 
-  --clr-bg:            #e6e9f3;   /* tinted blue-grey, not white */
-  --clr-bg-alt:        #dce1ee;
-  --clr-surface:       #eff1f8;
-  --clr-primary:       #0f1426;   /* headings */
-  --clr-text:          #2a3042;
-  --clr-muted:         #525a6e;
-  --clr-border:        #cdd3e4;
-  --clr-grid:          rgba(15, 20, 38, .07);
-  --clr-accent:        #3550e8;   /* electric cobalt */
-  --clr-accent-dark:   #2338b8;
-  --clr-accent-light:  rgba(53, 80, 232, .08);
-  --clr-accent-border: rgba(53, 80, 232, .30);
-  --clr-signal:        #c22a60;   /* raspberry */
-  --clr-on-accent:     #ffffff;
-  --clr-header:        rgba(230, 233, 243, .85);
-  --clr-glow:          rgba(53, 80, 232, .14);
-  --clr-thumb:         #f3f5fb;
-  --clr-glow-2:        rgba(224, 69, 123, .10);
+  --clr-bg:            #f2ece0;   /* hanji paper */
+  --clr-bg-alt:        #e9e0cf;   /* unbleached cotton */
+  --clr-surface:       #faf6ee;   /* sized paper: cards */
+  --clr-primary:       #1c1a1e;   /* iron-black: headings */
+  --clr-text:          #2f2a25;   /* sepia-black: body */
+  --clr-muted:         #655c52;   /* walnut-gall grey */
+  --clr-border:        #d6c9b2;   /* fold line */
+  --clr-grid:          transparent;
+  --clr-accent:        #a1301f;   /* madder red: links, primary button */
+  --clr-accent-dark:   #7f2216;   /* over-dyed madder: hover */
+  --clr-accent-light:  rgba(161, 48, 31, .07);
+  --clr-accent-border: rgba(161, 48, 31, .32);
+  --clr-signal:        #26406b;   /* indigo: secondary marks */
+  --clr-signal-dark:   #1d3257;
+  --clr-ochre:         #9a6a12;   /* third dye, used rarely */
+  --clr-on-accent:     #fbf6ec;
+  --clr-header:        rgba(242, 236, 224, .9);
+  --clr-glow:          transparent;
+  --clr-glow-2:        transparent;
+  --clr-thumb:         #faf6ee;
 
-  --clr-badge-green:  rgba(21, 128, 61, .11);  --clr-badge-green-text:  #166534;
-  --clr-badge-blue:   rgba(37, 99, 235, .10);  --clr-badge-blue-text:   #1d4ed8;
-  --clr-badge-purple: rgba(147, 51, 234, .10); --clr-badge-purple-text: #7e22ce;
-  --clr-badge-amber:  rgba(217, 119, 6, .13);  --clr-badge-amber-text:  #92400e;
-  --clr-badge-teal:   rgba(15, 118, 106, .11); --clr-badge-teal-text:   #0f766a;
-  --clr-badge-rose:   rgba(225, 29, 72, .10);  --clr-badge-rose-text:   #be123c;
+  /* tags: one quiet style; colour only where it carries meaning */
+  --clr-badge-green:  rgba(38, 64, 107, .07);  --clr-badge-green-text:  #26406b;
+  --clr-badge-blue:   rgba(38, 64, 107, .07);  --clr-badge-blue-text:   #26406b;
+  --clr-badge-purple: rgba(101, 92, 82, .09);  --clr-badge-purple-text: #4f473f;
+  --clr-badge-amber:  rgba(154, 106, 18, .09); --clr-badge-amber-text:  #7a540e;
+  --clr-badge-teal:   rgba(38, 64, 107, .07);  --clr-badge-teal-text:   #26406b;
+  --clr-badge-rose:   rgba(161, 48, 31, .07);  --clr-badge-rose-text:   #a1301f;
 
-  --radius:    10px;
-  --radius-sm: 6px;
-  --shadow-sm: 0 1px 2px rgba(20, 22, 19, .06);
-  --shadow-md: 0 10px 30px -12px rgba(20, 22, 19, .22);
+  --radius:    8px;
+  --radius-sm: 5px;
+  --shadow-sm: 0 1px 2px rgba(47, 42, 37, .06);
+  --shadow-md: 0 10px 28px -14px rgba(47, 42, 37, .28);
 
   --fs-xs:   0.78rem;
   --fs-sm:   0.9rem;
@@ -53,66 +59,6 @@
   --header-h: 60px;
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   color-scheme: light;
-}
-
-/* ----- Tokens: dark ("ink") — the site is dark-only; these override the base set above ----- */
-@media all {
-  :root {
-    --clr-bg:            #120d0b;
-    --clr-bg-alt:        #1a1310;
-    --clr-surface:       #211814;
-    --clr-primary:       #fff7ed;
-    --clr-text:          #e6d5c8;
-    --clr-muted:         #b8a294;
-    --clr-border:        #3a2a23;
-    --clr-grid:          rgba(255, 247, 237, .05);
-    --clr-accent:        #fbbf24;
-    --clr-accent-dark:   #fcd34d;
-    --clr-accent-light:  rgba(251, 191, 36, .12);
-    --clr-accent-border: rgba(251, 191, 36, .4);
-    --clr-signal:        #fb7185;
-    --clr-on-accent:     #1a1004;
-    --clr-header:        rgba(18, 13, 11, .82);
-  --clr-glow:          rgba(251, 146, 60, .13);
-  --clr-thumb:         #ecdfd3;
-  --clr-glow-2:        rgba(251, 113, 133, .10);
-    --clr-badge-green-text:  #74e3a0;
-    --clr-badge-blue-text:   #8db4ff;
-    --clr-badge-purple-text: #d3a6ff;
-    --clr-badge-amber-text:  #fbbf5c;
-    --clr-badge-teal-text:   #5fdcc2;
-    --clr-badge-rose-text:   #fb7f9b;
-    --shadow-md: 0 14px 34px -14px rgba(0, 0, 0, .7);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --clr-bg:            #120d0b;
-  --clr-bg-alt:        #1a1310;
-  --clr-surface:       #211814;
-  --clr-primary:       #fff7ed;
-  --clr-text:          #e6d5c8;
-  --clr-muted:         #b8a294;
-  --clr-border:        #3a2a23;
-  --clr-grid:          rgba(255, 247, 237, .05);
-  --clr-accent:        #fbbf24;
-  --clr-accent-dark:   #fcd34d;
-  --clr-accent-light:  rgba(251, 191, 36, .12);
-  --clr-accent-border: rgba(251, 191, 36, .4);
-  --clr-signal:        #fb7185;
-  --clr-on-accent:     #1a1004;
-  --clr-header:        rgba(18, 13, 11, .82);
-  --clr-glow:          rgba(251, 146, 60, .13);
-  --clr-thumb:         #ecdfd3;
-  --clr-glow-2:        rgba(251, 113, 133, .10);
-  --clr-badge-green-text:  #74e3a0;
-  --clr-badge-blue-text:   #8db4ff;
-  --clr-badge-purple-text: #d3a6ff;
-  --clr-badge-amber-text:  #fbbf5c;
-  --clr-badge-teal-text:   #5fdcc2;
-  --clr-badge-rose-text:   #fb7f9b;
-  --shadow-md: 0 14px 34px -14px rgba(0, 0, 0, .7);
-  color-scheme: dark;
 }
 
 /* ----- Reset & base ----- */
@@ -2351,3 +2297,34 @@ main :where(.card, .repo-card, .like-card, .learn-card, .project-feature, .rl-re
 .news-tag.t-career   { background: linear-gradient(var(--clr-badge-green), var(--clr-badge-green)), var(--clr-surface); }
 .hero-figure figcaption { padding: .35rem .5rem; background: var(--clr-bg); border-radius: var(--radius-sm); }
 .news-date { color: var(--clr-text); }
+
+/* ============================================================
+   Ajrak overrides: fewer decorative colour habits
+   ============================================================ */
+/* the name and highlighted words are set in one ink, italics only */
+.hero-name em, .hero-lede em, .rl-hero h1 em, .nf h1 em { color: inherit; }
+/* section numbers removed: the headings carry the structure */
+.block-num { display: none; }
+/* single top rule on "recently added" cards */
+.rl-recent-card:nth-child(even) { border-top-color: var(--clr-accent); }
+/* repo kind labels in muted ink instead of a second accent */
+.repo-kind, .rl-recent-topic, .drive-hint, .chart-hint, .rl-chart-hint { color: var(--clr-muted); }
+/* text halo in paper colour is only needed over the ink particles */
+
+/* No film grain on paper: it reads as dust */
+body::after { display: none; }
+
+/* Round 3: solid red only for the primary action; everything else is a tint or plain ink */
+.pub-venue-tag .chip { color: var(--clr-accent-dark); background: var(--clr-accent-light); }
+.pub-venue-tag .chip a { color: inherit; }
+.like-icon, .like-card:nth-child(even) .like-icon {
+  background: none; color: var(--clr-muted); border: 1px solid var(--clr-border);
+}
+.rl-bar-fill { background-color: var(--clr-muted); }
+.rl-bar.is-active .rl-bar-fill, .rl-bar:hover:not(:disabled) .rl-bar-fill { background-color: var(--clr-accent); }
+.rl-topic.is-active { color: var(--clr-primary); background: var(--clr-bg-alt); border-color: var(--clr-primary); }
+.rl-recent-card, .rl-recent-card:nth-child(even) { border-top-color: var(--clr-border); }
+/* the portrait sits on paper: a touch less saturation, a hint of warmth */
+#pixel-hero, .hero-fallback { filter: saturate(.82) sepia(.08); }
+/* phones: the equation caption would sit over the text */
+@media (max-width: 700px) { .bg-caption { display: none; } }

@@ -32,12 +32,12 @@
 
   var PALETTES = {
     light: {
-      skyTop: '#dfe6fb', skyBottom: '#f5f6fa', far: '#cdd4ea',
-      bldg: ['#4a5372', '#5a6485', '#414a66'], win: '#c3cbe6', winLit: '#ffc56b',
-      ground: '#2a3042', tree: '#4caf8a', trunk: '#2a3042',
-      tower: '#c22a60', pad: '#3550e8', padMark: '#ffffff',
-      drone: '#0f1426', rotor: '#7d849a', led: '#ff3b30',
-      trail: '#3550e8', box: '#c22a60', star: null
+      skyTop: '#e9e0cf', skyBottom: '#f6f1e6', far: '#d9cdb6',
+      bldg: ['#4f473f', '#5e554b', '#463f38'], win: '#d6c9b2', winLit: '#c8962e',
+      ground: '#2f2a25', tree: '#5b6b3a', trunk: '#2f2a25',
+      tower: '#a1301f', pad: '#26406b', padMark: '#fbf6ec',
+      drone: '#1c1a1e', rotor: '#8a7f72', led: '#a1301f',
+      trail: '#26406b', box: '#a1301f', star: null
     },
     dark: {
       skyTop: '#0d0806', skyBottom: '#22160f', far: '#1c140f',
@@ -51,7 +51,7 @@
 
   function currentTheme() {
     var t = document.documentElement.getAttribute('data-theme');
-    return t === 'light' ? 'light' : 'dark';   // dark is the site default
+    return 'light';   // the site uses a light paper theme
   }
   function applyTheme() {
     palette = PALETTES[currentTheme()];
@@ -125,7 +125,7 @@
 
   /* ---------- Episodes ---------- */
   var VIAS = {
-    tower:   { phrase: 'fly past the pink tower',             step: 'fly past the pink tower' },
+    tower:   { phrase: 'fly past the red tower',              step: 'fly past the red tower' },
     antenna: { phrase: 'pass the building with the antenna',  step: 'pass the antenna building' }
   };
 

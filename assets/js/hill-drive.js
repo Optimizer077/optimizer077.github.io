@@ -33,9 +33,9 @@
   /* ---------- Palettes follow the site theme ---------- */
   var PALETTES = {
     light: {
-      skyTop: '#dfe6fb', skyBottom: '#f5f6fa', sun: '#ffb547', cloud: '#ffffff',
-      far: '#c8d0ea', mid: '#9fb0e6', ground: '#3550e8', grass: '#7c9cff', dust: '#d5ddf8',
-      body: '#e0457b', window: '#fdf2f6', wheel: '#0f1426', hub: '#8a92a9',
+      skyTop: '#e9e0cf', skyBottom: '#f6f1e6', sun: '#c8962e', cloud: '#fbf8f1',
+      far: '#d9cdb6', mid: '#b9a688', ground: '#7d6a50', grass: '#26406b', dust: '#d6c9b2',
+      body: '#a1301f', window: '#fbf6ec', wheel: '#1c1a1e', hub: '#8a7f72',
       light: '#ffd36b', tail: '#a32020', star: null
     },
     dark: {
@@ -48,7 +48,7 @@
 
   function currentTheme() {
     var t = document.documentElement.getAttribute('data-theme');
-    return t === 'light' ? 'light' : 'dark';   // dark is the site default
+    return 'light';   // the site uses a light paper theme
   }
 
   /* 18×7 car, facing right. b body, w window, l headlight, k tail light */
