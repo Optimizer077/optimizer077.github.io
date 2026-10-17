@@ -234,20 +234,92 @@
     }
   }
 
-  /* ---------- Pixel-reveal thumbnails ----------
-     Each thumbnail starts as coarse pixel blocks and sharpens when it scrolls
-     into view (and again on hover), like an INR fit at rising resolution. */
+  /* ---------- Figure lightbox: click a publication figure to see it large ---------- */
+  var figButtons = document.querySelectorAll('.pub-thumb[data-full]');
+  if (figButtons.length) {
+    var lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Figure');
+    lb.hidden = true;
+    lb.innerHTML = '<figure><img alt="" /><figcaption></figcaption></figure>' +
+                   '<button type="button" class="lightbox-close" aria-label="Close figure">Close</button>';
+    document.body.appendChild(lb);
+    var lbImg = lb.querySelector('img'), lbCap = lb.querySelector('figcaption'), lastFocus = null;
+    var closeLb = function () {
+      lb.classList.remove('is-open');
+      window.setTimeout(function () { lb.hidden = true; lbImg.removeAttribute('src'); }, reduceMotion ? 0 : 220);
+      if (lastFocus) lastFocus.focus();
+    };
+    figButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var fig = btn.closest('figure');
+        var cap = fig && fig.querySelector('figcaption');
+        lastFocus = btn;
+        lbImg.src = btn.getAttribute('data-full');
+        lbCap.textContent = cap ? cap.textContent : '';
+        lb.hidden = false;
+        void lb.offsetWidth;                      // let the open transition run
+        lb.classList.add('is-open');
+        lb.querySelector('.lightbox-close').focus();
+      });
+    });
+    lb.addEventListener('click', function (e) { if (e.target === lb || e.target.classList.contains('lightbox-close')) closeLb(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) closeLb(); });
+  }
+
+  /* ---------- Section headings: an ink underline draws itself when the heading arrives ---------- */
+  var heads = document.querySelectorAll('.block-head');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    heads.forEach(function (h) { h.classList.add('is-drawn'); });
+  } else {
+    var headObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('is-drawn'); headObs.unobserve(entry.target); }
+      });
+    }, { rootMargin: '0px 0px -20% 0px' });
+    heads.forEach(function (h) { headObs.observe(h); });
+  }
+
+  /* ---------- News timeline: the line is drawn down as you read ---------- */
+  var timeline = document.getElementById('news-list');
+  if (timeline && !reduceMotion) {
+    timeline.classList.add('is-drawing');
+    var tlTick = 0;
+    var tlUpdate = function () {
+      tlTick = 0;
+      var r = timeline.getBoundingClientRect();
+      var p = (window.innerHeight * 0.75 - r.top) / Math.max(r.height, 1);
+      timeline.style.setProperty('--p', Math.max(0, Math.min(1, p)).toFixed(3));
+    };
+    window.addEventListener('scroll', function () { if (!tlTick) tlTick = requestAnimationFrame(tlUpdate); }, { passive: true });
+    window.addEventListener('resize', tlUpdate);
+    tlUpdate();
+  }
+
+  /* ---------- Figure reveals ----------
+     Each publication figure reveals itself in a way that matches its paper when it
+     scrolls into view (and again on hover):
+       pixel   (I-INR)      coarse to fine, like an INR fit at rising resolution
+       scan    (Descanning) a yellowed, noisy, blurred scan is restored to clean
+       sweep   (FCRN)       a detector sweeps across the frame
+       denoise (KMBE)       noise is removed step by step */
   var BLOCKS = [32, 24, 16, 11, 8, 5, 3, 2];
+  var STEPS = 16;
 
   function setupPixelThumb(img) {
     var box = img.parentElement;
+    var mode = img.getAttribute('data-reveal') || 'pixel';
     var canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
     box.appendChild(canvas);
     var ctx = canvas.getContext('2d');
     var tiny = document.createElement('canvas');
     var tctx = tiny.getContext('2d');
+    var hasFilter = typeof ctx.filter === 'string';
     var timer = 0;
+    var paper = getComputedStyle(box).backgroundColor || '#faf6ee';
 
     function size() {
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -255,23 +327,61 @@
       canvas.height = Math.max(1, Math.round(box.clientHeight * dpr));
     }
 
-    function draw(block) {
-      var W = canvas.width, H = canvas.height;
-      var dpr = W / Math.max(box.clientWidth, 1);
-      var b = Math.max(1, Math.round(block * dpr));
-      var tw = Math.max(1, Math.ceil(W / b)), th = Math.max(1, Math.ceil(H / b));
-      tiny.width = tw;
-      tiny.height = th;
-      // object-fit: contain on a white panel, at low resolution
-      var s = Math.min(tw / img.naturalWidth, th / img.naturalHeight);
+    // the figure drawn with object-fit: contain on the paper panel
+    function drawFull(target, w, h, filter) {
+      var s = Math.min(w / img.naturalWidth, h / img.naturalHeight);
       var dw = img.naturalWidth * s, dh = img.naturalHeight * s;
-      tctx.fillStyle = getComputedStyle(box).backgroundColor || '#f3f5fb';
-      tctx.fillRect(0, 0, tw, th);
-      tctx.globalCompositeOperation = 'multiply';   // match the CSS blend on the <img>
-      tctx.drawImage(img, (tw - dw) / 2, (th - dh) / 2, dw, dh);
-      tctx.globalCompositeOperation = 'source-over';
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(tiny, 0, 0, tw, th, 0, 0, tw * b, th * b);
+      target.fillStyle = paper;
+      target.fillRect(0, 0, w, h);
+      if (filter && hasFilter) target.filter = filter;
+      target.globalCompositeOperation = 'multiply';
+      target.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+      target.globalCompositeOperation = 'source-over';
+      if (hasFilter) target.filter = 'none';
+    }
+
+    function speckle(amount) {
+      var n = Math.round(canvas.width * canvas.height * 0.06 * amount);
+      for (var i = 0; i < n; i++) {
+        var v = Math.random() < 0.5 ? 40 : 235;
+        ctx.fillStyle = 'rgba(' + v + ',' + v + ',' + v + ',' + (0.35 + Math.random() * 0.4) + ')';
+        ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1.5, 1.5);
+      }
+    }
+
+    // p: 0 = fully degraded, 1 = clean
+    function draw(p) {
+      var W = canvas.width, H = canvas.height, q = 1 - p;
+      if (mode === 'pixel') {
+        var dpr = W / Math.max(box.clientWidth, 1);
+        var block = BLOCKS[Math.min(BLOCKS.length - 1, Math.floor(p * BLOCKS.length))];
+        var bsz = Math.max(1, Math.round(block * dpr));
+        var tw = Math.max(1, Math.ceil(W / bsz)), th = Math.max(1, Math.ceil(H / bsz));
+        tiny.width = tw; tiny.height = th;
+        drawFull(tctx, tw, th);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(tiny, 0, 0, tw, th, 0, 0, tw * bsz, th * bsz);
+      } else if (mode === 'scan') {
+        drawFull(ctx, W, H, 'blur(' + (q * 2.5).toFixed(2) + 'px) sepia(' + (q * 0.9).toFixed(2) + ') contrast(' + (1 - q * 0.35).toFixed(2) + ')');
+        ctx.fillStyle = 'rgba(214, 186, 120,' + (q * 0.35).toFixed(3) + ')';   // paper yellowing
+        ctx.fillRect(0, 0, W, H);
+        speckle(q * 0.6);
+      } else if (mode === 'sweep') {
+        drawFull(ctx, W, H, 'grayscale(1) opacity(.35)');
+        var x = Math.round(W * p);
+        ctx.save();
+        ctx.beginPath(); ctx.rect(0, 0, x, H); ctx.clip();
+        drawFull(ctx, W, H);
+        ctx.restore();
+        if (p < 1) {
+          var accent = getComputedStyle(document.documentElement).getPropertyValue('--clr-accent').trim() || '#a1301f';
+          ctx.fillStyle = accent;
+          ctx.fillRect(x - 1, 0, 2, H);
+        }
+      } else {   // denoise
+        drawFull(ctx, W, H);
+        speckle(q * 1.4);
+      }
     }
 
     function play() {
@@ -280,14 +390,16 @@
       canvas.classList.remove('is-done');
       var i = 0;
       (function step() {
-        if (i >= BLOCKS.length) { canvas.classList.add('is-done'); return; }
-        draw(BLOCKS[i++]);
-        timer = window.setTimeout(step, 85);
+        if (i > STEPS) { canvas.classList.add('is-done'); return; }
+        var p = i / STEPS;
+        draw(1 - Math.pow(1 - p, 2));       // ease out
+        i++;
+        timer = window.setTimeout(step, 70);
       })();
     }
 
     size();
-    draw(BLOCKS[0]);
+    draw(0);
 
     if ('IntersectionObserver' in window) {
       var obs = new IntersectionObserver(function (entries) {
