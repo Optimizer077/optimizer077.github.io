@@ -2328,3 +2328,206 @@ body::after { display: none; }
 #pixel-hero, .hero-fallback { filter: saturate(.82) sepia(.08); }
 /* phones: the equation caption would sit over the text */
 @media (max-width: 700px) { .bg-caption { display: none; } }
+
+/* ============================================================
+   Typography & layout pass: a printed page, not a template
+   One serif family (Source Serif 4, a publishing typeface),
+   no monospace UI labels, ruled lists instead of cards.
+   ============================================================ */
+:root {
+  --font-display: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-body:    "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-mono:    "Source Serif 4", "Iowan Old Style", Georgia, serif;   /* no monospace labels */
+  --radius:    3px;
+  --radius-sm: 2px;
+}
+body { font-size: 1.06rem; line-height: 1.65; font-feature-settings: "onum" 1, "kern" 1; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -.005em; line-height: 1.2; }
+
+/* small labels: normal case, no tracking, no fills */
+.eyebrow, .block-sub, .news-date, .news-tag, .repo-top, .repo-kind, .repo-stars, .repo-tags li,
+.pub-venue-tag, .pub-links a, .badge, .rl-chip, .rl-count, .rl-section-count, .rl-stats dt,
+.rl-recent-top, .rl-recent-topic, .rl-year, .rl-venue, .section-tabs a, .site-header nav a,
+.btn, .renoise, .ai-fab, .motion-toggle, .site-footer, .hero-figure figcaption, .drive-figure figcaption,
+.drone-figure figcaption, .loop-figure figcaption, .bg-caption, .drone-console, .loop-console,
+.facts-grid h3, .learn-lectures summary, .dlm-head, .like-icon {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+/* header: plain links, a rule under the current page */
+.site-header .logo { font-weight: 600; font-size: 1.15rem; }
+.logo-mark { display: none; }
+.site-header nav a { font-size: .98rem; padding: .35rem .6rem; border-radius: 0; }
+.site-header nav a:hover { background: none; text-decoration: underline; text-underline-offset: 4px; }
+.site-header nav a.active { color: var(--clr-primary); text-decoration: underline; text-decoration-color: var(--clr-accent); text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.site-header nav a.active::before { display: none; }
+
+/* hero: name on one line, plain introduction */
+.eyebrow { font-size: 1rem; font-style: italic; color: var(--clr-muted); margin-bottom: .6rem; }
+.eyebrow .dot { display: none; }
+.hero-name { font-size: clamp(2.6rem, 6vw, 3.6rem); line-height: 1.05; letter-spacing: -.015em; margin-bottom: 1.1rem; }
+.hero-lede { font-size: clamp(1.2rem, 2vw, 1.4rem); font-weight: 400; max-width: 32ch; }
+.hero-bio { font-size: 1.04rem; }
+.hero-frame { padding: 0; border: 1px solid var(--clr-border); background: none; }
+.hero-frame::before, .hero-frame::after { display: none; }
+.hero-figure figcaption { font-size: .92rem; font-style: italic; background: none; padding: .3rem 0; }
+.t-readout, .tangent-readout, .loop-status, .persona-grid, .drive-hint { display: none !important; }
+.renoise { border: 0; padding: 0; min-height: 0; color: var(--clr-accent); font-size: .92rem; font-style: normal; text-decoration: underline; text-underline-offset: 3px; }
+.renoise:hover { background: none; color: var(--clr-accent-dark); }
+
+/* buttons: rectangular, quiet */
+.btn { font-size: .98rem; border-radius: var(--radius); background: transparent; }
+.btn:hover { transform: none; background: var(--clr-bg-alt); }
+.btn-primary { background: var(--clr-accent); }
+.btn-primary:hover { background: var(--clr-accent-dark); }
+
+/* research-interest ticker removed; the bio already says it */
+.marquee { display: none; }
+
+/* section headings */
+.block-head h2 { font-size: clamp(1.6rem, 3vw, 2rem); }
+.block-sub { font-size: .98rem; font-style: italic; }
+
+/* news: date, then text; category as a quiet italic word */
+.news-date { font-size: .95rem; color: var(--clr-muted); }
+.news-tag, .news-tag.t-release, .news-tag.t-course, .news-tag.t-talk, .news-tag.t-event, .news-tag.t-career {
+  background: none !important; padding: 0; margin-right: .35rem; font-size: .95rem; font-style: italic;
+  font-weight: 400; color: var(--clr-muted) !important;
+}
+.news-tag::after { content: " \2014"; }
+.new-flag { font-size: .85rem; font-style: italic; animation: none; color: var(--clr-accent); }
+.news-item:hover { background: none; }
+.news-item::before { width: 5px; height: 5px; left: -3px; border-radius: 50%; }
+.news-item:hover::before { transform: none; }
+
+/* cards become ruled lists */
+.repo-grid, .likes-grid { display: block; }
+.repo-card, .repo-card.is-featured, .like-card, .learn-card, .project-feature, .facts-grid .card {
+  display: block; background: none; border: 0; border-top: 1px solid var(--clr-border);
+  border-radius: 0; box-shadow: none; padding: 1.2rem 0 1.1rem; margin: 0; transform: none !important;
+}
+.repo-card::after { display: none; }
+.repo-card h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+.repo-card.is-featured h3 { font-size: 1.25rem; }
+.repo-top { font-size: .92rem; font-style: italic; color: var(--clr-muted); margin-bottom: .2rem; }
+.repo-kind { color: var(--clr-muted); }
+.live-pill::before { display: none; }
+.repo-tags { display: inline; }
+.repo-tags li { display: inline; border: 0; padding: 0; font-size: .92rem; font-style: italic; color: var(--clr-muted); }
+.repo-tags li + li::before { content: "\00A0\00B7\00A0"; }
+.pub-links a, .repo-links a { background: none; }
+.repo-links { font-size: .98rem; }
+.tangent-demo { max-width: 420px; border-style: solid; }
+.dlm-demo { border-style: solid; background: none; }
+.like-icon { display: none; }
+.like-card h3 { font-size: 1.15rem; margin-bottom: .2rem; }
+.learn-title { font-size: 1.5rem; }
+
+/* badges: plain italic words in brackets */
+.badge, .badge-green, .badge-blue, .badge-purple, .badge-amber, .badge-teal {
+  background: none !important; color: var(--clr-muted) !important; padding: 0; font-size: .92rem;
+  font-style: italic; font-weight: 400;
+}
+.badge::before { content: "("; }
+.badge::after { content: ")"; }
+
+/* publications */
+.pub-venue-tag { font-size: .95rem; font-style: italic; }
+.pub-venue-tag .chip { background: none; padding: 0; color: var(--clr-accent-dark); font-style: normal; font-weight: 600; }
+.pub-links a { border: 0; padding: 0; background: none; text-decoration: underline; text-underline-offset: 3px; color: var(--clr-accent); font-size: .98rem; }
+.pub-links a:hover { background: none; color: var(--clr-accent-dark); }
+.pub-links { gap: .9rem; }
+.pub-title { font-size: 1.25rem; font-weight: 600; }
+.pub-thumb { border-radius: 0; }
+
+/* honors etc.: plain lists */
+.facts-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 3rem; }
+.facts-grid h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--clr-primary); }
+.facts-grid li { border-bottom: 0; padding: .2rem 0; }
+
+/* figure consoles: no boxes */
+.drone-console, .loop-console { background: none; border: 0; padding: .6rem 0 0; }
+.drone-steps li, .loop-stages li { border-radius: 0; }
+.drone-figure figcaption, .loop-figure figcaption, .drive-figure figcaption { font-size: .92rem; font-style: italic; }
+
+/* Ask Gemma: a plain text button, not a floating pill */
+.ai-fab { border-radius: var(--radius); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+  background: var(--clr-surface); font-size: .95rem; }
+.ai-fab:hover { transform: none; }
+
+/* section tabs on phones: text with an underline, no pills */
+.section-tabs a { border: 0; border-radius: 0; padding: .3rem .5rem; font-size: .95rem; }
+.section-tabs a.is-active { background: none; color: var(--clr-primary); text-decoration: underline;
+  text-decoration-color: var(--clr-accent); text-underline-offset: 5px; text-decoration-thickness: 2px; }
+
+/* reading page */
+.rl-hero h1 { font-size: clamp(2.2rem, 5vw, 3rem); }
+.rl-stats dd { font-weight: 600; font-size: 1.7rem; }
+.rl-topic { border-radius: var(--radius); font-size: .95rem; }
+.rl-chip { border: 0; padding: 0; font-style: italic; font-size: .88rem; }
+.rl-chip.is-new, .rl-chip.is-mine { background: none; color: var(--clr-accent); }
+.rl-links a { border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; color: var(--clr-accent); min-width: 0; }
+.rl-links a:hover { background: none; color: var(--clr-accent-dark); }
+.rl-recent-card { border: 0; border-top: 1px solid var(--clr-border); border-radius: 0; background: none; padding: .9rem 0; }
+.rl-recent-card:hover { transform: none; box-shadow: none; }
+.rl-chart { border-radius: 0; }
+
+@media (max-width: 600px) {
+  .repo-grid { display: block; overflow: visible; margin-inline: 0; padding: 0; }
+  .repo-card, .repo-card.is-featured { flex: none; }
+  .swipe-hint { display: none !important; }
+  .likes-grid { display: block; }
+  .facts-grid { grid-template-columns: 1fr; }
+  .facts-grid ul { display: block; }
+  .facts-grid li { border: 0; border-radius: 0; padding: .2rem 0; font-size: .95rem; }
+  .hero .hero-name { font-size: 2.5rem; }
+  .ai-fab { width: auto; height: auto; padding: .4rem .7rem; }
+  .ai-fab-label { position: static; width: auto; height: auto; clip: auto; overflow: visible; }
+}
+
+/* ============================================================
+   Round 5: keep the background out of the text, plainer details
+   ============================================================ */
+/* The physics background lives in the page margins and fades out under the text column */
+#bg-gl, #flow-bg {
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(50% - 640px), transparent calc(50% - 470px),
+                                      transparent calc(50% + 470px), #000 calc(50% + 640px), #000 100%);
+          mask-image: linear-gradient(90deg, #000 0, #000 calc(50% - 640px), transparent calc(50% - 470px),
+                                      transparent calc(50% + 470px), #000 calc(50% + 640px), #000 100%);
+}
+/* Narrow screens have no margins: keep only a faint trace */
+@media (max-width: 1100px) {
+  #bg-gl, #flow-bg { -webkit-mask-image: none; mask-image: none; opacity: .3; }
+}
+/* the corner equation label is gone; the portrait caption names the process */
+.bg-caption { display: none !important; }
+
+/* no doubled rule where a ruled list starts right under the section rule */
+.block-body > .learn-card:first-child,
+.block-body > .project-feature:first-child,
+.repo-grid > .repo-card:first-child,
+.facts-grid > .card { border-top: 0; padding-top: 0; }
+
+/* off the clock: one paragraph */
+.clock-note { max-width: 62ch; margin-top: 1rem; }
+
+/* Gemma: quiet text button; on phones it sits in the page flow above the footer */
+.ai-fab { font-style: italic; }
+@media (max-width: 600px) {
+  .ai-fab { position: static; display: block; margin: 0 auto 1.2rem; }
+}
+
+/* seminars page */
+.seminar-index th { text-transform: none !important; letter-spacing: 0 !important; font-size: .98rem !important; background: none; }
+.seminar-index thead tr { background: none !important; }
+.seminar-num { background: none !important; color: var(--clr-muted) !important; width: auto !important; height: auto !important;
+  font-weight: 400 !important; font-style: italic; margin-top: .25rem; }
+.seminar-num::after { content: "."; }
+.seminar-venue-tag { font-style: italic; }
+.seminar-card, .seminar-hero + .card { background: none; border: 0; border-top: 1px solid var(--clr-border); border-radius: 0; box-shadow: none; padding: 1.4rem 0; }
+.seminar-card:hover { box-shadow: none; }
+.seminar-iframe { border-radius: 0; box-shadow: none; border: 1px solid var(--clr-border); }
+
+.seminar-venue-tag { text-transform: none !important; letter-spacing: 0 !important; font-size: .95rem !important; font-weight: 400 !important; }
+.seminar-index th { color: var(--clr-primary) !important; }

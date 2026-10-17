@@ -26,8 +26,8 @@
   <script>(function(){var d=document.documentElement,p=null;d.classList.add('js');try{p=localStorage.getItem('motion')}catch(e){}var sys=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);if(sys)d.classList.add('sys-reduce');if(p==='off'||(sys&&p!=='on'))d.classList.add('reduce-motion');})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=0dc421c4" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=7a67ec4e" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -65,8 +65,8 @@
     <!-- ── Hero ── -->
     <section class="hero wrap" id="about">
       <div class="hero-text">
-        <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span>Ph.D. researcher · MLVC Lab · Kyung Hee University</p>
-        <h1 class="hero-name reveal">Ali<br /><em>Haider</em></h1>
+        <p class="eyebrow reveal">Ph.D. researcher, MLVC Lab, Kyung Hee University</p>
+        <h1 class="hero-name reveal">Ali Haider</h1>
         <p class="hero-lede reveal">From <em>circuits</em> and <em>embedded systems</em> to <em>vision intelligence</em> and <em>data</em>.</p>
 
         <div class="hero-bio reveal">
@@ -108,7 +108,7 @@
           <img class="hero-fallback" src="assets/img/portrait.webp" width="640" height="641" alt="Portrait of Ali Haider" />
         </div>
         <figcaption>
-          <span id="hero-cap">Fig. 1 — diffusion: x<sub>0</sub> → x<sub>T</sub> → x<sub>0</sub></span>
+          <span id="hero-cap">Diffusion: noised, then denoised back</span>
           <span class="t-readout"><span id="t-lab">t</span> = <b id="t-val">0</b></span>
           <button class="renoise" id="renoise" type="button" aria-label="Show the next physics process">↻ next</button>
         </figcaption>
@@ -148,7 +148,6 @@
         <div class="block-head">
           <span class="block-num">01 /</span>
           <h2>News</h2>
-          <p class="block-sub">Papers, talks, and things I've recently put on GitHub.</p>
         </div>
         <div class="block-body">
           <ol class="news-list is-collapsed" id="news-list">
@@ -284,7 +283,6 @@
         <div class="block-head">
           <span class="block-num">02 /</span>
           <h2>Learning these days</h2>
-          <p class="block-sub">What I am studying right now, beyond my own papers.</p>
         </div>
         <div class="block-body">
           <article class="learn-card reveal">
@@ -293,8 +291,8 @@
             <p class="learn-desc">
               Working through Stanford's CS 329A, taught by Azalia Mirhoseini and Aakanksha Chowdhery, with
               <a href="https://jameskle.com/writes/cs329a-self-improving-agents" target="_blank" rel="noopener noreferrer">James Le's write-up</a>
-              of its nine lectures as a guide. The thread running through it: agents improve by generating many candidate
-              answers, verifying them, and learning from the ones that pass.
+              of its nine lectures as a guide. The main idea: an agent gets better by generating many candidate
+              answers, checking them, and learning from the ones that pass.
             </p>
 
             <figure class="loop-figure">
@@ -310,7 +308,7 @@
                 </ol>
                 <p class="loop-status"><span>round <b id="loop-round">1</b></span><span>success <b id="loop-rate">0%</b></span></p>
               </div>
-              <figcaption>Fig. 4 — generate → verify → learn. Candidates that pass the verifier update the policy, so the next round samples better answers. Illustration only.</figcaption>
+              <figcaption>Illustration: the agent tries several answers, a checker keeps the good ones, and it learns from those.</figcaption>
             </figure>
 
             <details class="learn-lectures">
@@ -336,7 +334,7 @@
         <div class="block-head">
           <span class="block-num">03 /</span>
           <h2>Side projects</h2>
-          <p class="block-sub">Tools, courses and fun builds outside my main research. Code on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+          <p class="block-sub">Code on <a href="https://github.com/Optimizer077" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
           <p class="swipe-hint" aria-hidden="true">swipe →</p>
         </div>
         <div class="block-body repo-grid">
@@ -346,7 +344,7 @@
               <div class="repo-top"><span class="repo-kind">tool · featured</span><span class="repo-stars" hidden></span></div>
               <h3><a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">paper-review-harness</a></h3>
               <p>
-                Give your paper a demanding first audience. The harness turns a PDF into independent simulated reviews,
+                Turns a paper PDF into independent simulated reviews,
                 section scores and a prioritized revision plan. Thirty personas cover CVPR, ICLR, ICML and NeurIPS,
                 reviewers inspect the rendered figures, and each open criticism is tracked through later drafts.
               </p>
@@ -437,7 +435,7 @@
         <div class="block-head">
           <span class="block-num">04 /</span>
           <h2>Publications</h2>
-          <p class="block-sub">Selected papers. Full list on <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>.</p>
+          <p class="block-sub">Full list on <a href="https://scholar.google.com/citations?user=-ADiGUAAAAAJ&hl=en" target="_blank" rel="noopener noreferrer">Google Scholar</a>.</p>
         </div>
         <ul class="block-body pub-list">
 
@@ -522,7 +520,6 @@
         <div class="block-head">
           <span class="block-num">05 /</span>
           <h2>Patents</h2>
-          <p class="block-sub">Korean patents, Korean Intellectual Property Office (KIPO).</p>
         </div>
         <ul class="block-body pub-list">
 
@@ -553,7 +550,6 @@
         <div class="block-head">
           <span class="block-num">06 /</span>
           <h2>Projects</h2>
-          <p class="block-sub">Research and industry projects I have worked on.</p>
         </div>
         <div class="block-body">
 
@@ -575,7 +571,7 @@
                 <ol class="drone-steps" id="drone-steps"></ol>
                 <p class="drone-status" id="drone-status"></p>
               </div>
-              <figcaption>Fig. 3 — illustration of language-guided drone navigation. The dashed box marks the landmark grounded at each step. Not output from the actual model.</figcaption>
+              <figcaption>Illustration: a drone following a written instruction; the dashed box is what it is looking at.</figcaption>
             </figure>
           </article>
 
@@ -616,7 +612,7 @@
           <li class="project-item reveal">
             <div class="project-title">
               <strong>Track-following Robot (PID)</strong>
-              <span class="badge badge-amber">🏆 1st Place · AirTech 2017</span>
+              <span class="badge badge-amber">1st place, AirTech 2017</span>
             </div>
             <p class="project-desc">PID-controlled line-following robot on ATMEGA328P-PU. 1st place nationally at AirTech 2017.</p>
           </li>
@@ -624,7 +620,7 @@
           <li class="project-item reveal">
             <div class="project-title">
               <strong>Embedded Vehicular Security System</strong>
-              <span class="badge badge-amber">🏆 2nd Prize · DICE-IET 2019</span>
+              <span class="badge badge-amber">2nd prize, DICE-IET 2019</span>
             </div>
             <p class="project-desc">Face recognition with liveness detection on a low-cost SoC. 2nd Prize at All Pakistan DICE-IET 2019.</p>
           </li>
@@ -645,7 +641,6 @@
         <div class="block-head">
           <span class="block-num">07 /</span>
           <h2>Honors &amp; more</h2>
-          <p class="block-sub">Awards, languages and certifications.</p>
         </div>
         <div class="block-body facts-grid">
           <div class="card reveal">
@@ -685,7 +680,6 @@
         <div class="block-head">
           <span class="block-num">08 /</span>
           <h2>Off the clock</h2>
-          <p class="block-sub">What I like when I'm not training models.</p>
         </div>
         <div class="block-body">
           <figure class="drive-figure reveal">
@@ -694,34 +688,16 @@
                       aria-label="Pixel-art car driving across rolling hills. Press Space or click to jump; hold to speed up."></canvas>
             </div>
             <figcaption>
-              <span>Fig. 2 — weekend mode</span>
-              <span class="drive-hint">click / tap / space to jump · hold to boost</span>
+              <span>Weekend mode. Click or press space to jump.</span>
               <span class="t-readout">v = <b id="drive-speed">38</b> px/s</span>
             </figcaption>
           </figure>
 
-          <ul class="likes-grid">
-            <li class="like-card reveal">
-              <span class="like-icon" aria-hidden="true">▶</span>
-              <h3>Playing games</h3>
-              <p>I like games, and the scene above is a small one. Click it and the car jumps.</p>
-            </li>
-            <li class="like-card reveal">
-              <span class="like-icon" aria-hidden="true">&lt;/&gt;</span>
-              <h3>Building things</h3>
-              <p>Side projects outside the paper pipeline, like <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">UrduPy</a>, <a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">Paper Review Harness</a> and a <a href="https://games.opexplore.rocks/#course" target="_blank" rel="noopener noreferrer">calculus classroom</a>.</p>
-            </li>
-            <li class="like-card reveal">
-              <span class="like-icon" aria-hidden="true">¶</span>
-              <h3>Reading</h3>
-              <p>Papers and more than papers. My <a href="reading.html">paper reading list</a> is public and updated weekly.</p>
-            </li>
-            <li class="like-card reveal">
-              <span class="like-icon" aria-hidden="true">✈</span>
-              <h3>Traveling</h3>
-              <p>Conferences have taken me to Vancouver and Singapore so far.</p>
-            </li>
-          </ul>
+          <p class="clock-note">I play games (the car above jumps if you click it), read a lot more than papers
+            (my <a href="reading.html">reading list</a> is public), and build small things like
+            <a href="https://github.com/Optimizer077/urdupy" target="_blank" rel="noopener noreferrer">UrduPy</a> and a
+            <a href="https://games.opexplore.rocks/#course" target="_blank" rel="noopener noreferrer">calculus classroom</a>.
+            Conferences have taken me to Vancouver and Singapore so far.</p>
         </div>
       </section>
 
@@ -729,20 +705,20 @@
   </main>
 
   <button class="ai-fab" id="gemma-fab" type="button" title="Chat with Gemma 4 running on your own GPU (LiteRT, in-browser)">
-    <span aria-hidden="true">✦</span> <span class="ai-fab-label">Ask Gemma</span>
+    <span class="ai-fab-label">Chat with Gemma (runs on your GPU)</span>
   </button>
 
   <footer class="site-footer">
     <p>&copy; 2026 Ali Haider &nbsp;·&nbsp; <a href="#about">back to top ↑</a></p>
   </footer>
 
-  <script src="assets/js/site.js?v=9ee49e1a" defer></script>
+  <script src="assets/js/site.js?v=5f625ab1" defer></script>
   <script src="assets/js/bg-physics.js?v=6fb871f9" defer></script>
   <script src="assets/js/flow-field.js?v=ddcebc0f" defer></script>
-  <script src="assets/js/pixel-hero.js?v=a3a6ec19" defer></script>
+  <script src="assets/js/pixel-hero.js?v=44dcba87" defer></script>
   <script src="assets/js/hill-drive.js?v=7fc7b1f3" defer></script>
   <script src="assets/js/drone-nav.js?v=016ea004" defer></script>
-  <script src="assets/js/mini-demos.js?v=14cb59cc" defer></script>
+  <script src="assets/js/mini-demos.js?v=1e5dfa1e" defer></script>
   <script src="assets/js/learn-loop.js?v=83df17eb" defer></script>
 </body>
 </html>

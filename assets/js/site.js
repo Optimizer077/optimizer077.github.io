@@ -64,6 +64,33 @@
     });
   }
 
+  /* ---------- Header nav follows the section on screen (homepage) ---------- */
+  var navLinks = {};
+  document.querySelectorAll('.site-header nav a').forEach(function (a) {
+    var h = a.getAttribute('href') || '';
+    if (h.charAt(0) === '#') navLinks[h.slice(1)] = a;
+    else if (h === 'index.html') navLinks.about = a;
+  });
+  if (Object.keys(navLinks).length > 1 && 'IntersectionObserver' in window) {
+    var setActive = function (id) {
+      var link = navLinks[id];
+      if (!link) return;
+      Object.keys(navLinks).forEach(function (k) { navLinks[k].classList.toggle('active', navLinks[k] === link); });
+    };
+    var clearActive = function () {
+      Object.keys(navLinks).forEach(function (k) { navLinks[k].classList.remove('active'); });
+    };
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        if (navLinks[entry.target.id]) setActive(entry.target.id);
+        else clearActive();                       // a section that has no menu entry
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    // watch every section, so ones without a menu entry clear the highlight
+    document.querySelectorAll('#about, main section.block').forEach(function (sec) { if (sec.id) spy.observe(sec); });
+  }
+
   /* ---------- Mobile section tabs: show after the hero, highlight current section ---------- */
   var tabs = document.getElementById('section-tabs');
   if (tabs && 'IntersectionObserver' in window) {
@@ -103,8 +130,8 @@
       label.textContent = 'Loading…';
       var sc = document.createElement('script');
       sc.src = 'assets/js/gemma-chat.js';
-      sc.onload = function () { label.textContent = 'Ask Gemma'; window.GemmaChat.open(); };
-      sc.onerror = function () { label.textContent = 'Ask Gemma'; };
+      sc.onload = function () { label.textContent = 'Chat with Gemma (runs on your GPU)'; window.GemmaChat.open(); };
+      sc.onerror = function () { label.textContent = 'Chat with Gemma (runs on your GPU)'; };
       document.head.appendChild(sc);
     });
   }

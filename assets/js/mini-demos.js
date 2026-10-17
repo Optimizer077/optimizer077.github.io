@@ -47,7 +47,8 @@
 
     var scramble = function (s) {
       var w = s.dataset.word, out = '';
-      for (var i = 0; i < w.length; i++) out += NOISE[Math.floor(Math.random() * NOISE.length)];
+      // partly unmasked: some letters already decoded, the rest still masked
+      for (var i = 0; i < w.length; i++) out += Math.random() < 0.5 ? w[i] : '▒';
       s.textContent = out;
     };
 

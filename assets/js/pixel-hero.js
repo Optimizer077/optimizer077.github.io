@@ -27,25 +27,25 @@
 
   var EFFECTS = {
     diffusion: { out: 1700, hold: 500, back: 2600, label: 't',
-                 cap: 'Fig. 1 — diffusion: x<sub>0</sub> → x<sub>T</sub> → x<sub>0</sub>' },
+                 cap: 'Diffusion: noised, then denoised back' },
     flow:      { out: 2200, hold: 300, back: 2400, label: 's',
-                 cap: 'Fig. 1 — pixels advected by a curl-noise flow, then returned' },
+                 cap: 'Carried along a swirling flow, then back' },
     heat:      { out: 2000, hold: 600, back: 2200, label: 'αt',
-                 cap: 'Fig. 1 — heat equation on the image, ∂u/∂t = α∇²u, run back' },
+                 cap: 'The heat equation run on the photo, then reversed' },
     lorenz:    { out: 2200, hold: 700, back: 2600, label: 't',
-                 cap: 'Fig. 1 — pixels pulled onto the Lorenz attractor and back' },
+                 cap: 'Pulled onto the Lorenz attractor and back' },
     flowmatch: { out: 1800, hold: 500, back: 1800, label: 't',
-                 cap: 'Fig. 1 — flow matching: straight paths x<sub>0</sub> ↔ ε' },
+                 cap: 'Flow matching: straight paths to noise and back' },
     langevin:  { out: 2400, hold: 500, back: 2200, label: 'step',
-                 cap: 'Fig. 1 — Langevin descent into the minima of a loss landscape, then back' },
+                 cap: 'Rolling downhill into a loss landscape, then back' },
     wave:      { out: 1400, hold: 1800, back: 1400, label: 't',
-                 cap: 'Fig. 1 — wave equation: ripples travelling through the pixels' },
+                 cap: 'Ripples from the wave equation' },
     vortex:    { out: 2000, hold: 600, back: 2200, label: 't',
-                 cap: 'Fig. 1 — a vortex twists the image, then unwinds' },
+                 cap: 'Twisted by a vortex, then unwound' },
     gravity:   { out: 2000, hold: 900, back: 2000, label: 'M',
-                 cap: 'Fig. 1 — gravitational lensing: a point mass bends the image into an Einstein ring' },
+                 cap: 'Bent by a point mass into an Einstein ring' },
     kmeans:    { out: 1800, hold: 1000, back: 1800, label: 'iter',
-                 cap: 'Fig. 1 — k-means (k = 6) on pixel colours: each pixel joins its cluster' }
+                 cap: 'Colours sorted into six clusters (k-means)' }
   };
   var LANGEVIN_STEPS = 28;
   var WELLS = [[-0.55, 0.45], [0.5, 0.5], [0, -0.1], [-0.45, -0.6], [0.55, -0.55]];   // minima, in [-1, 1]²
