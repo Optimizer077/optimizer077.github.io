@@ -121,18 +121,43 @@
     });
   }
 
-  /* ---------- On-device Gemma chat: script loaded on first click ---------- */
+  /* ---------- On-device Gemma chat: scripts loaded on first click (facts, retrieval, chat; fingerprinted in data-scripts) ---------- */
   var gemmaBtn = document.getElementById('gemma-fab');
   if (gemmaBtn) {
+    var gemmaLabel = gemmaBtn.querySelector('.ai-fab-label'), gemmaText = gemmaLabel.textContent, gemmaBusy = false, gemmaDone = {};
+    gemmaBtn.setAttribute('aria-haspopup', 'dialog');
+    gemmaBtn.setAttribute('aria-expanded', 'false');
     gemmaBtn.addEventListener('click', function () {
-      if (window.GemmaChat) { window.GemmaChat.open(); return; }
-      var label = gemmaBtn.querySelector('.ai-fab-label');
-      label.textContent = 'Loading…';
-      var sc = document.createElement('script');
-      sc.src = 'assets/js/gemma-chat.js';
-      sc.onload = function () { label.textContent = 'Chat with Gemma (runs on your GPU)'; window.GemmaChat.open(); };
-      sc.onerror = function () { label.textContent = 'Chat with Gemma (runs on your GPU)'; };
-      document.head.appendChild(sc);
+      var chat = window.GemmaChat;
+      if (chat) { (chat.toggle || chat.open)(); return; }
+      if (gemmaBusy) return;                    // aria-busy, not disabled: a disabled button would drop the keyboard focus
+      gemmaBusy = true;
+      gemmaBtn.setAttribute('aria-busy', 'true');
+      gemmaLabel.textContent = 'Loading…';
+      var files = (gemmaBtn.getAttribute('data-scripts') || 'assets/js/gemma-chat.js').split(/\s+/);
+      var finish = function () {
+        gemmaBusy = false;
+        gemmaBtn.removeAttribute('aria-busy');
+        if (window.GemmaChat) { gemmaLabel.textContent = gemmaText; window.GemmaChat.open(); return; }
+        gemmaLabel.textContent = 'Unavailable';
+        setTimeout(function () { gemmaLabel.textContent = gemmaText; }, 2500);
+      };
+      (function next(i) {                       // the chat is the last file; the facts and retrieval before it are optional
+        if (i === files.length) { finish(); return; }
+        if (gemmaDone[files[i]]) { next(i + 1); return; }
+        var sc = document.createElement('script'), timer = 0;
+        var settle = function (ok) {
+          clearTimeout(timer);
+          sc.onload = sc.onerror = null;
+          if (ok) gemmaDone[files[i]] = true; else sc.remove();
+          next(i + 1);
+        };
+        sc.src = files[i];
+        sc.onload = function () { settle(true); };
+        sc.onerror = function () { settle(false); };
+        timer = setTimeout(function () { settle(false); }, 15000);      // a stalled request must not leave the tab saying "Loading…"
+        document.head.appendChild(sc);
+      })(0);
     });
   }
 

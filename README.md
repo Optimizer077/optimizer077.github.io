@@ -93,7 +93,9 @@ optimizer077.github.io/
 │       ├── flow-field.js # 2D-canvas fallback background (no WebGL2)
 │       ├── bg-scenes.js  # The 30 background processes (GLSL snippets)
 │       ├── bg-physics.js # GPU background engine (WebGL2): shuffled scenes, ~5% GPU budget
-│       ├── gemma-chat.js # Opt-in on-device Gemma 4 E2B chat (MediaPipe LLM Inference / WebGPU)
+│       ├── gemma-chat.js # Ask-about-Ali chat: instant answers, optional on-device Gemma 4 E2B (MediaPipe / WebGPU)
+│       ├── gemma-rag.js  # Retrieval for the chat: passages from this page, BM25, no model download
+│       ├── ali-facts.js  # Hand-written facts the page does not state in one place (nationality, career order)
 │       └── reading.js    # Reading page: search, filters, year chart
 └── _includes/
     └── header.html
@@ -162,11 +164,33 @@ natively, so no maths library is loaded. Run `python build_math.py` after editin
 `python build_math.py --check` only parses everything. The I-INR and DescanDiffusion equations are quoted from their
 papers; the FCRN and KMBE ones are marked "schematically" because those papers' full text was not available to check.
 
-The **✦ Ask Gemma** button (homepage, bottom-right) loads `assets/js/gemma-chat.js`, which runs
+### Ask Gemma (the side tab on the homepage)
+
+The **Ask Gemma** tab sits on the right edge of the homepage, the reading list and the seminar page, at every screen
+size. The first click loads three files listed in its `data-scripts` attribute (`ali-facts.js`, `gemma-rag.js`,
+`gemma-chat.js`; `stamp_assets.py` fingerprints them like the other assets) and opens a panel to the left of the tab.
+
+**Instant answers need no download.** `gemma-rag.js` reads the homepage's text (About, news, learning, side projects,
+publications with their equations and captions, patents, projects, honors) plus `ali-facts.js`, splits it into passages
+of at most 520 characters and ranks them for a question with BM25 (light stemming, stop words, a few intent
+expansions such as "from" → nationality, "paper" → publications). Without the model, the panel shows the best passages
+and a "From:" row of links. On the homepage the passages come from the live DOM and a link scrolls to the passage and
+marks it; on the other pages `index.html` is fetched once and read the same way, and a link opens the homepage section.
+Editing the homepage therefore updates what the chat knows; only `ali-facts.js` needs editing by hand, for things the
+page does not say in one place. A question about something the page does not mention gets no passages and the reply
+"I could not find that on this page", not the nearest topic.
+
+**Optional on-device model.** *Download & run* (*Load Gemma* once the model is saved) fetches
 [`litert-community/gemma-4-E2B-it-litert-lm`](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm)
-(`gemma-4-E2B-it-web.task`, ~2.0 GB, Apache-2.0) with `@mediapipe/tasks-genai@0.10.29` on WebGPU. Before anything
-is downloaded it warns about size, battery and memory (with extra warnings on phones and metered connections). The
-model is saved in the Origin Private File System after the first download and runs entirely in the browser.
+(`gemma-4-E2B-it-web.task`, ~2.0 GB, Apache-2.0) and runs it with `@mediapipe/tasks-genai@0.10.29` on WebGPU. Before
+anything is downloaded it warns about size, battery and memory (with extra warnings on phones and metered
+connections). The model is saved in the Origin Private File System after the first download and runs entirely in the
+browser. With the model loaded, each question is answered from the retrieved passages (the prompt keeps to 1300 of the
+model's 2048 tokens: the weakest passage is dropped first, then the oldest exchange). The system prompt states that Ali
+is from Pakistan and is not Korean, because the page mentions Korea often (Kyung Hee University, a Korean patent).
+
+To test the prompt without the 2 GB download, set `window.__gemmaMock = { sizeInTokens, generateResponse, … }` before
+clicking *Load Gemma*; the chat then uses that object in place of the model.
 
 ---
 

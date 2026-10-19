@@ -2152,80 +2152,86 @@ html.reduce-motion { scroll-behavior: auto; }
    ============================================================ */
 .gemma-panel {
   position: fixed;
-  right: 1.1rem;
-  bottom: 4.2rem;
+  right: 2.5rem;                                  /* to the left of the side tab */
+  bottom: .9rem;
   z-index: 400;
   display: flex;
   flex-direction: column;
-  width: min(420px, calc(100vw - 2.2rem));
-  height: min(560px, calc(100vh - 7rem));
+  width: min(420px, calc(100vw - 4rem));
+  height: min(620px, calc(100vh - 1.8rem));
+  height: min(620px, calc(100dvh - 1.8rem));
   background: var(--clr-bg);
   border: 1px solid var(--clr-accent-border);
   border-radius: var(--radius);
-  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .8);
+  box-shadow: -8px 10px 28px -18px rgba(47, 42, 37, .55);
   overflow: hidden;
 }
+.gemma-panel[hidden] { display: none; }           /* display:flex would otherwise win over the hidden attribute */
+.gemma-panel:focus { outline: none; }
 .gemma-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: .75rem .9rem;
+  gap: .6rem;
+  padding: .7rem .9rem;
   border-bottom: 1px solid var(--clr-border);
   background: var(--clr-surface);
 }
-.gemma-title { display: flex; flex-direction: column; }
+.gemma-title { display: flex; flex-direction: column; min-width: 0; }
 .gemma-title b { font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; color: var(--clr-primary); }
-.gemma-sub { font-family: var(--font-mono); font-size: .66rem; color: var(--clr-signal); }
+.gemma-sub { font-size: .78rem; font-style: italic; color: var(--clr-muted); text-wrap: balance; }
 .gemma-close {
-  width: 34px; height: 34px;
-  font-size: 1.2rem;
+  flex: none;
+  width: 36px; height: 36px;
+  font-size: 1.25rem; line-height: 1;
   color: var(--clr-primary);
   background: none;
   border: 1px solid var(--clr-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
+.gemma-close:hover { background: var(--clr-accent-light); }
 .gemma-body {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;                   /* the page behind does not scroll when the panel reaches its end */
   padding: .9rem;
   display: flex;
   flex-direction: column;
-  gap: .6rem;
+  gap: .9rem;
 }
-.gemma-intro { font-size: .86rem; }
-.gemma-intro ul { margin: .6rem 0 1rem; padding-left: 1.1rem; color: var(--clr-muted); font-size: .8rem; }
+
+/* the first screen: ask now; the 2 GB model is a folded, optional extra */
+.gemma-intro { font-size: .9rem; }
+.gemma-intro p { margin: 0 0 .5rem; }
+.gemma-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .45rem 0 1rem; }
+.gemma-chip {
+  padding: .35rem .75rem;
+  font: inherit;
+  font-size: .84rem;
+  font-style: italic;
+  color: var(--clr-accent);
+  background: none;
+  border: 1px solid var(--clr-accent-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.gemma-chip:hover { background: var(--clr-accent-light); }
+.gemma-more { padding-top: .55rem; border-top: 1px solid var(--clr-border); }
+.gemma-more summary { padding: .2rem 0; cursor: pointer; font-size: .88rem; font-style: italic; color: var(--clr-accent); }
+.gemma-more[open] summary { margin-bottom: .6rem; }
+.gemma-more ul { margin: .5rem 0 .9rem; padding-left: 1.1rem; color: var(--clr-muted); font-size: .82rem; }
 .gemma-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.gemma-warn { color: var(--clr-signal); font-size: .82rem; }
-.gemma-note { font-family: var(--font-mono); font-size: .72rem; color: var(--clr-muted); }
+.gemma-warn { margin: .5rem 0; padding-left: .6rem; border-left: 2px solid var(--clr-signal); color: var(--clr-signal); font-size: .84rem; }
+.gemma-note { font-family: var(--font-mono); font-size: .74rem; color: var(--clr-muted); }
 .gemma-progress { height: 8px; background: var(--clr-border); border-radius: 4px; overflow: hidden; }
-.gemma-progress span {
-  display: block; width: 0; height: 100%;
-  background: linear-gradient(90deg, var(--clr-accent), var(--clr-signal));
-  transition: width .2s;
-}
-.gemma-msg {
-  max-width: 88%;
-  padding: .55rem .75rem;
-  font-size: .86rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  border-radius: 10px;
-}
-.gemma-msg.is-user {
-  align-self: flex-end;
-  color: var(--clr-on-accent);
-  background: var(--clr-accent);
-  border-bottom-right-radius: 3px;
-}
-.gemma-msg.is-model {
-  align-self: flex-start;
-  color: var(--clr-text);
-  background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
-  border-bottom-left-radius: 3px;
-}
+.gemma-progress span { display: block; width: 0; height: 100%; background: var(--clr-accent); transition: width .2s; }
+
+/* the conversation reads like a printed interview: the question as a running head, the answer under a margin rule */
+.gemma-msg { font-size: .92rem; line-height: 1.55; white-space: pre-wrap; word-wrap: break-word; }
+.gemma-msg.is-user { padding-top: .6rem; color: var(--clr-accent); font-style: italic; border-top: 1px solid var(--clr-border); }
+.gemma-msg.is-model { padding-left: .75rem; color: var(--clr-text); border-left: 2px solid var(--clr-accent-border); }
+.gemma-msg.is-passages { white-space: normal; }
 .gemma-msg.is-typing::after {
   content: "";
   display: inline-block;
@@ -2235,12 +2241,18 @@ html.reduce-motion { scroll-behavior: auto; }
   background: var(--clr-accent);
   animation: blink 1s steps(2, start) infinite;
 }
+.gemma-lead { margin: 0 0 .4rem; font-style: italic; color: var(--clr-muted); }
+.gemma-hit { margin: 0 0 .55rem; line-height: 1.5; }
+.gemma-hit a { color: var(--clr-accent); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+.gemma-sources { margin: -.5rem 0 0 calc(.75rem + 2px); font-size: .8rem; color: var(--clr-muted); }
+.gemma-msg .gemma-sources { margin: .3rem 0 0; }
+.gemma-src { display: inline-block; padding: .25rem 0; margin-right: .8rem; color: var(--clr-accent); text-decoration: underline; text-underline-offset: 2px; }
 .gemma-status {
   margin: 0 !important;
   padding: .35rem .9rem;
   min-height: 1.6em;
   font-family: var(--font-mono);
-  font-size: .66rem;
+  font-size: .72rem;
   color: var(--clr-muted);
   border-top: 1px solid var(--clr-border);
 }
@@ -2248,21 +2260,42 @@ html.reduce-motion { scroll-behavior: auto; }
 .gemma-form textarea {
   flex: 1;
   resize: none;
-  min-height: 40px;
+  min-height: 42px;
   max-height: 120px;
   padding: .55rem .7rem;
   font: inherit;
-  font-size: .86rem;
+  font-size: .9rem;
   color: var(--clr-primary);
   background: var(--clr-surface);
-  border: 1px solid var(--clr-border);
+  border: 1px solid var(--clr-muted);             /* the box itself is the only thing that says "type here": 3:1 or more */
   border-radius: var(--radius-sm);
 }
-.gemma-form textarea:focus { outline: none; border-color: var(--clr-accent); }
+.gemma-form textarea::placeholder { color: var(--clr-muted); opacity: 1; }
+.gemma-form textarea:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: 1px; border-color: var(--clr-accent); }
 
-@media (max-width: 600px) {
-  .gemma-panel { right: .5rem; left: .5rem; width: auto; bottom: 3.6rem; height: calc(100vh - 8rem); }
+/* touch: bigger targets, and 16px text in the box so iOS does not zoom in when it gets focus */
+@media (pointer: coarse), (max-width: 600px) {
+  .gemma-form textarea { font-size: 16px; }
+  .gemma-close { width: 44px; height: 44px; }
+  .gemma-chip { min-height: 40px; padding: .45rem .8rem; font-size: .9rem; }
+  .gemma-more summary { padding: .5rem 0; }
+  .gemma-src { padding: .55rem 0; }
+  .gemma-msg { font-size: .98rem; }
+  .gemma-sub, .gemma-status { font-size: .76rem; }
 }
+/* phones: a full-screen sheet; it covers the tab, so no sliver of it shows beside the panel */
+@media (max-width: 600px) {
+  .gemma-panel { top: 0; right: 0; bottom: 0; left: 0; width: auto; height: auto; border: 0; border-radius: 0; box-shadow: none; }
+}
+
+/* the passage a source link scrolled to: marked for a moment, fading out; its scroll-margin keeps it under the sticky header */
+.is-found {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 5px;
+  scroll-margin: 8rem 0 3rem;
+  transition: outline-color .6s;
+}
+.is-found.is-fading { outline-color: transparent; }
 
 /* Phones: the Ask Gemma button shrinks to an icon so it covers less text */
 @media (max-width: 600px) {
@@ -2738,3 +2771,48 @@ html.reduce-motion #hero-cap, html:not(.js) #hero-cap { min-height: 0; }
   .pub-cite summary { display: inline-block; padding: .55rem 0; }
   .cite-copy { min-height: 44px; }
 }
+
+/* ============================================================
+   Ask Gemma as a tab on the right edge; grounded answers
+   ============================================================ */
+.ai-fab {
+  position: fixed;
+  top: 50%;
+  right: -4px;                           /* tucked 4px past the edge; slides out on hover or focus */
+  bottom: auto;
+  left: auto;
+  transform: translateY(-50%);
+  z-index: 300;
+  display: block;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: .95rem calc(.55rem + 4px) .95rem .55rem;
+  writing-mode: vertical-rl;
+  font-family: var(--font-body);
+  font-size: .98rem;
+  font-style: italic;
+  line-height: 1;
+  color: var(--clr-primary);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-accent-border);
+  border-right: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+  box-shadow: -3px 0 10px -7px rgba(47, 42, 37, .5);
+  cursor: pointer;
+  transition: right .2s var(--ease-out), color .15s, background .15s;
+}
+.ai-fab:hover, .ai-fab:focus-visible { right: 0; color: var(--clr-accent); background: var(--clr-bg); transform: translateY(-50%); }
+.ai-fab[aria-busy="true"] { opacity: .7; cursor: progress; }
+.ai-fab:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: -3px; }
+.ai-fab-label { position: static; width: auto; height: auto; clip: auto; overflow: visible; white-space: nowrap; }
+@media (max-width: 600px) {
+  .ai-fab { top: 58%; margin: 0; padding: .75rem calc(.3rem + 4px) .75rem .3rem; font-size: .86rem; }
+}
+@media (max-width: 1180px) {
+  /* a gutter for the tab (on every page that has it), so the tab never covers the end of a line */
+  .wrap, .rl-wrap, .page-wrap { padding-right: calc(clamp(1rem, 4vw, 2rem) + 12px); }
+}
+html.reduce-motion .ai-fab { transition: none; }
+@media print { .ai-fab, .gemma-panel { display: none; } }
