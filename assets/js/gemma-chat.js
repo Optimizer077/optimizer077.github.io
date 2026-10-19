@@ -24,8 +24,6 @@
     'Write one to four short sentences of plain text, without markdown or lists unless asked.'
   ].join(' ');
 
-  var STARTERS = ['Tell me about Ali', 'What is he working on now?', 'Which papers has he published?', 'Where is he from?'];
-
   var api = { open: open, toggle: toggle };
   window.GemmaChat = api;
 
@@ -124,7 +122,7 @@
     panel.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') { e.stopPropagation(); hide(true); return; }
       if (e.key !== 'Tab' || window.innerWidth > 600) return;         // on a phone the panel fills the screen: keep Tab inside it
-      var f = panel.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), summary, [tabindex="0"]');
+      var f = panel.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), [tabindex="0"]');
       if (!f.length) return;
       var first = f[0], last = f[f.length - 1];
       if (e.shiftKey && (document.activeElement === first || document.activeElement === panel)) { e.preventDefault(); last.focus(); }
@@ -162,7 +160,7 @@
     els.input.rows = 1;
     els.input.maxLength = 600;                                        // a pasted wall of text would not fit the model's context
     els.input.setAttribute('aria-label', 'Your question about Ali');
-    els.input.placeholder = 'Ask about Ali (instant answers)';
+    els.input.placeholder = 'Ask about Ali';
     els.input.addEventListener('input', function () {                 // grows with a longer question, up to a few lines
       els.input.style.height = 'auto';
       els.input.style.height = Math.min(els.input.scrollHeight + 2, 120) + 'px';
@@ -182,18 +180,14 @@
 
   function setStatus(t) { if (els.status) els.status.textContent = t; }       // the panel may have been closed while a stream was still running
 
-  // The first thing in the panel: ask now. Running the 2 GB model is optional and folded away until asked for.
+  // The first thing in the panel: run Gemma. Until it is loaded, the box answers from the page text.
   function intro(cached, gpuOk, gpuNote) {
     if (els.intro) els.intro.remove();                                // replaced in place: messages typed meanwhile stay
     var box = el('div', 'gemma-intro');
     els.intro = box;
-    box.appendChild(el('p', null, 'Answers come instantly from the text of ' + where() + ', with no download. Try one, or type your own question.'));
-    box.appendChild(chips());
-    var more = el('details', 'gemma-more');
-    more.appendChild(el('summary', null, cached ? 'Write answers with Gemma (model saved on this device)'
-                                                : 'Write answers with Gemma on your GPU (optional, ' + gb(MODEL_BYTES) + ' download)'));
-    more.appendChild(el('p', null, 'Google’s Gemma 4 E2B language model runs directly in this tab, on your own GPU. ' +
-      'It reads the same passages first. Nothing you type leaves your device.'));
+    var more = box;
+    more.appendChild(el('p', null, 'Run Google’s Gemma 4 E2B language model directly in this tab, on your own GPU. ' +
+      'It reads ' + where() + ' before it answers, and nothing you type leaves your device.'));
     var ul = el('ul');
     [
       cached ? 'Model already saved on this device — loads from disk in seconds.' :
@@ -221,20 +215,9 @@
       row.appendChild(del);
     }
     more.appendChild(row);
-    box.appendChild(more);
+    box.appendChild(el('p', 'gemma-lead', 'Before the model is loaded, the box below answers from the text of ' + where() + '.'));
     els.body.insertBefore(box, els.body.firstChild);
     setStatus('');
-  }
-
-  function chips() {
-    var row = el('div', 'gemma-chips');
-    STARTERS.forEach(function (q) {
-      var b = el('button', 'gemma-chip', q);
-      b.type = 'button';
-      b.addEventListener('click', function () { els.input.value = q; send(); });
-      row.appendChild(b);
-    });
-    return row;
   }
 
   // "From: Publications · News": links that scroll to the passage on the page and mark it for a moment.
@@ -323,7 +306,7 @@
     var b = el('div', 'gemma-msg is-model is-passages');
     if (!real.length && !hits.overview) {
       b.textContent = 'I could not find that on ' + where() + '. Try Ali’s research, papers, projects or background; ' +
-                      'the optional Gemma model at the top of this panel can take open questions.';
+                      'Gemma (top of this panel) can take open questions.';
     } else {
       b.appendChild(el('p', 'gemma-lead', weak ? 'Not a direct match. The closest passages on ' + where() + ':' : 'From ' + where() + ' (instant, no model):'));
       var shown = (real.length ? real : hits).slice(0, weak ? 2 : 4), lastKey = '';
@@ -522,7 +505,6 @@
     els.sub.textContent = 'Gemma 4 E2B · running on your GPU';
     bubble('model', 'Hi! I am Gemma 4 E2B, running on your GPU right here in the browser (ready in ' +
       ((performance.now() - t0) / 1000).toFixed(0) + ' s). I read the text of ' + where() + ' before I answer. Ask me about Ali, or anything else.');
-    els.body.appendChild(chips());
     els.input.placeholder = 'Ask about Ali’s research, or anything…';
     els.input.disabled = false;
     els.send.disabled = false;

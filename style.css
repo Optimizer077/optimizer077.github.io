@@ -2201,26 +2201,11 @@ html.reduce-motion { scroll-behavior: auto; }
   gap: .9rem;
 }
 
-/* the first screen: ask now; the 2 GB model is a folded, optional extra */
+/* the first screen: run Gemma */
 .gemma-intro { font-size: .9rem; }
 .gemma-intro p { margin: 0 0 .5rem; }
-.gemma-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .45rem 0 1rem; }
-.gemma-chip {
-  padding: .35rem .75rem;
-  font: inherit;
-  font-size: .84rem;
-  font-style: italic;
-  color: var(--clr-accent);
-  background: none;
-  border: 1px solid var(--clr-accent-border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-.gemma-chip:hover { background: var(--clr-accent-light); }
-.gemma-more { padding-top: .55rem; border-top: 1px solid var(--clr-border); }
-.gemma-more summary { padding: .2rem 0; cursor: pointer; font-size: .88rem; font-style: italic; color: var(--clr-accent); }
-.gemma-more[open] summary { margin-bottom: .6rem; }
-.gemma-more ul { margin: .5rem 0 .9rem; padding-left: 1.1rem; color: var(--clr-muted); font-size: .82rem; }
+.gemma-intro ul { margin: .5rem 0 .9rem; padding-left: 1.1rem; color: var(--clr-muted); font-size: .82rem; }
+.gemma-intro .gemma-lead { margin: .8rem 0 0; font-size: .84rem; }
 .gemma-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .gemma-warn { margin: .5rem 0; padding-left: .6rem; border-left: 2px solid var(--clr-signal); color: var(--clr-signal); font-size: .84rem; }
 .gemma-note { font-family: var(--font-mono); font-size: .74rem; color: var(--clr-muted); }
@@ -2277,8 +2262,6 @@ html.reduce-motion { scroll-behavior: auto; }
 @media (pointer: coarse), (max-width: 600px) {
   .gemma-form textarea { font-size: 16px; }
   .gemma-close { width: 44px; height: 44px; }
-  .gemma-chip { min-height: 40px; padding: .45rem .8rem; font-size: .9rem; }
-  .gemma-more summary { padding: .5rem 0; }
   .gemma-src { padding: .55rem 0; }
   .gemma-msg { font-size: .98rem; }
   .gemma-sub, .gemma-status { font-size: .76rem; }
