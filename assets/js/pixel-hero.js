@@ -1,11 +1,9 @@
 /* Pixel portrait with physics effects.
-   The photo is sampled into a grid of square "pixels". The portrait plays the same
-   physics as the page background (bg-physics.js) and switches when it does:
-     diffusion  pixels are noised (x_0 -> x_T) and denoised back (x_T -> x_0)
-     flow       pixels are advected along a curl-noise field, then return
-     heat       colours evolve under the heat equation (blur), then the run is reversed
-     lorenz     pixels are pulled onto the Lorenz attractor and back
-   Without the GPU background it picks an effect at random every ~25 s.
+   The photo is sampled into a grid of square "pixels". The portrait plays the same process as the page
+   background (bg-physics.js) and switches when it does; 30 processes in all, listed in hero-effects.js,
+   with captions and formulas from processes.js. Each effect runs for about 70% of the scene, then the
+   portrait rests (and follows the cursor) until the next one.
+   Without the GPU background it runs its own shuffled loop, one process every ~9 s.
    Between effects the cursor pushes pixels away and a spring brings them back. */
 (function () {
   'use strict';
@@ -15,50 +13,38 @@
 
   var ctx = canvas.getContext('2d');
   var frame = canvas.parentElement;
-  var tVal = document.getElementById('t-val');
   var capEl = document.getElementById('hero-cap');
+  var eqEl = document.getElementById('hero-eq');
+  var countEl = document.getElementById('hero-count');
   var replayBtn = document.getElementById('renoise');
   var reduceMotion = document.documentElement.classList.contains('reduce-motion');
 
+  var FX = window.HERO_FX || {};
+  var has = function (name) { return Object.prototype.hasOwnProperty.call(FX, name); };
+  var INFO = {};
+  (window.PROCESSES || []).forEach(function (p) { INFO[p.id] = p; });
+  var NAMES = Object.keys(FX);
+  if (!NAMES.length) return;
+
   var LEVELS = 10;          // colour steps between noise and the true colour
   var HEAT_SNAPS = [0, 3, 8, 18, 36, 70, 120];   // heat-equation steps stored as blur levels
-  var FLOW_STEPS = 24;      // samples along each pixel's flow path
   var STAGGER = 0.3;        // per-pixel start offset, as a fraction of the run
-
-  var EFFECTS = {
-    diffusion: { out: 1700, hold: 500, back: 2600, label: 't',
-                 cap: 'Diffusion: noised, then denoised back' },
-    flow:      { out: 2200, hold: 300, back: 2400, label: 's',
-                 cap: 'Carried along a swirling flow, then back' },
-    heat:      { out: 2000, hold: 600, back: 2200, label: 'αt',
-                 cap: 'The heat equation run on the photo, then reversed' },
-    lorenz:    { out: 2200, hold: 700, back: 2600, label: 't',
-                 cap: 'Pulled onto the Lorenz attractor and back' },
-    flowmatch: { out: 1800, hold: 500, back: 1800, label: 't',
-                 cap: 'Flow matching: straight paths to noise and back' },
-    langevin:  { out: 2400, hold: 500, back: 2200, label: 'step',
-                 cap: 'Rolling downhill into a loss landscape, then back' },
-    wave:      { out: 1400, hold: 1800, back: 1400, label: 't',
-                 cap: 'Ripples from the wave equation' },
-    vortex:    { out: 2000, hold: 600, back: 2200, label: 't',
-                 cap: 'Twisted by a vortex, then unwound' },
-    gravity:   { out: 2000, hold: 900, back: 2000, label: 'M',
-                 cap: 'Bent by a point mass into an Einstein ring' },
-    kmeans:    { out: 1800, hold: 1000, back: 1800, label: 'iter',
-                 cap: 'Colours sorted into six clusters (k-means)' }
-  };
-  var LANGEVIN_STEPS = 28;
-  var WELLS = [[-0.55, 0.45], [0.5, 0.5], [0, -0.1], [-0.45, -0.6], [0.55, -0.55]];   // minima, in [-1, 1]²
-  var NAMES = Object.keys(EFFECTS);
+  var SPAN = 0.72;          // an effect takes this fraction of its scene
+  var OWN_LEN = 9;          // seconds per effect when the background is not driving
+  var SMALL = Math.min(screen.width, screen.height) < 700 || /Mobi|Android/i.test(navigator.userAgent);   // phones: draw at 30 fps
 
   var crop = (canvas.getAttribute('data-crop') || '').split(',').map(Number);
   var particles = [];
   var cols = 0, rows = 0, cssW = 0, cssH = 0, cell = 0;
   var phase = 'idle';       // 'effect' | 'idle'
-  var fx = null;            // { name, start }
-  var current = 'diffusion', pending = null;
-  var raf = 0, visible = true, randomTimer = 0;
+  var fx = null;            // { name, def, start, dur }
+  var current = '', pending = null, started = false;
+  var raf = 0, visible = true, ownTimer = 0, ownBag = [], ownN = 0, lastPaint = 0;
   var pointer = { x: -1e4, y: -1e4, active: false };
+  var out = { x: 0, y: 0, c: '' };
+  var NOISE = [[160, 48, 31], [31, 62, 112], [122, 84, 13], [34, 30, 33]];
+  var E = { W: 0, H: 0, cell: 0, LEVELS: LEVELS, HEAT_SNAPS: HEAT_SNAPS, particles: particles, t: 0,
+            col: { a: [160, 48, 31], b: [31, 62, 112], o: [122, 84, 13] }, mixLevels: null };
 
   var img = new Image();
   img.onload = init;
@@ -66,29 +52,44 @@
 
   /* ---------------- setup ---------------- */
   function init() {
+    readColours();
     build();
     frame.classList.add('is-live');
+    settle();                                          // the clean portrait, until the first effect starts
     if (reduceMotion) {
       if (replayBtn) replayBtn.hidden = true;
-      settle();
       return;
     }
-    // First view matches the background's opening scene (random, different from the last visit).
-    // Without the GPU background, pick one here the same way.
-    if (window.__bg && window.__bg.stats) {
-      current = window.__bg.stats().scene;
-    } else {
-      var lastP = null;
-      try { lastP = localStorage.getItem('hero-effect'); } catch (e) {}
-      var opts = NAMES.filter(function (n) { return n !== lastP; });
-      current = opts[Math.floor(Math.random() * opts.length)];
-    }
-    if (!EFFECTS[current]) current = 'diffusion';
-    play(current, true);             // start fully "out" and settle back into the portrait
     bindEvents();
+    var now = window.__bgCurrent;                      // the background may already be running
+    if (now && has(now.name)) onScene(now);
+    else ownTimer = setTimeout(function () { if (!started) runOwn(); }, 2200);   // no GPU background: run our own loop
   }
 
+  function clamp255(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
   function rgb(r, g, b) { return 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')'; }
+
+  function readColours() {                              // the dye colours, as the background uses them
+    var cs = getComputedStyle(document.documentElement);
+    var hex = function (v, fb) {
+      var m = /^#([0-9a-f]{6})$/i.exec((v || '').trim());
+      if (!m) return fb;
+      var n = parseInt(m[1], 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    };
+    E.col.a = hex(cs.getPropertyValue('--clr-accent-dark'), E.col.a);
+    E.col.b = hex(cs.getPropertyValue('--clr-signal-dark') || cs.getPropertyValue('--clr-signal'), E.col.b);
+    NOISE = [E.col.a, E.col.b, E.col.o, [34, 30, 33], [196, 178, 146], [236, 226, 206]];   // madder, indigo, ochre, iron black, two paper tones
+  }
+
+  E.mixLevels = function (q, target) {                  // LEVELS colours from the tile's true colour to a dye
+    var res = new Array(LEVELS);
+    for (var s = 0; s < LEVELS; s++) {
+      var f = s / (LEVELS - 1);
+      res[s] = rgb(q.rgb[0] + (target[0] - q.rgb[0]) * f, q.rgb[1] + (target[1] - q.rgb[1]) * f, q.rgb[2] + (target[2] - q.rgb[2]) * f);
+    }
+    return res;
+  };
 
   /* Sample the photo into a grid, precompute colour levels (noise mix and heat blur). */
   function build() {
@@ -103,6 +104,7 @@
     rows = Math.round(cols * sh / sw);
     cell = cssW / cols;
     cssH = rows * cell;
+    E.W = cssW; E.H = cssH; E.cell = cell;
 
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(cssW * dpr);
@@ -119,11 +121,13 @@
     var heat = heatLevels(data);
     var km = kmeans(data, 6);
     particles = new Array(cols * rows);
+    E.particles = particles;
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
         var i = r * cols + c, k = i * 4;
         var R = data[k], G = data[k + 1], B = data[k + 2];
-        var nR = Math.random() * 255, nG = Math.random() * 255, nB = Math.random() * 255;
+        var nc = NOISE[Math.floor(Math.random() * NOISE.length)];       // a dye, jittered
+        var nR = clamp255(nc[0] + (Math.random() - 0.5) * 60), nG = clamp255(nc[1] + (Math.random() - 0.5) * 60), nB = clamp255(nc[2] + (Math.random() - 0.5) * 60);
         var colours = new Array(LEVELS);
         for (var s = 0; s < LEVELS; s++) {
           var f = s / (LEVELS - 1);
@@ -132,12 +136,13 @@
         var tx = c * cell, ty = r * cell;
         particles[i] = {
           tx: tx, ty: ty, x: tx, y: ty, vx: 0, vy: 0,
+          rgb: [R, G, B], lum: 0.299 * R + 0.587 * G + 0.114 * B,
           colours: colours,
           heat: heat.map(function (lvl) { return lvl[i]; }),
           klev: km.levels(i, R, G, B),
           kx: km.cx[km.label[i]] * cell, ky: km.cy[km.label[i]] * cell,
           delay: Math.random(),
-          nx: 0, ny: 0, ax: 0, ay: 0, path: null
+          nx: 0, ny: 0, ax: 0, ay: 0, path: null, alt: null
         };
       }
     }
@@ -169,9 +174,9 @@
     return {
       label: label, cx: cx, cy: cy,
       levels: function (idx, R, G, B) {
-        var c = C[label[idx]], out = [];
-        for (var s2 = 0; s2 < 6; s2++) { var f = s2 / 5; out.push(rgb(R + (c[0] - R) * f, G + (c[1] - G) * f, B + (c[2] - B) * f)); }
-        return out;
+        var c = C[label[idx]], res = [];
+        for (var s2 = 0; s2 < 6; s2++) { var f = s2 / 5; res.push(rgb(R + (c[0] - R) * f, G + (c[1] - G) * f, B + (c[2] - B) * f)); }
+        return res;
       }
     };
   }
@@ -182,11 +187,11 @@
     var n = cols * rows, alpha = 0.22;
     var ch = [new Float32Array(n), new Float32Array(n), new Float32Array(n)];
     for (var i = 0; i < n; i++) { ch[0][i] = data[i * 4]; ch[1][i] = data[i * 4 + 1]; ch[2][i] = data[i * 4 + 2]; }
-    var tmp = new Float32Array(n), out = [], step = 0;
+    var tmp = new Float32Array(n), res = [], step = 0;
     var snap = function () {
       var lvl = new Array(n);
       for (var j = 0; j < n; j++) lvl[j] = rgb(ch[0][j], ch[1][j], ch[2][j]);
-      out.push(lvl);
+      res.push(lvl);
     };
     for (var si = 0; si < HEAT_SNAPS.length; si++) {
       while (step < HEAT_SNAPS[si]) {
@@ -206,102 +211,32 @@
       }
       snap();
     }
-    return out;
-  }
-
-  /* ---------------- per-effect preparation ---------------- */
-  function curl(x, y, t) {                          // same stream function as the background
-    var qx = x * 1.6, qy = y * 1.6;
-    var a = 1.3 * qx + 0.21 * t, b = 1.1 * qy - 0.17 * t, c = 2.1 * (qx + qy) + 0.11 * t, d = 3.7 * qx - 2.9 * qy + 0.3 * t;
-    var dx = 1.3 * Math.cos(a) * Math.cos(b) + 1.05 * Math.cos(c) + 0.925 * Math.cos(d);
-    var dy = -1.1 * Math.sin(a) * Math.sin(b) + 1.05 * Math.cos(c) - 0.725 * Math.cos(d);
-    return [dy, -dx];
-  }
-
-  function lorenzPoints(n) {
-    var x = 0.1, y = 0, z = 25, pts = [], dt = 0.006;
-    for (var i = 0; i < 400; i++) { var dx0 = 10 * (y - x), dy0 = x * (28 - z) - y, dz0 = x * y - 8 / 3 * z; x += dx0 * dt; y += dy0 * dt; z += dz0 * dt; }
-    for (var k = 0; k < n; k++) {
-      for (var s = 0; s < 3; s++) { var dx = 10 * (y - x), dy = x * (28 - z) - y, dz = x * y - 8 / 3 * z; x += dx * dt; y += dy * dt; z += dz * dt; }
-      pts.push([x, z]);
-    }
-    return pts;
-  }
-
-  // Gradient of the loss landscape U(p) = 0.12|p|² − Σ exp(−|p − wᵢ|² / 0.06)
-  function lossGrad(x, y) {
-    var gx = 0.24 * x, gy = 0.24 * y;
-    for (var i = 0; i < WELLS.length; i++) {
-      var dx = x - WELLS[i][0], dy = y - WELLS[i][1], e = Math.exp(-(dx * dx + dy * dy) / 0.06);
-      gx += e * 2 * dx / 0.06; gy += e * 2 * dy / 0.06;
-    }
-    return [gx, gy];
-  }
-
-  function prepare(name) {
-    var i, q;
-    if (name === 'langevin') {
-      for (i = 0; i < particles.length; i++) {
-        q = particles[i];
-        var x = q.tx / cssW * 2 - 1, y = q.ty / cssH * 2 - 1, path = new Float32Array(LANGEVIN_STEPS * 2);
-        for (var s = 0; s < LANGEVIN_STEPS; s++) {
-          path[s * 2] = (x + 1) / 2 * cssW; path[s * 2 + 1] = (y + 1) / 2 * cssH;
-          var g = lossGrad(x, y);
-          x += -g[0] * 0.012 + (Math.random() - 0.5) * 0.012;      // gradient step + Langevin noise
-          y += -g[1] * 0.012 + (Math.random() - 0.5) * 0.012;
-        }
-        q.path = path;
-      }
-      return;
-    }
-    if (name === 'diffusion' || name === 'flowmatch') {
-      for (i = 0; i < particles.length; i++) {
-        q = particles[i];
-        q.nx = Math.random() * (cssW - cell);
-        q.ny = Math.random() * (cssH - cell);
-      }
-    } else if (name === 'flow') {
-      var t0 = Math.random() * 100, stepLen = cssW * 0.028;
-      for (i = 0; i < particles.length; i++) {
-        q = particles[i];
-        var px = q.tx, py = q.ty, path = new Float32Array(FLOW_STEPS * 2);
-        for (var s = 0; s < FLOW_STEPS; s++) {
-          path[s * 2] = px; path[s * 2 + 1] = py;
-          var v = curl(px / cssW * 2 - 1, 1 - py / cssH * 2, t0 + s * 0.05);
-          var len = Math.sqrt(v[0] * v[0] + v[1] * v[1]) + 1e-6;
-          px += v[0] / len * stepLen;
-          py -= v[1] / len * stepLen;
-        }
-        q.path = path;
-      }
-    } else if (name === 'lorenz') {
-      var pts = lorenzPoints(particles.length);
-      for (i = pts.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = pts[i]; pts[i] = pts[j]; pts[j] = tmp; }
-      for (i = 0; i < particles.length; i++) {
-        q = particles[i];
-        q.ax = cssW / 2 + pts[i][0] / 22 * cssW * 0.46 - cell / 2;
-        q.ay = cssH * 0.92 - pts[i][1] / 50 * cssH * 0.84;
-      }
-    }
+    return res;
   }
 
   /* ---------------- playback ---------------- */
   function setCaption(name) {
-    if (capEl) capEl.innerHTML = EFFECTS[name].cap;    // static strings defined above
-    var lab = document.getElementById('t-lab');
-    if (lab) lab.textContent = EFFECTS[name].label;
+    var info = INFO[name];
+    if (!info) return;
+    if (capEl) capEl.textContent = info.cap;
+    // formulas are MathML produced at build time from LaTeX by build_math.py (trusted, static)
+    if (eqEl) eqEl.innerHTML = info.eqHero || info.eq;
   }
 
-  function play(name, entering) {
-    if (!EFFECTS[name]) return;
+  function setCount(n, of) {
+    if (countEl) countEl.textContent = n && of ? '(' + n + ' of ' + of + ')' : '';
+  }
+
+  function play(name, lenSec) {
+    var def = has(name) ? FX[name] : null;
+    if (!def) return;
     if (raf) cancelAnimationFrame(raf);
     current = name;
-    try { localStorage.setItem('hero-effect', name); } catch (e) {}
-    prepare(name);
+    started = true;
+    if (def.prep) def.prep(E);
     setCaption(name);
-    var e = EFFECTS[name];
-    // `entering`: skip the "out" half so the first view assembles the portrait
-    fx = { name: name, start: performance.now() - (entering ? e.out + e.hold : 0) };
+    var span = (lenSec || OWN_LEN) * 1000 * SPAN, w = def.w, sum = w[0] + w[1] + w[2];
+    fx = { name: name, def: def, start: performance.now(), dur: { out: span * w[0] / sum, hold: span * w[1] / sum, back: span * w[2] / sum } };
     phase = 'effect';
     raf = requestAnimationFrame(effectFrame);
   }
@@ -309,85 +244,34 @@
   function smooth(x) { return x * x * (3 - 2 * x); }
 
   function amount(now) {
-    var e = EFFECTS[fx.name], t = now - fx.start;
-    if (t < e.out) return { u: smooth(t / e.out), done: false };
-    if (t < e.out + e.hold) return { u: 1, done: false };
-    var b = (t - e.out - e.hold) / e.back;
+    var d = fx.dur, t = now - fx.start;
+    if (t < d.out) return { u: smooth(t / d.out), done: false };
+    if (t < d.out + d.hold) return { u: 1, done: false };
+    var b = (t - d.out - d.hold) / d.back;
     if (b < 1) return { u: 1 - (1 - Math.pow(1 - b, 3)), done: false };
     return { u: 0, done: true };
   }
 
   function effectFrame(now) {
-    var a = amount(now), u = a.u;
-    var size = cell * (cell < 5 ? 0.92 : 0.86);
+    if (SMALL && now - lastPaint < 30) { raf = requestAnimationFrame(effectFrame); return; }   // effects are time-based: skipping a frame only costs smoothness
+    lastPaint = now;
+    var a = amount(now), u = a.u, def = fx.def, stagger = def.stagger !== false;
+    E.t = (now - fx.start) / 1000;
+    var size = cell * (cell < 5 ? 0.92 : 0.86), base = LEVELS - 1;
     ctx.clearRect(0, 0, cssW, cssH);
     for (var i = 0; i < particles.length; i++) {
       var q = particles[i];
-      // flow matching moves every pixel in lock-step along a straight line (no stagger, no jitter)
-      var ui = fx.name === 'flowmatch' ? u : Math.min(1, Math.max(0, (u - q.delay * STAGGER) / (1 - STAGGER)));
-      var x = q.tx, y = q.ty, col = q.colours[LEVELS - 1];
-      if (fx.name === 'diffusion') {
-        var jit = ui * cell * 2.4;
-        x = q.tx + (q.nx - q.tx) * ui + (Math.random() - 0.5) * jit;
-        y = q.ty + (q.ny - q.ty) * ui + (Math.random() - 0.5) * jit;
-        col = q.colours[Math.round((1 - ui) * (LEVELS - 1))];
-      } else if (fx.name === 'flow') {
-        var f = ui * (FLOW_STEPS - 1), k0 = Math.floor(f), k1 = Math.min(FLOW_STEPS - 1, k0 + 1), w = f - k0;
-        x = q.path[k0 * 2] + (q.path[k1 * 2] - q.path[k0 * 2]) * w;
-        y = q.path[k0 * 2 + 1] + (q.path[k1 * 2 + 1] - q.path[k0 * 2 + 1]) * w;
-      } else if (fx.name === 'heat') {
-        col = q.heat[Math.round(u * (HEAT_SNAPS.length - 1))];   // whole image diffuses together
-      } else if (fx.name === 'flowmatch') {
-        x = q.tx + (q.nx - q.tx) * ui;
-        y = q.ty + (q.ny - q.ty) * ui;
-        col = q.colours[Math.round((1 - ui) * (LEVELS - 1))];
-      } else if (fx.name === 'langevin') {
-        var lf = ui * (LANGEVIN_STEPS - 1), l0 = Math.floor(lf), l1 = Math.min(LANGEVIN_STEPS - 1, l0 + 1), lw = lf - l0;
-        x = q.path[l0 * 2] + (q.path[l1 * 2] - q.path[l0 * 2]) * lw;
-        y = q.path[l0 * 2 + 1] + (q.path[l1 * 2 + 1] - q.path[l0 * 2 + 1]) * lw;
-      } else if (fx.name === 'wave') {
-        // two damped circular waves: displacement along the radius, u scales the amplitude
-        var tt = (now - fx.start) / 1000;
-        var cx1 = cssW * 0.3, cy1 = cssH * 0.35, cx2 = cssW * 0.72, cy2 = cssH * 0.7;
-        var dx1 = q.tx - cx1, dy1 = q.ty - cy1, r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) + 1e-3;
-        var dx2 = q.tx - cx2, dy2 = q.ty - cy2, r2 = Math.sqrt(dx2 * dx2 + dy2 * dy2) + 1e-3;
-        var a1 = Math.sin(r1 * 0.09 - tt * 7) * Math.exp(-r1 / cssW * 1.2);
-        var a2 = Math.sin(r2 * 0.09 - tt * 7 + 1.5) * Math.exp(-r2 / cssW * 1.2);
-        var amp = u * cell * 2.6;
-        x = q.tx + (dx1 / r1 * a1 + dx2 / r2 * a2) * amp;
-        y = q.ty + (dy1 / r1 * a1 + dy2 / r2 * a2) * amp;
-      } else if (fx.name === 'vortex') {
-        // Gaussian vortex: rotation angle falls off with distance from the core
-        var vx0 = q.tx - cssW / 2, vy0 = q.ty - cssH / 2, R0 = cssW * 0.36;
-        var ang = ui * 5.5 * Math.exp(-(vx0 * vx0 + vy0 * vy0) / (R0 * R0));
-        var ca = Math.cos(ang), sa = Math.sin(ang);
-        x = cssW / 2 + vx0 * ca - vy0 * sa;
-        y = cssH / 2 + vx0 * sa + vy0 * ca;
-      } else if (fx.name === 'gravity') {
-        // point-mass lens equation: an image point at radius b appears at (b + sqrt(b² + 4 θE²)) / 2
-        var lx = q.tx - cssW * 0.5, ly = q.ty - cssH * 0.42, b = Math.sqrt(lx * lx + ly * ly) + 1e-3;
-        var thE = cssW * 0.2, rl = (b + Math.sqrt(b * b + 4 * thE * thE)) / 2;
-        var rr = b + (rl - b) * ui;
-        x = cssW * 0.5 + lx / b * rr;
-        y = cssH * 0.42 + ly / b * rr;
-      } else if (fx.name === 'kmeans') {
-        col = q.klev[Math.round(ui * 5)];
-        x = q.tx + (q.kx - q.tx) * ui * 0.35;
-        y = q.ty + (q.ky - q.ty) * ui * 0.35;
-      } else if (fx.name === 'lorenz') {
-        var bend = Math.sin(Math.PI * ui) * cell * 5;
-        x = q.tx + (q.ax - q.tx) * ui + bend;
-        y = q.ty + (q.ay - q.ty) * ui - bend * 0.6;
-      }
-      q.x = x; q.y = y;
-      ctx.fillStyle = col;
-      ctx.fillRect(x, y, size, size);
+      var ui = stagger ? Math.min(1, Math.max(0, (u - q.delay * STAGGER) / (1 - STAGGER))) : u;
+      out.x = q.tx; out.y = q.ty; out.c = q.colours[base];
+      def.at(q, u, ui, E, out);
+      q.x = out.x; q.y = out.y;
+      ctx.fillStyle = out.c;
+      ctx.fillRect(out.x, out.y, size, size);
     }
-    if (tVal) tVal.textContent = String(Math.round(u * 1000));
     if (!a.done) { raf = requestAnimationFrame(effectFrame); return; }
     raf = 0;
     settle();
-    if (pending && pending !== current) { var p = pending; pending = null; setTimeout(function () { play(p); }, 400); }
+    if (pending && pending.name !== current) { var p = pending; pending = null; setTimeout(function () { onScene(p); }, 400); }
     pending = null;
   }
 
@@ -407,7 +291,6 @@
       q.x = q.tx; q.y = q.ty; q.vx = 0; q.vy = 0;
     }
     phase = 'idle';
-    if (tVal) tVal.textContent = '0';
     drawSettled();
   }
 
@@ -464,21 +347,28 @@
     wake();
   }
 
-  /* Follow the background's scene; if there is none, choose at random. */
-  function onScene(name) {
-    if (!EFFECTS[name]) return;
-    if (!visible) { pending = name; return; }
-    play(name);                      // interrupts a running effect so the portrait stays in sync
+  /* Follow the background's scene (detail = { name, n, of, len }); if there is none, run our own loop. */
+  function onScene(detail) {
+    if (!detail || !has(detail.name)) return;
+    clearTimeout(ownTimer);
+    setCount(detail.n, detail.of);
+    if (!visible) { pending = detail; return; }
+    play(detail.name, detail.len);                      // interrupts a running effect so the portrait stays in sync
   }
 
-  function scheduleRandom() {
-    clearTimeout(randomTimer);
-    randomTimer = setTimeout(function () {
-      var next;
-      do { next = NAMES[Math.floor(Math.random() * NAMES.length)]; } while (next === current && NAMES.length > 1);
-      onScene(next);
-      scheduleRandom();
-    }, 22000 + Math.random() * 8000);
+  function ownNext() {
+    if (!ownBag.length) {
+      ownBag = NAMES.filter(function (n) { return n !== current; });     // the one on screen opens the round, so it is never repeated
+      for (var k = ownBag.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = ownBag[k]; ownBag[k] = ownBag[j]; ownBag[j] = t; }
+      ownN = NAMES.length - ownBag.length;
+    }
+    ownN++;
+    return { name: ownBag.shift(), n: ownN, of: NAMES.length, len: OWN_LEN };
+  }
+
+  function runOwn() {
+    onScene(ownNext());
+    ownTimer = setTimeout(runOwn, OWN_LEN * 1000);
   }
 
   function bindEvents() {
@@ -496,20 +386,22 @@
     });
     canvas.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') pointer.active = false; });
 
-    // "next": advance the background (the portrait follows its event); without it, pick another effect
+    // "next": advance the background (the portrait follows its event); without it, take our own next one
     if (replayBtn) replayBtn.addEventListener('click', function () {
-      if (window.__bg && window.__bg.next) { window.__bg.next(); return; }
-      var others = NAMES.filter(function (n) { return n !== current; });
-      play(others[Math.floor(Math.random() * others.length)]);
+      if (window.__bg && window.__bg.next && window.__bg.next()) return;
+      clearTimeout(ownTimer);
+      runOwn();
     });
 
-    window.addEventListener('bgscene', function (e) { onScene(e.detail && e.detail.name); });
-    if (!window.__bg) scheduleRandom();
+    window.addEventListener('bgscene', function (e) {
+      if (e.detail) onScene(e.detail);
+      else { clearTimeout(ownTimer); runOwn(); }       // the background engine has stopped
+    });
 
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         visible = entries[0].isIntersecting;
-        if (visible && pending && phase === 'idle') { var p = pending; pending = null; play(p); }
+        if (visible && pending && phase === 'idle') { var p = pending; pending = null; play(p.name, p.len); }
       }).observe(frame);
     }
 
@@ -526,4 +418,7 @@
       }, 200);
     });
   }
+
+  // for debugging / curiosity: window.__hero.play('rossler')
+  window.__hero = { play: function (n, len) { if (has(n)) { clearTimeout(ownTimer); play(n, len || OWN_LEN); } return has(n); }, names: NAMES };
 })();

@@ -263,7 +263,7 @@
     b.fillRect(x - 1, y - 2, 3, 5);
     b.fillRect(x - 2, y - 1, 5, 3);
     // rotating hub pixel
-    var k = Math.floor(car.spin) % 4;
+    var k = ((Math.floor(car.spin) % 4) + 4) % 4;                // car.spin goes negative when the car rolls back
     var off = [[0, -1], [1, 0], [0, 1], [-1, 0]][k];
     b.fillStyle = palette.hub;
     b.fillRect(x + off[0], y + off[1], 1, 1);

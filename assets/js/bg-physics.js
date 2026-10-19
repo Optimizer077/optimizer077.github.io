@@ -1,32 +1,26 @@
 /* Background physics on the GPU (WebGL2), kept to about 5% of the frame budget.
-   Particle state lives in a float texture and is integrated by a fragment shader.
-   Every 20-30 s the scene changes at random:
-     0 flow       curl-noise advection
-     1 diffusion  forward then reverse diffusion of a shape: x_t = sqrt(abar) x0 + sqrt(1-abar) eps
-     2 heat       Brownian particles coloured by an analytic heat-equation solution
-     3 lorenz     particles relax onto the Lorenz attractor
-   Budget: with EXT_disjoint_timer_query_webgl2 the active particle count is steered
-   toward 5% of the frame time; without it a modest fixed count is used. Pauses when
-   the tab is hidden or throttled. If WebGL2 is unavailable, flow-field.js (2D canvas)
-   runs instead. */
+   Particle state lives in a float texture and is integrated by a fragment shader. The 30 processes
+   themselves (their equations of motion and their colouring) are in bg-scenes.js; this file is the engine:
+
+     - every scene gets its own pair of small programs, compiled lazily and in parallel
+       (KHR_parallel_shader_compile) while the previous scene is still playing;
+     - scenes come from a shuffled bag, so all 30 appear once before any repeats; then the bag is refilled;
+     - each scene fades in and out over the paper, and tells the portrait (pixel-hero.js) through a
+       'bgscene' event so both show the same process at the same time.
+   Budget: with EXT_disjoint_timer_query_webgl2 the active particle count is steered toward 5% of the
+   frame time; without it a modest count is used, thinned if frames drop and restored when they recover.
+   Pauses when the tab is hidden or throttled.
+   If WebGL2 is unavailable, flow-field.js (2D canvas) runs instead. */
 (function () {
   'use strict';
 
   if (document.documentElement.classList.contains('reduce-motion')) return;
+  var DEFS = window.BG_SCENES;
+  if (!DEFS || !DEFS.length) return;
 
   var BUDGET_FRACTION = 0.05;
-  var SCENES = [
-    { name: 'flow',      caption: 'curl-noise flow · ẋ = ∇ × ψ(x, t)' },
-    { name: 'diffusion', caption: 'forward / reverse diffusion · xₜ = √ᾱₜ x₀ + √(1−ᾱₜ) ε' },
-    { name: 'heat',      caption: 'heat equation · ∂T/∂t = α ∇²T  (move the cursor to add heat)' },
-    { name: 'lorenz',    caption: 'Lorenz system · σ = 10, ρ = 28, β = 8/3' },
-    { name: 'flowmatch', caption: 'flow matching · xₜ = (1−t) ε + t x₁  (straight paths, noise ↔ data)' },
-    { name: 'langevin',  caption: 'Langevin dynamics on a loss landscape · dx = −∇U(x) dt + √(2T) dW' },
-    { name: 'wave',      caption: 'wave equation · ∂²u/∂t² = c² ∇²u' },
-    { name: 'vortex',    caption: 'point vortices · u = Σ Γᵢ (−y, x) / 2π r²  (Biot–Savart)' },
-    { name: 'gravity',   caption: 'Newtonian gravity · r̈ = −GM r / |r|³  (orbits)' },
-    { name: 'kmeans',    caption: 'k-means clustering · each point joins its nearest centroid' }
-  ];
+  var DEFAULT_LEN = 9;                       // seconds per scene
+  var FADE_IN = 0.9, FADE_OUT = 0.7;
 
   var canvas = document.createElement('canvas');
   var gl = canvas.getContext('webgl2', { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' });
@@ -35,194 +29,105 @@
   var small = Math.min(screen.width, screen.height) < 700 || /Mobi|Android/i.test(navigator.userAgent);
   var SIDE = small ? 512 : 1024;            // memory cap: 262k (phones) / 1M (desktop) particles
   var timerExt = gl.getExtension('EXT_disjoint_timer_query_webgl2');
-  var rows = timerExt ? SIDE / 16 : (small ? SIDE / 16 : SIDE / 8);   // start; governor adjusts with a timer
+  var parallel = gl.getExtension('KHR_parallel_shader_compile');
+  var ROWS0 = timerExt ? SIDE / 16 : (small ? SIDE / 16 : SIDE / 8);
+  var rows = ROWS0;                          // start here; the governor adjusts
 
-  /* ---------------- shaders ---------------- */
+  /* ---------------- shader sources ---------------- */
+  var PRE = '#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n';
   var VS_FULL = '#version 300 es\nconst vec2 P[3] = vec2[3](vec2(-1.,-1.), vec2(3.,-1.), vec2(-1.,3.));\n' +
     'void main(){ gl_Position = vec4(P[gl_VertexID], 0., 1.); }';
 
-  var COMMON = [
-    'float hash(vec2 p){ p = fract(p*vec2(123.34, 456.21)); p += dot(p, p+45.32); return fract(p.x*p.y); }',
+  var HASH = [
+    'float hash(vec2 p){ vec3 q = fract(vec3(p.xyx)*.1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y)*q.z); }',   // Hoskins hash12: no lattice artefacts
     'vec2 gauss(vec2 s){ float u1 = max(hash(s), 1e-4), u2 = hash(s + 17.3);',
-    '  return sqrt(-2.*log(u1)) * vec2(cos(6.2831853*u2), sin(6.2831853*u2)); }',
-    // loss landscape for the Langevin scene: a wide bowl with five Gaussian wells
-    'const vec2 WELLS[5] = vec2[5](vec2(-.95, .35), vec2(.85, -.3), vec2(.05, .58), vec2(.32, -.55), vec2(-.45, -.45));',
-    'float lossU(vec2 p){ float u = .12*dot(p, p);',
-    '  for (int i = 0; i < 5; i++) { vec2 d = p - WELLS[i]; u -= exp(-dot(d, d)/.08); } return u; }',
-    'vec2 lossGrad(vec2 p){ vec2 g = .24*p;',
-    '  for (int i = 0; i < 5; i++) { vec2 d = p - WELLS[i]; g += exp(-dot(d, d)/.08)*2.*d/.08; } return g; }'
+    '  return sqrt(-2.*log(u1)) * vec2(cos(6.2831853*u2), sin(6.2831853*u2)); }'
   ].join('\n') + '\n';
 
-  var FS_INIT = '#version 300 es\nprecision highp float;\nuniform float uAspect, uSeed;\nout vec4 o;\n' + COMMON +
+  var UPD_LIB = [
+    'float refl(float x, float L){ return abs(mod(x - L, 4.*L) - 2.*L) - L; }',   // fold a coordinate back into [-L, L]
+    // data distributions for the diffusion and flow-matching scenes: a ring, an S-curve, a spiral
+    'vec2 shape(int k, vec2 h){',
+    '  if (k == 0) { float a = h.x*6.2831853; return vec2(cos(a), sin(a))*.55 + gauss(h*3.1)*.015; }',
+    '  if (k == 1) { float th = h.x*3.1415927;',
+    '    vec2 q = h.y < .5 ? vec2(cos(th), sin(th)) : vec2(1. - cos(th), .5 - sin(th));',
+    '    return (q - vec2(.5, .25))*.62 + gauss(h*5.7)*.025; }',
+    '  float r = sqrt(h.x), th2 = r*12.;',
+    '  return vec2(cos(th2), sin(th2))*r*.72 + gauss(h*2.3)*.02;',
+    '}'
+  ].join('\n') + '\n';
+
+  var FS_INIT = PRE + 'uniform float uAspect, uSeed;\nout vec4 o;\n' + HASH +
     'void main(){ vec2 ij = gl_FragCoord.xy;\n' +
     '  o = vec4((hash(ij + uSeed)*2.-1.)*uAspect, hash(ij.yx*1.37 + uSeed*2.1)*2.-1., 0., 0.); }';
 
-  var FS_UPDATE = '#version 300 es\nprecision highp float;\n' +
-    'uniform sampler2D uState;\nuniform int uScene, uShape;\n' +
-    'uniform float uTime, uSceneT, uDt, uAspect, uSeed, uPointerOn;\nuniform vec2 uPointer;\nout vec4 o;\n' + COMMON +
-    'vec2 curl(vec2 p, float t){\n' +
-    '  vec2 q = p*1.6;\n' +
-    '  float a = 1.3*q.x + .21*t, b = 1.1*q.y - .17*t, c = 2.1*(q.x+q.y) + .11*t, d = 3.7*q.x - 2.9*q.y + .3*t;\n' +
-    '  float dx = 1.3*cos(a)*cos(b) + 1.05*cos(c) + .925*cos(d);\n' +
-    '  float dy = -1.1*sin(a)*sin(b) + 1.05*cos(c) - .725*cos(d);\n' +
-    '  return vec2(dy, -dx);\n}\n' +
-    // data distributions for the diffusion scene
-    'vec2 shape(int k, vec2 h){\n' +
-    '  if (k == 0) { float a = h.x*6.2831853; return vec2(cos(a), sin(a))*.55 + gauss(h*3.1)*.015; }\n' +
-    '  if (k == 1) { float th = h.x*3.1415927;\n' +
-    '    vec2 q = h.y < .5 ? vec2(cos(th), sin(th)) : vec2(1. - cos(th), .5 - sin(th));\n' +
-    '    return (q - vec2(.5, .25))*.62 + gauss(h*5.7)*.025; }\n' +
-    '  float r = sqrt(h.x), th2 = r*12.;\n' +
-    '  return vec2(cos(th2), sin(th2))*r*.72 + gauss(h*2.3)*.02;\n}\n' +
-    'void main(){\n' +
-    '  ivec2 ij = ivec2(gl_FragCoord.xy); vec2 fij = vec2(ij);\n' +
-    '  vec4 s = texelFetch(uState, ij, 0);\n' +
-    '  vec2 p = s.xy, z = s.zw;\n' +
-    '  vec2 h = vec2(hash(fij*.731 + .13), hash(fij.yx*1.37 + .71));\n' +   // fixed per particle
-    '  vec2 eps = gauss(fij*.917 + 3.3);\n' +                               // fixed Gaussian per particle
-    '  vec2 nT = gauss(fij*.53 + uSeed);\n' +                               // fresh noise every step
-    '  bool bounded = true;\n' +
-    '  if (uScene == 0) {\n' +
-    '    vec2 f = curl(p, uTime)*.32;\n' +
-    '    if (uPointerOn > .5) { vec2 d = uPointer - p; float r = length(d) + 1e-4; float k = smoothstep(.5, 0., r);\n' +
-    '      f += (d/r*.6 + vec2(-d.y, d.x)/max(r, .06)*.35)*k; }\n' +
-    '    z = mix(z, f, .08); p += z*uDt;\n' +
-    '    if (hash(fij + uSeed) < .002) p = vec2(9.);\n' +
-    '  } else if (uScene == 1) {\n' +
-    '    float c = mod(uSceneT, 14.);\n' +       // hold data, noise it, hold noise, denoise, hold
-    '    float tt = c < 2. ? 0. : c < 6. ? (c-2.)/4. : c < 8. ? 1. : c < 12. ? 1. - (c-8.)/4. : 0.;\n' +
-    '    float ab = cos(1.5707963*tt); ab *= ab;\n' +
-    '    vec2 tgt = sqrt(ab)*shape(uShape, h) + sqrt(1. - ab)*eps*vec2(.5*uAspect, .5) + nT*.003;\n' +
-    '    p += (tgt - p)*(1. - exp(-uDt*4.));\n' +
-    '    z = vec2(tt, 0.); bounded = false;\n' +
-    '  } else if (uScene == 2) {\n' +
-    '    p += nT*sqrt(2.*.004*uDt);\n' +            // Brownian motion, D = 0.004
-    '    if (hash(fij + uSeed) < .001) p = vec2(9.);\n' +
-    '    z = vec2(0.);\n' +
-    '  } else if (uScene == 4) {\n' +           // flow matching: straight-line paths between noise and data
-    '    float c = mod(uSceneT, 12.);\n' +
-    '    float tt = c < 1.5 ? 0. : c < 5.5 ? (c-1.5)/4. : c < 7.5 ? 1. : c < 11.5 ? 1. - (c-7.5)/4. : 0.;\n' +
-    '    vec2 tgt = mix(eps*vec2(.5*uAspect, .5), shape(uShape, h), tt);\n' +
-    '    p += (tgt - p)*(1. - exp(-uDt*9.));\n' +
-    '    z = vec2(1. - tt, 0.); bounded = false;\n' +
-    '  } else if (uScene == 5) {\n' +           // Langevin dynamics: gradient descent on lossU plus noise
-    '    p += -lossGrad(p)*uDt*.25 + nT*sqrt(2.*.03*uDt);\n' +   // warmer: particles explore instead of collapsing
-    '    if (hash(fij + uSeed) < .008) p = vec2(9.);\n' +   // steady turnover keeps the descent itself visible
-    '    z = vec2(clamp((lossU(p) + 1.)/1.4, 0., 1.), 0.);\n' +
-    '  } else if (uScene == 7) {\n' +           // three point vortices advect the particles (Biot-Savart)
-    '    vec2 u = vec2(0.);\n' +
-    '    for (int i = 0; i < 3; i++) { float fi = float(i);\n' +
-    '      vec2 c = vec2(cos(uTime*.11 + fi*2.1)*.55*uAspect, sin(uTime*.09 + fi*2.7)*.45);\n' +
-    '      float G = (i == 1 ? -1. : 1.)*.09; vec2 d = p - c; float r2 = dot(d, d) + .01;\n' +
-    '      u += G*vec2(-d.y, d.x)/r2; }\n' +
-    '    z = mix(z, u, .2); p += z*uDt;\n' +
-    '    if (hash(fij + uSeed) < .002) p = vec2(9.);\n' +
-    '  } else if (uScene == 8) {\n' +           // Newtonian gravity: orbits around a central mass (leapfrog)
-    '    float GM = .12;\n' +
-    '    if (uSceneT < .08 || dot(p, p) > 6.) { float r = .25 + h.x*.8, th = h.y*6.2831853;\n' +
-    '      p = vec2(cos(th)*uAspect*.75, sin(th)*.85)*r; float rr = length(p);\n' +
-    '      z = vec2(-p.y, p.x)/rr*sqrt(GM/rr)*(.8 + .35*hash(fij + .5)); }\n' +
-    '    for (int i = 0; i < 2; i++) { float r2 = dot(p, p) + .004;\n' +
-    '      z += -GM*p/(r2*sqrt(r2))*uDt*.5; p += z*uDt*.5; }\n' +
-    '    bounded = false;\n' +
-    '  } else if (uScene == 9) {\n' +           // k-means: points drift toward their nearest of 5 moving centroids
-    '    vec2 home = vec2((h.x*2.-1.)*uAspect, h.y*2.-1.);\n' +
-    '    float best = 1e9, id = 0.; vec2 bc = home;\n' +
-    '    for (int i = 0; i < 5; i++) { float fi = float(i);\n' +
-    '      vec2 c = vec2(sin(uTime*.13 + fi*1.7)*.7*uAspect, cos(uTime*.1 + fi*2.3)*.7);\n' +
-    '      float dd = dot(home - c, home - c); if (dd < best) { best = dd; bc = c; id = fi; } }\n' +
-    '    p += (mix(home, bc, .3) - p)*(1. - exp(-uDt*3.));\n' +
-    '    z = vec2(id/4., 0.); bounded = false;\n' +
-    '  } else if (uScene == 6) {\n' +           // wave: particles rest on a jittered field; render adds the ripple
-    '    vec2 home = vec2((h.x*2.-1.)*uAspect, h.y*2.-1.);\n' +
-    '    p += (home - p)*(1. - exp(-uDt*3.));\n' +
-    '    z = vec2(0.); bounded = false;\n' +
-    '  } else {\n' +
-    '    float K = .034;\n' +                       // screen = (x*K, (z-25)*K); y stored in s.z
-    '    vec3 L = vec3(clamp(p.x/K, -25., 25.), z.x, clamp(p.y/K + 25., 0., 55.));\n' +
-    '    if (uSceneT < .06) L.y = (h.x - .5)*20.;\n' +
-    '    for (int i = 0; i < 2; i++) {\n' +
-    '      vec3 dL = vec3(10.*(L.y - L.x), L.x*(28. - L.z) - L.y, L.x*L.y - 2.6666667*L.z);\n' +
-    '      L += dL*.0035;\n' +
-    '    }\n' +
-    '    p = vec2(L.x*K, (L.z - 25.)*K); z = vec2(L.y, 0.); bounded = false;\n' +
-    '  }\n' +
-    '  if (bounded && (abs(p.x) > uAspect*1.05 || abs(p.y) > 1.05)) {\n' +
-    '    p = vec2((hash(fij*1.31 + uSeed*3.1)*2.-1.)*uAspect, hash(fij.yx*.77 + uSeed*5.3)*2.-1.); z = vec2(0.);\n' +
-    '  }\n' +
-    '  o = vec4(p, z);\n}';
+  function updSource(def) {
+    return PRE + 'uniform sampler2D uState;\nuniform int uShape, uN;\n' +        // uN: a loop bound the compiler cannot unroll
+      'uniform float uTime, uSceneT, uLen, uDt, uAspect, uSeed, uPointerOn, uVar, uFresh, uFromRow;\nuniform vec2 uPointer;\nout vec4 o;\n' +
+      HASH + UPD_LIB + (def.fns || '') + '\n' +
+      'void main(){\n' +
+      '  ivec2 ij = ivec2(gl_FragCoord.xy); vec2 fij = vec2(ij);\n' +
+      '  vec4 s = texelFetch(uState, ij, 0);\n' +
+      '  vec2 p = s.xy, z = s.zw;\n' +
+      '  vec2 cv = vec2(uAspect, 1.);\n' +
+      '  vec2 h = vec2(hash(fij*.731 + .13), hash(fij.yx*1.37 + .71));\n' +      // fixed per particle
+      '  vec2 eps = gauss(fij*.917 + 3.3);\n' +                                  // fixed Gaussian per particle
+      '  vec2 nT = gauss(fij*.53 + uSeed);\n' +                                  // fresh noise every step
+      '  bool bounded = true;\n' +
+      '  bool fresh = uFresh > .5 || fij.y >= uFromRow;\n' +                     // new scene, or a row that was switched off
+      '  if (fresh) z = vec2(0.);\n' +
+      def.upd + '\n' +
+      '  if (!(abs(p.x) < 1e6 && abs(p.y) < 1e6 && abs(z.x) < 1e6 && abs(z.y) < 1e6)) { p = vec2(9.); z = vec2(0.); bounded = true; }\n' +   // NaN guard
+      '  if (bounded && (abs(p.x) > uAspect*1.05 || abs(p.y) > 1.05)) {\n' +
+      '    p = vec2((hash(fij*1.31 + uSeed*3.1)*2.-1.)*uAspect, hash(fij.yx*.77 + uSeed*5.3)*2.-1.); z = vec2(0.);\n' +
+      '  }\n' +
+      '  o = vec4(p, z);\n}';
+  }
 
-  var VS_RENDER = '#version 300 es\nprecision highp float;\n' +
-    'uniform sampler2D uState;\nuniform int uSide, uScene;\nuniform float uAspect, uTime, uPointerOn;\n' +
-    'uniform vec2 uPointer;\nuniform vec4 uHeat[3];\nuniform vec3 uA, uB;\nuniform float uCenterDim, uInner, uOuter;\nout vec4 vCol;\n' +
-    'void main(){\n' +
-    '  ivec2 ij = ivec2(gl_VertexID % uSide, gl_VertexID / uSide);\n' +
-    '  vec4 s = texelFetch(uState, ij, 0);\n' +
-    '  vec2 pos = s.xy; float ripple = 0.;\n' +
-    // wave equation: expanding ring pulses from point sources (2D, damped), Huygens-style
-    '  if (uScene == 6) { for (int i = 0; i < 3; i++) { vec4 w = uHeat[i]; float age = uTime - w.z;\n' +
-    '      if (age < 0. || age > 6.) continue; vec2 d = pos - w.xy; float r = length(d) + 1e-4;\n' +
-    '      float ring = w.w*exp(-pow((r - .42*age)/.06, 2.))*exp(-age*.45);\n' +
-    '      ripple += ring; pos += d/r*ring*.045; } }\n' +
-    '  gl_Position = vec4(pos.x/uAspect, pos.y, 0., 1.);\n' +
-    '  gl_PointSize = 1.;\n' +
-    '  vec3 col = uA; float a = 1.;\n' +
-    // colour maps: amber -> orange -> coral for speed / noise level
-    '  vec3 violet = vec3(.48, .33, .05);\n' +   // ochre: the third Ajrak dye, between madder (uA) and indigo (uB)
-    '  if (uScene == 0 || uScene == 7 || uScene == 8) { float v = clamp(length(s.zw)*1.8, 0., 1.);\n' +
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
-    '    if (uScene == 7) a = 2.2; else if (uScene == 8) a = 3.; }\n' +   // spread-out scenes need more light
-    '  else if (uScene == 1) { float v = s.z;\n' +
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.);\n' +
-    '    a = .9 - .6*v; }\n' +   // ink on paper: scattered noise stays faint, the shape stays crisp
-    '  else if (uScene == 2) {\n' +
-    // analytic solution of the 2D heat equation for instantaneous point sources: T ~ exp(-r^2/4at)/t
-    '    float T = 0.;\n' +
-    '    for (int i = 0; i < 3; i++) { vec4 hs = uHeat[i]; float t = max(uTime - hs.z, 0.) + .15;\n' +
-    '      vec2 d = s.xy - hs.xy; T += hs.w*exp(-dot(d, d)/(4.*.02*t))*min(1., .9/(t + .3)); }\n' +
-    '    if (uPointerOn > .5) { vec2 d = s.xy - uPointer; T += .8*exp(-dot(d, d)/.006); }\n' +
-    '    T = clamp(T, 0., 1.);\n' +
-    // heat colour scale (inferno-like): deep violet -> magenta -> orange -> pale yellow
-    '    vec3 h0 = vec3(.78, .66, .45), h1 = vec3(.60, .42, .07), h2 = vec3(.63, .19, .12), h3 = vec3(.15, .11, .12);\n' +   // dye ramp: paper -> ochre -> madder -> iron-black
-    '    float Tv = sqrt(T);\n' +   // lift moderate temperatures so the spreading heat stays visible
-    '    col = Tv < .33 ? mix(h0, h1, Tv/.33) : Tv < .66 ? mix(h1, h2, (Tv - .33)/.33) : mix(h2, h3, (Tv - .66)/.34);\n' +
-    '    a = .08 + Tv*16.;\n' +   // cold particles nearly invisible on paper; warm regions show as dye
-    '  } else if (uScene == 9) { float v = s.z;\n' +          // k-means: one colour per cluster
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = 2.; }\n' +
-    '  else if (uScene == 4) { float v = s.z;\n' +          // flow matching: data = accent, noise = coral
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .9 - .6*v; }\n' +
-    '  else if (uScene == 5) { float v = s.z;\n' +              // Langevin: low loss = accent, high loss = coral
-    '    col = v < .5 ? mix(uA, violet, v*2.) : mix(violet, uB, v*2. - 1.); a = .35 + 2.6*v; }\n' +   // bright while descending, dim once settled in a minimum
-    '  else if (uScene == 6) { float v = clamp(ripple, 0., 1.);\n' +
-    '    col = mix(uB, uA, v); a = .45 + v*5.; }\n' +   // wave crests in madder over indigo
-    '  else col = mix(uA, uB, step(0., s.z));\n' +
-    // readability: particles behind the text column are dimmed; the side margins stay bright
-    '  a *= mix(uCenterDim, 1., smoothstep(uInner, uOuter, abs(gl_Position.x)));\n' +
-    '  vCol = vec4(col, a);\n}';
+  function renSource(def) {
+    return PRE + 'uniform sampler2D uState;\nuniform int uSide;\n' +
+      'uniform float uAspect, uTime, uSceneT, uLen, uPointerOn, uFade, uVar;\nuniform vec2 uPointer;\nuniform vec4 uHeat[3];\n' +
+      'uniform vec3 uA, uB;\nuniform float uCenterDim, uInner, uOuter;\nout vec4 vCol;\n' + HASH +
+      'const vec3 OCHRE = vec3(.48, .33, .05);\n' +                                // the third Ajrak dye, between madder (uA) and indigo (uB)
+      'vec3 ramp(float v){ return v < .5 ? mix(uA, OCHRE, v*2.) : mix(OCHRE, uB, v*2. - 1.); }\n' +
+      'void main(){\n' +
+      '  ivec2 ij = ivec2(gl_VertexID % uSide, gl_VertexID / uSide);\n' +
+      '  vec4 s = texelFetch(uState, ij, 0);\n' +
+      '  vec2 pos = s.xy;\n' +
+      '  vec3 col = uA; float a = 1.;\n' +
+      def.col + '\n' +
+      '  gl_Position = vec4(pos.x/uAspect, pos.y, 0., 1.);\n' +
+      '  gl_PointSize = 1.;\n' +
+      '  a *= uFade;\n' +
+      // readability: particles behind the text column are dimmed; the side margins stay bright
+      '  a *= mix(uCenterDim, 1., smoothstep(uInner, uOuter, abs(gl_Position.x)));\n' +
+      '  vCol = vec4(col, a);\n}';
+  }
 
-  var FS_RENDER = '#version 300 es\nprecision highp float;\nuniform float uAlpha, uCap;\nin vec4 vCol;\nout vec4 o;\n' +
+  var FS_RENDER = PRE + 'uniform float uAlpha, uCap;\nin vec4 vCol;\nout vec4 o;\n' +
     'void main(){ float a = min(uAlpha*vCol.a, uCap); o = vec4(vCol.rgb*a, a); }';   // no single particle glows too bright
 
   /* ---------------- GL setup ---------------- */
-  function compile(type, src) {
-    var sh = gl.createShader(type);
-    gl.shaderSource(sh, src);
-    gl.compileShader(sh);
-    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
-    return sh;
+  // Programs are started without waiting for the result; poll() finishes them once the driver is done.
+  function begin(vs, fs) {
+    var h = { pr: gl.createProgram(), vs: gl.createShader(gl.VERTEX_SHADER), fs: gl.createShader(gl.FRAGMENT_SHADER), u: null };
+    gl.shaderSource(h.vs, vs); gl.compileShader(h.vs);
+    gl.shaderSource(h.fs, fs); gl.compileShader(h.fs);
+    gl.attachShader(h.pr, h.vs); gl.attachShader(h.pr, h.fs);
+    gl.linkProgram(h.pr);
+    return h;
   }
-  function program(vs, fs) {
-    var pr = gl.createProgram();
-    gl.attachShader(pr, compile(gl.VERTEX_SHADER, vs));
-    gl.attachShader(pr, compile(gl.FRAGMENT_SHADER, fs));
-    gl.linkProgram(pr);
-    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
-    pr.u = {};
-    for (var i = 0, n = gl.getProgramParameter(pr, gl.ACTIVE_UNIFORMS); i < n; i++) {
-      var name = gl.getActiveUniform(pr, i).name.replace(/\[0\]$/, '');
-      pr.u[name] = gl.getUniformLocation(pr, name);
+  function isDone(h) { return !parallel || gl.getProgramParameter(h.pr, parallel.COMPLETION_STATUS_KHR); }
+  function finish(h, label) {
+    if (!gl.getProgramParameter(h.pr, gl.LINK_STATUS)) {
+      throw new Error(label + ': ' + (gl.getProgramInfoLog(h.pr) || '') + (gl.getShaderInfoLog(h.vs) || '') + (gl.getShaderInfoLog(h.fs) || ''));
     }
-    return pr;
+    h.u = {};
+    for (var i = 0, n = gl.getProgramParameter(h.pr, gl.ACTIVE_UNIFORMS); i < n; i++) {
+      var name = gl.getActiveUniform(h.pr, i).name.replace(/\[0\]$/, '');
+      h.u[name] = gl.getUniformLocation(h.pr, name);
+    }
+    gl.deleteShader(h.vs); gl.deleteShader(h.fs);
   }
   function stateTexture() {
     var t = gl.createTexture();
@@ -237,26 +142,21 @@
     return { t: t, f: f };
   }
 
-  var progInit, progUpdate, progRender, vao, tex, cur = 0;
+  var progInit, vao, tex, cur = 0;
   try {
-    progInit = program(VS_FULL, FS_INIT);
-    progUpdate = program(VS_FULL, FS_UPDATE);
-    progRender = program(VS_RENDER, FS_RENDER);
+    progInit = begin(VS_FULL, FS_INIT);
+    finish(progInit, 'init');
     vao = gl.createVertexArray();
     tex = [stateTexture(), stateTexture()];
   } catch (err) {
+    if (window.console) console.warn('[bg] ' + err.message);
     return;                                   // 2D fallback takes over
   }
 
   canvas.id = 'bg-gl';
   canvas.setAttribute('aria-hidden', 'true');
-  document.documentElement.classList.add('bg-gl');
   document.body.insertBefore(canvas, document.body.firstChild);
-
-  var caption = document.createElement('p');
-  caption.className = 'bg-caption';
-  caption.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(caption);
+  document.documentElement.classList.add('bg-gl');           // hides the 2D fallback straight away; undone if no scene can start
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -265,7 +165,7 @@
   resize();
   (function seed() {
     var aspect = canvas.width / canvas.height;
-    gl.useProgram(progInit);
+    gl.useProgram(progInit.pr);
     gl.bindVertexArray(vao);
     gl.viewport(0, 0, SIDE, SIDE);
     for (var k = 0; k < 2; k++) {
@@ -292,47 +192,148 @@
   })();
 
   /* ---------------- scenes ---------------- */
-  // Each visit opens on a random scene, never the one the visitor saw last.
-  var lastSeen = -1;
-  try { var ls = localStorage.getItem('bg-scene'); if (ls !== null) lastSeen = +ls; } catch (e) {}
-  var scene;
-  do { scene = Math.floor(Math.random() * SCENES.length); } while (scene === lastSeen && SCENES.length > 1);
-  var shapeKind = 0, sceneStart = 0, sceneLen = 25;
-  var heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]], nextHeat = 0, heatSlot = 0;
+  var scenes = DEFS.map(function (d, i) {
+    return { def: d, idx: i, upd: null, ren: null, ready: false, failed: false, building: false };
+  });
+  var byId = {};
+  scenes.forEach(function (sc) { byId[sc.def.id] = sc; });
+  var pending = [];
 
-  // Scenes come from a shuffled bag, so every process appears before any repeats.
-  var bag = [];
-  function nextScene() {
-    if (!bag.length) {
-      bag = SCENES.map(function (_, k) { return k; }).filter(function (k) { return k !== scene; });
-      for (var k = bag.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var tmp = bag[k]; bag[k] = bag[j]; bag[j] = tmp; }
+  function build(sc) {
+    if (sc.ready || sc.failed || sc.building) return;
+    sc.building = true;
+    try {
+      sc.upd = begin(VS_FULL, updSource(sc.def));
+      sc.ren = begin(renSource(sc.def), FS_RENDER);
+      pending.push(sc);
+    } catch (e) { fail(sc, e); }
+  }
+  function fail(sc, e) {
+    sc.failed = true; sc.building = false;
+    [sc.upd, sc.ren].forEach(function (h) { if (h) { gl.deleteProgram(h.pr); gl.deleteShader(h.vs); gl.deleteShader(h.fs); } });
+    if (window.console) console.warn('[bg] scene "' + sc.def.id + '" disabled: ' + e.message);
+  }
+  function settle(sc) {
+    try { finish(sc.upd, sc.def.id + ' update'); finish(sc.ren, sc.def.id + ' render'); sc.ready = true; sc.building = false; }
+    catch (e) { fail(sc, e); }
+  }
+  function poll() {
+    for (var i = pending.length - 1; i >= 0; i--) {
+      var sc = pending[i];
+      if (!isDone(sc.upd) || !isDone(sc.ren)) continue;
+      pending.splice(i, 1);
+      settle(sc);
     }
-    return bag.shift();
+  }
+  function buildNow(sc) {                     // blocking: only for the debug hooks
+    build(sc);
+    var k = pending.indexOf(sc);
+    if (k >= 0) { pending.splice(k, 1); settle(sc); }
+  }
+  function buildSoon(sc) {                    // without parallel compilation, take the whole stall in an idle callback, not in a frame
+    if (parallel) { build(sc); return; }
+    if (sc.soon || sc.ready || sc.failed) return;
+    sc.soon = true;
+    (window.requestIdleCallback || function (f) { return setTimeout(f, 60); })(function () { buildNow(sc); }, { timeout: 1500 });
   }
 
-  function setScene(i, now) {
-    scene = i;
-    sceneStart = now;
-    // one full cycle for the cyclic scenes, 13-17 s for the others
-    sceneLen = i === 1 ? 14 : i === 4 ? 12 : 13 + Math.random() * 4;
+  // Scenes come from a shuffled bag, so every process appears before any repeats.
+  var queue = [];                              // entries {sc, n}: n is the position within its round
+  function shuffle(a) {
+    for (var k = a.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = a[k]; a[k] = a[j]; a[j] = t; }
+    return a;
+  }
+  function refill(avoid) {
+    var ok = scenes.filter(function (sc) { return !sc.failed; });
+    var round = shuffle(ok.slice());
+    if (round.length > 1 && round[0] === avoid) { var j = 1 + Math.floor(Math.random() * (round.length - 1)); var t = round[0]; round[0] = round[j]; round[j] = t; }
+    round.forEach(function (sc, k) { queue.push({ sc: sc, n: k + 1, of: round.length }); });
+  }
+  function ensureQueue(need, avoid) {
+    queue = queue.filter(function (e) { return !e.sc.failed; });
+    for (var guard = 0; queue.length < need && guard < 3; guard++) refill(queue.length ? queue[queue.length - 1].sc : avoid);
+  }
+  function startRound(first) {                 // a fresh round that opens with the given scene
+    var ok = scenes.filter(function (sc) { return !sc.failed; });
+    queue = shuffle(ok.filter(function (sc) { return sc !== first; })).map(function (sc, k) { return { sc: sc, n: k + 2, of: ok.length }; });
+    return { sc: first, n: 1, of: ok.length };
+  }
+
+  var wantNext = false;
+  var scene = null, entry = null, sceneStart = -1, curLen = DEFAULT_LEN, uVar = 0.5, shapeKind = 0, fresh = 1;
+  var heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]], nextHeat = 0, heatSlot = 0;
+  var t0 = performance.now();
+  var lastSeen = '';
+  try { lastSeen = localStorage.getItem('bg-scene-id') || ''; } catch (e) {}
+
+  function prefetch() {
+    ensureQueue(3, scene);
+    for (var k = 0; k < 2 && k < queue.length; k++) buildSoon(queue[k].sc);
+  }
+
+  function setScene(e, now) {
+    entry = e; scene = e.sc;
+    queue = queue.filter(function (x) { return x !== e; });
+    sceneStart = -1;                           // set on the first frame, so a compile stall never eats the scene's time
+    curLen = scene.def.len || DEFAULT_LEN;
+    uVar = Math.random();
     shapeKind = Math.floor(Math.random() * 3);
+    fresh = 1;
     nextHeat = 0;
     heat = [[0, 0, -99, 0], [0, 0, -99, 0], [0, 0, -99, 0]];
-    if (i === 2) {
-      // start with three sources already burning (staggered ages) so the scene is visible at once
+    var src = scene.def.src;
+    if (src && src.kind === 'heat') {
+      // start with sources already burning (staggered ages) so the scene is visible at once
       var tNow = (now - t0) / 1000, asp = canvas.width / canvas.height;
       for (var hs = 0; hs < 3; hs++) {
         heat[hs] = [(Math.random() * 1.6 - 0.8) * asp, Math.random() * 1.4 - 0.7, tNow - hs * 0.8, 0.9 + Math.random() * 0.3];
       }
-      heatSlot = 0;
+      heatSlot = 2;                          // the next refresh replaces the oldest source
       nextHeat = tNow + 1.4;
     }
-    try { localStorage.setItem('bg-scene', String(i)); } catch (e) {}
-    caption.textContent = SCENES[i].caption;
-    window.dispatchEvent(new CustomEvent('bgscene', { detail: { name: SCENES[i].name } }));
-    caption.classList.remove('is-on');
-    void caption.offsetWidth;                                // restart the fade
-    caption.classList.add('is-on');
+    try { localStorage.setItem('bg-scene-id', scene.def.id); } catch (err) {}
+    var detail = { name: scene.def.id, index: scene.idx, n: e.n, of: e.of, len: curLen };
+    window.__bgCurrent = detail;
+    window.dispatchEvent(new CustomEvent('bgscene', { detail: detail }));
+    prefetch();
+  }
+
+  // first scene: a random one the visitor did not see last, started as soon as its programs are ready
+  var firstTry = null, firstAt = 0, firstFails = 0;
+  function shutDown() {                        // the engine is finished: hand the page back to the 2D fallback and tell the portrait
+    cancelAnimationFrame(raf); raf = 0;
+    canvas.remove();
+    document.documentElement.classList.remove('bg-gl');
+    window.__bg = null; window.__bgCurrent = null;
+    window.dispatchEvent(new CustomEvent('bgscene', { detail: null }));   // the portrait then runs its own loop
+  }
+  function giveUp() { shutDown(); }            // nothing compiles here
+  function startFirst(now) {
+    if (!firstTry) {
+      ensureQueue(1, byId[lastSeen]);
+      var pool = queue.filter(function (e) { return e.sc.def.id !== lastSeen && !e.sc.failed; });
+      firstTry = pool[Math.floor(Math.random() * pool.length)] || queue[0];
+      if (!firstTry) { giveUp(); return; }
+      firstAt = 0;
+      build(firstTry.sc);
+    }
+    if (firstTry.sc.ready) {
+      var sc = firstTry.sc; firstTry = null;
+      setScene(startRound(sc), now);
+      return;
+    }
+    if (!firstAt) firstAt = now;
+    if (firstTry.sc.failed || now - firstAt > 8000) {          // pick another one; after a few misses, stop trying
+      firstTry = null;
+      if (++firstFails >= 4) giveUp();
+    }
+  }
+
+  function pickNext() {                        // the first ready scene in the bag
+    ensureQueue(3, scene);
+    for (var k = 0; k < queue.length; k++) if (queue[k].sc.ready) return queue[k];
+    buildSoon(queue[0].sc);
+    return null;
   }
 
   /* ---------------- input ---------------- */
@@ -378,85 +379,122 @@
       rows *= Math.min(1.12, Math.max(0.8, Math.pow(ratio, 0.6)));
     } else if (frameMs > budget * 1.25) {
       rows *= 0.7;                                           // no timer: just back off if frames drop
+    } else if (frameMs < budget * 1.05) {
+      rows = Math.min(ROWS0, rows * 1.05);                   // ...and come back once they recover
     }
     rows = Math.max(8, Math.min(SIDE, rows));
   }
 
   /* ---------------- frame ---------------- */
-  var raf = 0, last = 0, t0 = performance.now();
-  setScene(scene, t0);
+  var raf = 0, last = 0, prevActive = 0;
+  // a uniform the compiler optimised away has no location; skip it instead of passing undefined
+  function u1i(l, v) { if (l) gl.uniform1i(l, v); }
+  function u1f(l, v) { if (l) gl.uniform1f(l, v); }
+  function u2f(l, x, y) { if (l) gl.uniform2f(l, x, y); }
+
+  function smooth(a, b, x) { var k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); }
 
   function frame(now) {
+    if (!canvas.isConnected) return;                         // gave up, or the context was lost
     raf = requestAnimationFrame(frame);
     var dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
     if (last) { intervals.push(now - last); if (intervals.length > 60) intervals.shift(); }
     last = now;
     if (gl.isContextLost()) return;
 
-    if (now - sceneStart > sceneLen * 1000) setScene(nextScene(), now);
-    var t = (now - t0) / 1000, st = (now - sceneStart) / 1000;
-    if ((scene === 2 || scene === 6) && t > nextHeat) {      // heat sources / wave sources
-      var aspect0 = canvas.width / canvas.height;
-      heat[heatSlot] = [(Math.random() * 1.6 - 0.8) * aspect0, Math.random() * 1.4 - 0.7, t,
-                        scene === 6 ? 0.7 + Math.random() * 0.5 : 0.8 + Math.random() * 0.4];
-      heatSlot = (heatSlot + 1) % 3;
-      nextHeat = t + (scene === 6 ? 1.4 : 2.2);
+    poll();
+    if (!scene) { startFirst(now); if (!scene) return; }
+    if (sceneStart < 0) sceneStart = now;
+
+    var st = (now - sceneStart) / 1000;
+    if (wantNext) {                                          // a "next" that arrived before any scene was ready
+      var wn = pickNext();
+      if (wn) { wantNext = false; setScene(wn, now); sceneStart = now; st = 0; }
     }
+    if (st > curLen - FADE_OUT - 0.3) {                      // about to switch: is the next scene ready?
+      var nxt = pickNext();
+      if (!nxt) curLen = st + FADE_OUT + 0.4;                // not yet: stay a little longer rather than go blank
+      else if (st >= curLen) { setScene(nxt, now); sceneStart = now; st = 0; }
+    }
+    var nominal = scene.def.len || DEFAULT_LEN;
+    var t = (now - t0) / 1000;
+    var src = scene.def.src;
+    if (src && t > nextHeat) {                               // heat sources / wave sources
+      var aspect0 = canvas.width / canvas.height;
+      var wave = src.kind === 'wave';
+      heat[heatSlot] = [(Math.random() * 1.6 - 0.8) * aspect0, Math.random() * 1.4 - 0.7, t,
+                        wave ? 0.7 + Math.random() * 0.5 : 0.8 + Math.random() * 0.4];
+      heatSlot = (heatSlot + 1) % 3;
+      nextHeat = t + (src.period || 2);
+    }
+    var fade = smooth(0, FADE_IN, st) * (1 - smooth(curLen - FADE_OUT, curLen, st));
 
     var query = null;
     if (timerExt && queries.length < 4) { query = gl.createQuery(); gl.beginQuery(timerExt.TIME_ELAPSED_EXT, query); }
 
     var aspect = canvas.width / canvas.height;
     var active = Math.max(1, Math.round(rows));
+    var fromRow = active > prevActive ? prevActive : SIDE + 1;   // rows that were off until now start fresh
+    prevActive = active;
 
     gl.disable(gl.BLEND);
     gl.bindFramebuffer(gl.FRAMEBUFFER, tex[1 - cur].f);
     gl.viewport(0, 0, SIDE, active);
-    gl.useProgram(progUpdate);
+    var U = scene.upd.u;
+    gl.useProgram(scene.upd.pr);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, tex[cur].t);
-    gl.uniform1i(progUpdate.u.uState, 0);
-    gl.uniform1i(progUpdate.u.uScene, scene);
-    gl.uniform1i(progUpdate.u.uShape, shapeKind);
-    gl.uniform1f(progUpdate.u.uTime, t);
-    gl.uniform1f(progUpdate.u.uSceneT, st);
-    gl.uniform1f(progUpdate.u.uDt, dt);
-    gl.uniform1f(progUpdate.u.uAspect, aspect);
-    gl.uniform1f(progUpdate.u.uSeed, (now % 1000) * 0.137);
-    gl.uniform1f(progUpdate.u.uPointerOn, pointer.on);
-    gl.uniform2f(progUpdate.u.uPointer, pointer.x, pointer.y);
+    u1i(U.uState, 0);
+    u1i(U.uShape, shapeKind);
+    u1i(U.uN, Math.min(256, Math.ceil((st + 2.4) / 0.13) + 2));
+    u1f(U.uTime, t);
+    u1f(U.uSceneT, st);
+    u1f(U.uLen, nominal);
+    u1f(U.uDt, dt);
+    u1f(U.uAspect, aspect);
+    u1f(U.uSeed, (now % 1000) * 0.137);
+    u1f(U.uVar, uVar);
+    u1f(U.uFresh, fresh);
+    u1f(U.uFromRow, fromRow);
+    u1f(U.uPointerOn, pointer.on);
+    u2f(U.uPointer, pointer.x, pointer.y);
     gl.bindVertexArray(vao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     cur = 1 - cur;
+    fresh = 0;
 
     var count = active * SIDE;
+    var R = scene.ren.u;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);   // ink on paper: dense areas darken, never glow
-    gl.useProgram(progRender);
+    gl.useProgram(scene.ren.pr);
     gl.bindTexture(gl.TEXTURE_2D, tex[cur].t);
-    gl.uniform1i(progRender.u.uState, 0);
-    gl.uniform1i(progRender.u.uSide, SIDE);
-    gl.uniform1i(progRender.u.uScene, scene);
-    gl.uniform1f(progRender.u.uAspect, aspect);
-    gl.uniform1f(progRender.u.uTime, t);
-    gl.uniform1f(progRender.u.uPointerOn, pointer.on);
-    gl.uniform2f(progRender.u.uPointer, pointer.x, pointer.y);
-    gl.uniform4fv(progRender.u.uHeat, [].concat(heat[0], heat[1], heat[2]));
-    gl.uniform3fv(progRender.u.uA, colA);
-    gl.uniform3fv(progRender.u.uB, colB);
+    u1i(R.uState, 0);
+    u1i(R.uSide, SIDE);
+    u1f(R.uAspect, aspect);
+    u1f(R.uTime, t);
+    u1f(R.uSceneT, st);
+    u1f(R.uLen, nominal);
+    u1f(R.uVar, uVar);
+    u1f(R.uFade, fade);
+    u1f(R.uPointerOn, pointer.on);
+    u2f(R.uPointer, pointer.x, pointer.y);
+    if (R.uHeat) gl.uniform4fv(R.uHeat, [].concat(heat[0], heat[1], heat[2]));
+    gl.uniform3fv(R.uA, colA);
+    gl.uniform3fv(R.uB, colB);
     // background: keep it calm and roughly constant in brightness whatever the count
-    gl.uniform1f(progRender.u.uAlpha, Math.min(0.4, Math.max(0.02, 28000 / count)) * (small ? 0.75 : 1) * 1.0);
+    u1f(R.uAlpha, Math.min(0.4, Math.max(0.02, 28000 / count)) * (small ? 0.75 : 1) * (scene.def.gain || 1));
     // Keep text readable: cap each particle's brightness and dim the column where text sits.
     var contentHalf = Math.min(1140, window.innerWidth) / 2 - 32;     // matches .wrap max-width and gutter
     var narrow = window.innerWidth <= 760;                            // phones: text spans the full width
-    gl.uniform1f(progRender.u.uCap, narrow ? 0.2 : 0.26);              // fewer, darker ink marks rather than faint dust
-    gl.uniform1f(progRender.u.uCenterDim, narrow ? 0.3 : 0.32);
-    gl.uniform1f(progRender.u.uInner, narrow ? 2 : 0.92 * contentHalf / (window.innerWidth / 2));
-    gl.uniform1f(progRender.u.uOuter, narrow ? 3 : Math.min(1, contentHalf / (window.innerWidth / 2) + 0.12));
+    u1f(R.uCap, (narrow ? 0.2 : 0.26) * (scene.def.cap || 1));         // fewer, darker ink marks rather than faint dust
+    u1f(R.uCenterDim, narrow ? 0.3 : 0.32);
+    u1f(R.uInner, narrow ? 2 : 0.92 * contentHalf / (window.innerWidth / 2));
+    u1f(R.uOuter, narrow ? 3 : Math.min(1, contentHalf / (window.innerWidth / 2) + 0.12));
     gl.drawArrays(gl.POINTS, 0, count);
 
     if (query) { gl.endQuery(timerExt.TIME_ELAPSED_EXT); queries.push(query); }
@@ -467,24 +505,41 @@
   raf = requestAnimationFrame(frame);
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
-    else if (!raf) { last = 0; raf = requestAnimationFrame(frame); }
+    else if (!raf) { last = 0; firstAt = 0; raf = requestAnimationFrame(frame); }
   });
   canvas.addEventListener('webglcontextlost', function (e) {
     e.preventDefault();
-    cancelAnimationFrame(raf); raf = 0;
-    canvas.remove(); caption.remove();
-    document.documentElement.classList.remove('bg-gl');      // 2D fallback resumes
+    shutDown();                                              // 2D fallback resumes
   });
   var rt = 0;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); });
 
-  // for debugging / curiosity: window.__bg.stats()
+  // for debugging / curiosity: window.__bg.stats(), .scene('rossler'), .next()
+  function find(x) { return typeof x === 'number' ? scenes[x] : byId[x]; }
   window.__bg = {
     stats: function () {
-      return { scene: SCENES[scene].name, particles: Math.round(rows) * SIDE, gpuMs: +gpuMs.toFixed(3),
-               budgetMs: +budget.toFixed(1), gpuShare: gpuMs ? +(gpuMs / budget * 100).toFixed(2) + '%' : 'n/a (no timer)' };
+      return { scene: scene ? scene.def.id : null, n: entry ? entry.n + '/' + entry.of : null, particles: Math.round(rows) * SIDE,
+               gpuMs: +gpuMs.toFixed(3), budgetMs: +budget.toFixed(1),
+               gpuShare: gpuMs ? +(gpuMs / budget * 100).toFixed(2) + '%' : 'n/a (no timer)' };
     },
-    scene: function (i) { setScene(i, performance.now()); },
-    next: function () { setScene(nextScene(), performance.now()); }
+    list: function () { return scenes.map(function (sc) { return sc.def.id + (sc.failed ? ' (failed)' : ''); }); },
+    scene: function (x, variant, shape) {                   // jump to a scene (blocks until its programs are compiled)
+      var sc = find(x);
+      if (!sc) return false;
+      buildNow(sc);
+      if (sc.failed) return false;
+      document.documentElement.classList.add('bg-gl');
+      setScene(startRound(sc), performance.now());
+      sceneStart = performance.now();
+      if (typeof variant === 'number') uVar = variant;      // pin the random variant, for tests
+      if (typeof shape === 'number') shapeKind = shape;
+      return true;
+    },
+    next: function () {                                     // true if the background takes over (now, or as soon as a scene is ready)
+      var e = pickNext();
+      if (e) { setScene(e, performance.now()); sceneStart = performance.now(); return true; }
+      wantNext = !!scene;
+      return !!scene;
+    }
   };
 })();

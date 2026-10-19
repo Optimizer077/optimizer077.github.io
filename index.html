@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=2cb5ce54" />
+  <link rel="stylesheet" href="style.css?v=181e892b" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -104,13 +104,13 @@
                   data-src="assets/img/portrait.webp"
                   data-crop="150,70,480,520"
                   role="img"
-                  aria-label="Portrait of Ali Haider, drawn as pixels that denoise into place"></canvas>
+                  aria-label="Portrait of Ali Haider, drawn as pixels that act out a new physics or machine-learning process every few seconds"></canvas>
           <img class="hero-fallback" src="assets/img/portrait.webp" width="640" height="641" alt="Portrait of Ali Haider" />
         </div>
         <figcaption>
-          <span id="hero-cap">Diffusion: noised, then denoised back</span>
-          <span class="t-readout"><span id="t-lab">t</span> = <b id="t-val">0</b></span>
-          <button class="renoise" id="renoise" type="button" aria-label="Show the next physics process">↻ next</button>
+          <span id="hero-cap">Portrait of Ali Haider</span>
+          <span class="hero-eq" id="hero-eq" aria-hidden="true"></span>
+          <button class="renoise" id="renoise" type="button" aria-label="Show the next physics process">↻ next process <span class="hero-count" id="hero-count"></span></button>
         </figcaption>
       </figure>
     </section>
@@ -454,11 +454,35 @@
               <p class="pub-authors"><span class="me">Ali Haider</span>, Muhammad Salman Ali, Maryam Qamar, Tahir Khalil, Soo Ye Kim, Jihyong Oh, Enzo Tartaglione, Sung-Ho Bae</p>
               <p class="pub-venue">AAAI Conference on Artificial Intelligence, 2026 &middot; Singapore</p>
               <p class="pub-note">In collaboration with LTCI, Télécom Paris &amp; Adobe Research</p>
+              <!--math:iinr-->
+              <p class="pub-eq"><span class="eq-label">Training</span><span class="eq-row" role="img" aria-label="Training objective: minimize the expected squared error between the network output f theta, given a noisy blend of the signal I of x and a latent Z, and the clean signal I of x."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><munder><mi>min</mi><mi>θ</mi></munder><mo>&#x2061;</mo><mspace width="0.2778em"></mspace><mi>𝔼</mi><mspace width="0.1667em"></mspace><msubsup><mrow><mo form="prefix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo><msub><mi>f</mi><mi>θ</mi></msub><mrow><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mover accent="true"><mi>g</mi><mo>˜</mo></mover><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mi>t</mi></msub><mo>,</mo><mspace width="0.1667em"></mspace><mi>x</mi><mo>,</mo><mspace width="0.1667em"></mspace><mi>t</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>−</mo><mi>ℐ</mi><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mo form="postfix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo></mrow><mn>2</mn><mn>2</mn></msubsup></mrow></math></span><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mover accent="true"><mi>g</mi><mo>˜</mo></mover><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mi>t</mi></msub><mo>=</mo><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mn>1</mn><mo>−</mo><mi>t</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mspace width="0.1667em"></mspace><mi>ℐ</mi><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mo>+</mo><mi>t</mi><mspace width="0.1667em"></mspace><mi>𝒵</mi><mo>+</mo><mi>ε</mi><mspace width="0.1667em"></mspace><mi>t</mi><mspace width="0.1667em"></mspace><mi>n</mi></mrow></math></span></span></p>
+              <p class="pub-eq"><span class="eq-label">Refinement step</span><span class="eq-row" role="img" aria-label="Refinement step: the estimate at time t minus delta is delta over t times the network prediction, plus one minus delta over t times the current estimate."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mover accent="true"><mi>g</mi><mo>ˆ</mo></mover><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mrow><mi>t</mi><mo>−</mo><mi>δ</mi></mrow></msub><mo>=</mo><mfrac><mi>δ</mi><mi>t</mi></mfrac><mspace width="0.1667em"></mspace><msub><mi>f</mi><mi>θ</mi></msub><mrow><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mover accent="true"><mi>g</mi><mo>ˆ</mo></mover><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mi>t</mi></msub><mo>,</mo><mspace width="0.1667em"></mspace><mi>x</mi><mo>,</mo><mspace width="0.1667em"></mspace><mi>t</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo>+</mo><mrow><mo form="prefix" stretchy="true" symmetric="true" lspace="0" rspace="0">(</mo><mn>1</mn><mo>−</mo><mfrac><mi>δ</mi><mi>t</mi></mfrac><mo form="postfix" stretchy="true" symmetric="true" lspace="0" rspace="0">)</mo></mrow><mover accent="true"><mi>g</mi><mo>ˆ</mo></mover><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>x</mi><msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mi>t</mi></msub></mrow></math></span></span></p>
+              <!--/math:iinr-->
               <div class="pub-links">
                 <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">PDF</a>
                 <a href="https://arxiv.org/abs/2504.17364" target="_blank" rel="noopener noreferrer">arXiv</a>
                 <a href="https://github.com/mlvc-lab/iterative-inr" target="_blank" rel="noopener noreferrer">Code</a>
               </div>
+              <!--cite:iinr-->
+              <details class="pub-cite">
+              <summary>Cite</summary>
+              <div class="cite-body">
+              <pre class="bibtex" tabindex="0"><code>@inproceedings{haider2026iinr,
+  title     = {{I-INR}: Iterative Implicit Neural Representations},
+  author    = {Haider, Ali and Ali, Muhammad Salman and Qamar, Maryam and Khalil, Tahir and Kim, Soo Ye and Oh, Jihyong and Tartaglione, Enzo and Bae, Sung-Ho},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {40},
+  number    = {6},
+  pages     = {4520--4528},
+  year      = {2026},
+  doi       = {10.1609/aaai.v40i6.42451},
+  eprint    = {2504.17364},
+  archivePrefix = {arXiv}
+}</code></pre>
+              <button class="cite-copy" type="button">Copy BibTeX</button>
+              </div>
+              </details>
+              <!--/cite:iinr-->
             </div>
           </li>
 
@@ -477,10 +501,32 @@
               <p class="pub-authors">Junghun Cha<sup>*</sup>, <span class="me">Ali Haider</span><sup>*</sup>, Seoyun Yang, Hoeyeong Jin, Subin Yang, A.&nbsp;F.&nbsp;M. Shahab Uddin, Jaehyoung Kim, Soo Ye Kim, Sung-Ho Bae</p>
               <p class="pub-venue">AAAI, Vol.&nbsp;38 No.&nbsp;2, 2024</p>
               <p class="pub-note">In collaboration with Adobe Research</p>
+              <!--math:descan-->
+              <p class="pub-eq"><span class="eq-label">Colour correction</span><span class="eq-row" role="img" aria-label="Colour correction: each channel k of the scanned image is standardized by its own mean and standard deviation, then rescaled to the target mean and standard deviation."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><msubsup><mi>I</mi><mi>c</mi><mi>k</mi></msubsup><mo>=</mo><mfrac><mrow><msubsup><mi>I</mi><mi>s</mi><mi>k</mi></msubsup><mo>−</mo><msubsup><mi>μ</mi><mi>s</mi><mi>k</mi></msubsup></mrow><mrow><msubsup><mi>σ</mi><mi>s</mi><mi>k</mi></msubsup><mo>+</mo><mi>ε</mi></mrow></mfrac><mspace width="0.1667em"></mspace><msubsup><mi>σ</mi><mi>c</mi><mi>k</mi></msubsup><mo>+</mo><msubsup><mi>μ</mi><mi>c</mi><mi>k</mi></msubsup></mrow></math></span></span></p>
+              <p class="pub-eq"><span class="eq-label">Diffusion loss</span><span class="eq-row" role="img" aria-label="Diffusion loss: the expected norm of the difference between the true noise epsilon and the noise predicted from x t, t, the corrected image I c and the colour vector v c."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mi>L</mi><mo>=</mo><mi>𝔼</mi><mrow><mo form="prefix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo><mi>ϵ</mi><mo>−</mo><msub><mi>ϵ</mi><mi>θ</mi></msub><mrow><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mi>t</mi></msub><mo>,</mo><mspace width="0.1667em"></mspace><mi>t</mi><mo>,</mo><mspace width="0.1667em"></mspace><msub><mi>I</mi><mi>c</mi></msub><mo>,</mo><mspace width="0.1667em"></mspace><msub><mi>v</mi><mi>c</mi></msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo></mrow><mo form="postfix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo></mrow></mrow></math></span></span></p>
+              <!--/math:descan-->
               <div class="pub-links">
                 <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">HTML</a>
                 <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27855" target="_blank" rel="noopener noreferrer">PDF</a>
               </div>
+              <!--cite:descan-->
+              <details class="pub-cite">
+              <summary>Cite</summary>
+              <div class="cite-body">
+              <pre class="bibtex" tabindex="0"><code>@inproceedings{cha2024descanning,
+  title     = {Descanning: From Scanned to the Original Images with a Color Correction Diffusion Model},
+  author    = {Cha, Junghun and Haider, Ali and Yang, Seoyun and Jin, Hoeyeong and Yang, Subin and Uddin, A. F. M. Shahab and Kim, Jaehyoung and Kim, Soo Ye and Bae, Sung-Ho},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {38},
+  number    = {2},
+  pages     = {954--963},
+  year      = {2024},
+  doi       = {10.1609/aaai.v38i2.27855}
+}</code></pre>
+              <button class="cite-copy" type="button">Copy BibTeX</button>
+              </div>
+              </details>
+              <!--/cite:descan-->
             </div>
           </li>
 
@@ -498,9 +544,29 @@
               </h3>
               <p class="pub-authors"><span class="me">Ali Haider</span>, Furqan Shaukat, Junaid Mir</p>
               <p class="pub-venue">Infrared Physics &amp; Technology 116 (2021) &middot; Impact Factor: 3.4</p>
+              <!--math:fcrn-->
+              <p class="pub-eq"><span class="eq-label">Detection pipeline (a sketch, not an equation from the paper)</span><span class="eq-row" role="img" aria-label="Detection pipeline, a sketch rather than an equation from the paper: the network F theta maps the image I to a density map D hat; each connected region R k where the density exceeds a threshold tau yields one position, its centroid c k."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mover accent="true"><mi>D</mi><mo>ˆ</mo></mover><mo>=</mo><msub><mi>F</mi><mi>θ</mi></msub><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><mi>I</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo></mrow></math></span><span class="eq-part" tabindex="-1"><math display="inline"><mrow><msub><mi>𝐜</mi><mi>k</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mo form="prefix" stretchy="true" symmetric="true" lspace="0" rspace="0">|</mo><msub><mi>R</mi><mi>k</mi></msub><mo form="postfix" stretchy="true" symmetric="true" lspace="0" rspace="0">|</mo></mrow></mfrac><mspace width="0.1667em"></mspace><msub><mo>∑</mo><mrow><mi>p</mi><mo>∈</mo><msub><mi>R</mi><mi>k</mi></msub></mrow></msub><mspace width="0.1667em"></mspace><mi>p</mi><mo>,</mo><mspace width="1em"></mspace><msub><mi>R</mi><mi>k</mi></msub><mo>⊂</mo><mo form="prefix" stretchy="false" lspace="0" rspace="0">{</mo><mover accent="true"><mi>D</mi><mo>ˆ</mo></mover><mo>&gt;</mo><mi>τ</mi><mo form="postfix" stretchy="false" lspace="0" rspace="0">}</mo></mrow></math></span></span></p>
+              <!--/math:fcrn-->
               <div class="pub-links">
                 <a href="https://www.sciencedirect.com/science/article/pii/S1350449521001687" target="_blank" rel="noopener noreferrer">HTML</a>
               </div>
+              <!--cite:fcrn-->
+              <details class="pub-cite">
+              <summary>Cite</summary>
+              <div class="cite-body">
+              <pre class="bibtex" tabindex="0"><code>@article{haider2021fcrn,
+  title   = {Human Detection in Aerial Thermal Imaging using a Fully Convolutional Regression Network},
+  author  = {Haider, Ali and Shaukat, Furqan and Mir, Junaid},
+  journal = {Infrared Physics \&amp; Technology},
+  volume  = {116},
+  pages   = {103796},
+  year    = {2021},
+  doi     = {10.1016/j.infrared.2021.103796}
+}</code></pre>
+              <button class="cite-copy" type="button">Copy BibTeX</button>
+              </div>
+              </details>
+              <!--/cite:fcrn-->
             </div>
           </li>
 
@@ -518,9 +584,27 @@
               </h3>
               <p class="pub-authors"><span class="me">Ali Haider</span>, Sung Ho Bae</p>
               <p class="pub-venue">Korea Broadcasting Media Engineering Conference, 2024: 998–1001</p>
+              <!--math:kmbe-->
+              <p class="pub-eq"><span class="eq-label">Objective (a sketch, not an equation from the paper)</span><span class="eq-row" role="img" aria-label="Objective, a sketch rather than an equation from the paper: the mean squared error is replaced by the mean of a robust loss rho c of the residual, with c equal to 0.8."><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><mspace width="0.1667em"></mspace><msub><mo>∑</mo><mi>i</mi></msub><msubsup><mrow><mo form="prefix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo><msub><mi>f</mi><mi>θ</mi></msub><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><mo form="postfix" stretchy="true" symmetric="true" lspace="0" rspace="0">‖</mo></mrow><mn>2</mn><mn>2</mn></msubsup><mspace width="0.2778em"></mspace><mo>⟶</mo><mspace width="0.2778em"></mspace><mfrac><mn>1</mn><mi>N</mi></mfrac><mspace width="0.1667em"></mspace><msub><mo>∑</mo><mi>i</mi></msub><mspace width="0.1667em"></mspace><msub><mi>ρ</mi><mi>c</mi></msub><mrow><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>f</mi><mi>θ</mi></msub><mo form="prefix" stretchy="false" lspace="0" rspace="0">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo><mo>−</mo><msub><mi>y</mi><mi>i</mi></msub><mo form="postfix" stretchy="false" lspace="0" rspace="0">)</mo></mrow></mrow></math></span><span class="eq-part" tabindex="-1"><math display="inline"><mrow><mi>c</mi><mo>=</mo><mn>0.8</mn></mrow></math></span></span></p>
+              <!--/math:kmbe-->
               <div class="pub-links">
                 <a href="https://www.dbpia.co.kr/pdf/pdfView.do?nodeId=NODE11849226" target="_blank" rel="noopener noreferrer">PDF</a>
               </div>
+              <!--cite:kmbe-->
+              <details class="pub-cite">
+              <summary>Cite</summary>
+              <div class="cite-body">
+              <pre class="bibtex" tabindex="0"><code>@inproceedings{haider2024kmbe,
+  title     = {Improving Implicit Neural Representations with Robust Loss Function},
+  author    = {Haider, Ali and Bae, Sung Ho},
+  booktitle = {Korea Broadcasting Media Engineering Conference},
+  pages     = {998--1001},
+  year      = {2024}
+}</code></pre>
+              <button class="cite-copy" type="button">Copy BibTeX</button>
+              </div>
+              </details>
+              <!--/cite:kmbe-->
             </div>
           </li>
 
@@ -551,6 +635,21 @@
               <div class="pub-links">
                 <a href="https://doi.org/10.8080/1020240169006" target="_blank" rel="noopener noreferrer">DOI</a>
               </div>
+              <!--cite:patent-->
+              <details class="pub-cite">
+              <summary>Cite</summary>
+              <div class="cite-body">
+              <pre class="bibtex" tabindex="0"><code>@misc{bae2024patent,
+  title        = {Apparatus and Method for Image Restoration Based on Machine Learning},
+  author       = {Bae, Sung-Ho and Cha, Junghun and Haider, Ali},
+  year         = {2024},
+  howpublished = {Korean Intellectual Property Office (KIPO), No.~10-2024-0169006},
+  doi          = {10.8080/1020240169006}
+}</code></pre>
+              <button class="cite-copy" type="button">Copy BibTeX</button>
+              </div>
+              </details>
+              <!--/cite:patent-->
             </div>
           </li>
 
@@ -724,11 +823,14 @@
     <p>&copy; 2026 Ali Haider &nbsp;·&nbsp; <a href="#about">back to top ↑</a></p>
   </footer>
 
-  <script src="assets/js/site.js?v=0f273781" defer></script>
-  <script src="assets/js/bg-physics.js?v=6fb871f9" defer></script>
+  <script src="assets/js/site.js?v=7b82886c" defer></script>
+  <script src="assets/js/processes.js?v=9b4976ba" defer></script>
+  <script src="assets/js/bg-scenes.js?v=61bc6aab" defer></script>
+  <script src="assets/js/bg-physics.js?v=14ab85e9" defer></script>
   <script src="assets/js/flow-field.js?v=ddcebc0f" defer></script>
-  <script src="assets/js/pixel-hero.js?v=44dcba87" defer></script>
-  <script src="assets/js/hill-drive.js?v=7fc7b1f3" defer></script>
+  <script src="assets/js/hero-effects.js?v=f99c9fc8" defer></script>
+  <script src="assets/js/pixel-hero.js?v=e157043a" defer></script>
+  <script src="assets/js/hill-drive.js?v=f354dcbc" defer></script>
   <script src="assets/js/drone-nav.js?v=016ea004" defer></script>
   <script src="assets/js/mini-demos.js?v=1e5dfa1e" defer></script>
   <script src="assets/js/learn-loop.js?v=83df17eb" defer></script>

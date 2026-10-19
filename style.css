@@ -2629,3 +2629,112 @@ button.pub-thumb:focus-visible { outline: 2px solid var(--clr-accent); outline-o
   height: 100%;
   background: var(--clr-border);
 }
+
+/* ============================================================
+   Equations (MathML from build_math.py), BibTeX panels, hero formula
+   ============================================================ */
+math {
+  font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Noto Sans Math", math, serif;
+  font-size: 1.14em;
+  color: var(--clr-primary);
+}
+/* each formula scrolls sideways on its own if the column is too narrow for it */
+.eq-part { display: inline-block; max-width: 100%; padding: .2em 0; overflow-x: auto; vertical-align: middle; scrollbar-width: thin; }
+
+/* publication equations */
+.pub-eq { margin: .6rem 0 .2rem; padding: .05rem 0 .05rem .8rem; border-left: 2px solid var(--clr-accent-border); }
+.pub-eq + .pub-eq { margin-top: .35rem; }
+.eq-label { display: block; margin-bottom: .05rem; font-size: .84rem; font-style: italic; color: var(--clr-muted); }
+.eq-row { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem 1.6rem; }
+
+/* "Cite": BibTeX in a disclosure, with a copy button */
+.pub-cite { margin-top: .5rem; font-size: .98rem; }
+.pub-cite summary {
+  display: inline-block;
+  cursor: pointer;
+  list-style: none;
+  color: var(--clr-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pub-cite summary::-webkit-details-marker { display: none; }
+.pub-cite summary::after { content: " \25BE"; font-size: .8em; text-decoration: none; display: inline-block; }
+.pub-cite[open] summary::after { content: " \25B4"; }
+.pub-cite summary:hover { color: var(--clr-accent-dark); }
+.pub-cite summary:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: 3px; }
+.cite-body { margin-top: .45rem; }
+.bibtex {
+  margin: 0;
+  padding: .7rem .85rem;
+  overflow-x: auto;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: .76rem;
+  line-height: 1.55;
+  color: var(--clr-text);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+.bibtex:focus-visible { outline: 2px solid var(--clr-accent); outline-offset: 2px; }
+.cite-copy {
+  margin-top: .45rem;
+  padding: .2rem .75rem;
+  font: inherit;
+  font-size: .9rem;
+  color: var(--clr-accent);
+  background: none;
+  border: 1px solid var(--clr-accent-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.cite-copy:hover { background: var(--clr-accent-light); }
+html:not(.js) .cite-copy { display: none; }
+
+/* hero caption: process name, its formula, and the next button, each on its own row at full width.
+   The two text rows reserve their tallest case, so the page never shifts when the process changes. */
+.hero-figure figcaption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .3rem;
+  align-items: start;
+}
+#hero-cap { grid-row: 1; min-height: 3.3em; }                          /* two lines */
+.hero-eq {
+  grid-row: 2;
+  min-height: 4.6em;                      /* the tallest formula: a root inside brackets, or two stacked lines */
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;              /* the formula hugs its caption; any spare room is below it */
+  align-items: center;
+  gap: .05rem 1.2rem;
+  overflow-x: clip;                       /* never widens the page, and is not a keyboard-focusable scroller */
+  font-style: normal;
+  color: var(--clr-primary);
+}
+.hero-eq .eq-part { max-width: none; overflow: visible; }
+.hero-eq math { font-size: 1.1em; }
+.hero-eq:empty { display: none; }       /* reduced motion / no script: no formula, no reserved row */
+html.reduce-motion #hero-cap, html:not(.js) #hero-cap { min-height: 0; }
+.renoise { grid-row: 3; justify-self: end; white-space: nowrap; }
+.hero-count { display: inline-block; margin-left: .2em; color: var(--clr-muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+  .hero-eq { min-height: 5em; }           /* two lines of formula on a phone */
+  .hero-eq math { font-size: .96em; }
+  .pub-eq { padding-left: .6rem; }
+  .pub-eq math { font-size: 1.04em; }
+  .eq-label { font-size: .78rem; }
+}
+
+/* a wide formula must never stretch its card: grid items may shrink below their content, the formula scrolls instead */
+.pub-card > * { min-width: 0; }
+.pub-body { min-width: 0; }
+@media (max-width: 600px) { .pub-card { grid-template-columns: minmax(0, 1fr); } }
+
+@media (pointer: coarse) {
+  .renoise { display: inline-flex; align-items: center; min-height: 44px; padding: 0 .3rem; }
+  .pub-cite summary { display: inline-block; padding: .55rem 0; }
+  .cite-copy { min-height: 44px; }
+}

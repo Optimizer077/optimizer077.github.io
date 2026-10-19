@@ -1,5 +1,5 @@
 /* Shared site behaviour: mobile nav, theme toggle, scroll reveal,
-   news "show all", live GitHub stars, and pixel-reveal thumbnails. */
+   news "show all", live GitHub stars, BibTeX copy, and pixel-reveal thumbnails. */
 (function () {
   'use strict';
 
@@ -297,6 +297,37 @@
     window.addEventListener('resize', tlUpdate);
     tlUpdate();
   }
+
+  /* ---------- Citations: copy a publication's BibTeX ---------- */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.cite-copy') : null;
+    var pre = btn && btn.parentNode.querySelector('.bibtex');
+    if (!pre) return;
+    var label = btn.getAttribute('data-label') || btn.textContent;
+    btn.setAttribute('data-label', label);
+    var selectAll = function () {
+      var r = document.createRange();
+      r.selectNodeContents(pre);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    };
+    var done = function (ok) {
+      btn.textContent = ok ? 'Copied' : 'Selected: press Ctrl+C';
+      window.setTimeout(function () { btn.textContent = label; }, 1800);
+    };
+    var legacy = function () {
+      selectAll();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) {}
+      done(ok);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(pre.textContent).then(function () { done(true); }, legacy);
+    } else {
+      legacy();
+    }
+  });
 
   /* ---------- Figure reveals ----------
      Each publication figure reveals itself in a way that matches its paper when it
