@@ -2862,3 +2862,4 @@ html.reduce-motion .ai-fab { transition: none; }
 .cp-anim p:nth-child(3) i { animation-delay: .3s; }
 .cp-anim p:nth-child(4) i { animation-delay: .45s; }
 @keyframes cp-grow { from { transform: scaleX(0); } 70%, to { transform: scaleX(1); } }
+.repo-card p a { position: relative; z-index: 1; white-space: nowrap; }   /* a link inside the text stays clickable above the stretched title link */
