@@ -2799,3 +2799,66 @@ html.reduce-motion #hero-cap, html:not(.js) #hero-cap { min-height: 0; }
 }
 html.reduce-motion .ai-fab { transition: none; }
 @media print { .ai-fab, .gemma-panel { display: none; } }
+
+/* ============================================================
+   Project logos and small animations on the newer project cards
+   ============================================================ */
+.repo-card h3 { display: flex; align-items: center; gap: .55rem; }
+.repo-logo { flex: none; width: 28px; height: 28px; border-radius: 6px; }
+.repo-anim { margin: -.2rem 0 .9rem; color: var(--clr-muted); }
+
+/* gpu-pulse: three gauges filling and a pulse running along the strip */
+.gp-anim svg { display: block; width: 100%; max-width: 340px; height: 64px; overflow: visible; }
+.gp-ring circle { fill: none; stroke: var(--clr-border); stroke-width: 4; }
+.gp-ring .gp-val {
+  stroke: var(--clr-accent);
+  stroke-linecap: round;
+  stroke-dasharray: 94.25;
+  stroke-dashoffset: var(--to);
+  transform: rotate(-90deg);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gp-fill 2.6s var(--ease-out) infinite alternate both;
+}
+.gp-ring:nth-child(2) .gp-val { animation-delay: .5s; stroke: var(--clr-signal); }
+.gp-ring:nth-child(3) .gp-val { animation-delay: 1s; }
+.gp-ring text { font-family: var(--font-mono); font-size: 10px; fill: currentColor; text-anchor: middle; }
+@keyframes gp-fill { from { stroke-dashoffset: 94.25; } }
+.gp-line {
+  fill: none;
+  stroke: var(--clr-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-dasharray: 320;
+  animation: gp-draw 2.4s linear infinite both;
+}
+@keyframes gp-draw { from { stroke-dashoffset: 320; } to { stroke-dashoffset: 0; } }
+
+/* nibblepi: speculative decoding, four draft tokens at a time, then accepted */
+.nb-anim { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.nb-anim span {
+  width: 14px; height: 14px;
+  border: 1px solid var(--clr-accent-border);
+  border-radius: 2px;
+  animation: nb-g1 6s linear infinite;
+}
+.nb-anim span:nth-child(n+5)  { animation-name: nb-g2; }
+.nb-anim span:nth-child(n+9)  { animation-name: nb-g3; }
+.nb-anim span:nth-child(n+13) { animation-name: nb-g4; }
+@keyframes nb-g1 { 0%, 4% { background: transparent; } 6% { background: var(--clr-accent-light); } 12%, 90% { background: var(--clr-accent); } 94%, 100% { background: transparent; } }
+@keyframes nb-g2 { 0%, 22% { background: transparent; } 24% { background: var(--clr-accent-light); } 30%, 90% { background: var(--clr-accent); } 94%, 100% { background: transparent; } }
+@keyframes nb-g3 { 0%, 40% { background: transparent; } 42% { background: var(--clr-accent-light); } 48%, 90% { background: var(--clr-accent); } 94%, 100% { background: transparent; } }
+@keyframes nb-g4 { 0%, 58% { background: transparent; } 60% { background: var(--clr-accent-light); } 66%, 90% { background: var(--clr-accent); } 94%, 100% { background: transparent; } }
+.reduce-motion .nb-anim span { animation: none; background: var(--clr-accent); }
+.nb-anim em { flex-basis: 100%; margin-top: .2rem; font-family: var(--font-mono); font-size: .68rem; font-style: normal; }
+
+/* cerno-pi: one forward pass, probabilities per option */
+.cp-anim p { display: flex; align-items: center; gap: .5rem; margin: 0 0 3px; font-size: .7rem; line-height: 1; }
+.cp-anim b { width: 1em; font-family: var(--font-mono); font-weight: 500; }
+.cp-anim i { display: block; height: 8px; width: var(--w); max-width: 260px; background: var(--clr-border); border-radius: 1px;
+             transform-origin: left; animation: cp-grow 3s var(--ease-out) infinite alternate both; }
+.cp-anim p:first-child i { background: var(--clr-accent); }
+.cp-anim p:nth-child(2) i { animation-delay: .15s; }
+.cp-anim p:nth-child(3) i { animation-delay: .3s; }
+.cp-anim p:nth-child(4) i { animation-delay: .45s; }
+@keyframes cp-grow { from { transform: scaleX(0); } 70%, to { transform: scaleX(1); } }

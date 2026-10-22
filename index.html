@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=7e2e0151" />
+  <link rel="stylesheet" href="style.css?v=d3a834a9" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -151,6 +151,14 @@
         </div>
         <div class="block-body">
           <ol class="news-list is-collapsed" id="news-list">
+            <li class="news-item is-new reveal">
+              <time class="news-date" datetime="2026-10">Oct 2026</time>
+              <p class="news-text"><span class="news-tag t-release">release</span>
+                Released <a href="https://github.com/Optimizer077/nibblepi" target="_blank" rel="noopener noreferrer"><strong>nibblepi</strong></a>:
+                Qwen3.5 at 20 tokens/s on a Raspberry Pi 4. It is a from-scratch C and NEON inference engine with 4-bit weights
+                and exact speculative decoding, measured on the board against llama.cpp (5.4 tokens/s).<span class="new-flag">NEW</span>
+              </p>
+            </li>
             <li class="news-item is-new reveal">
               <time class="news-date" datetime="2026-10">Oct 2026</time>
               <p class="news-text"><span class="news-tag t-release">release</span>
@@ -350,7 +358,7 @@
           <article class="repo-card is-featured reveal" data-repo="paper-review-harness">
             <div class="repo-main">
               <div class="repo-top"><span class="repo-kind">tool · featured</span><span class="repo-stars" hidden></span></div>
-              <h3><a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">paper-review-harness</a></h3>
+              <h3><img class="repo-logo" src="assets/img/projects/paper-review-harness.svg" alt="" width="28" height="28" loading="lazy" decoding="async"><a href="https://github.com/Optimizer077/paper-review-harness" target="_blank" rel="noopener noreferrer">paper-review-harness</a></h3>
               <p>
                 Turns a paper PDF into independent simulated reviews,
                 section scores and a prioritized revision plan. Thirty personas cover CVPR, ICLR, ICML and NeurIPS,
@@ -366,13 +374,52 @@
             </div>
           </article>
 
+          <article class="repo-card reveal" data-repo="nibblepi">
+            <div class="repo-top"><span class="repo-kind">inference engine</span><span class="repo-stars" hidden></span></div>
+            <h3><img class="repo-logo" src="assets/img/projects/nibblepi.svg" alt="" width="28" height="28" loading="lazy" decoding="async"><a href="https://github.com/Optimizer077/nibblepi" target="_blank" rel="noopener noreferrer">nibblepi</a></h3>
+            <p>
+              Qwen3.5 on a Raspberry Pi 4 at 20 tokens/s: a from-scratch C engine with NEON kernels, its own 4-bit weight format,
+              speculative decoding that matches plain greedy output token for token, long context and an OpenAI-compatible server.
+            </p>
+            <div class="repo-anim nb-anim" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <em>draft 4, accept, repeat</em>
+            </div>
+            <ul class="repo-tags"><li>C11 + NEON</li><li>Raspberry Pi 4</li><li>Qwen3.5 0.8B · 2B</li><li>Apache-2.0</li></ul>
+          </article>
+
+          <article class="repo-card reveal" data-repo="cerno-pi">
+            <div class="repo-top"><span class="repo-kind">port</span><span class="live-pill">in progress</span></div>
+            <h3><a href="https://github.com/Optimizer077/cerno-pi" target="_blank" rel="noopener noreferrer">cerno-pi</a></h3>
+            <p>
+              Runs Apertix's Cerno 4B decision models on a Raspberry Pi 4 with the nibblepi engine: a state and typed questions in,
+              calibrated probabilities per option out, in one forward pass. An independent port; Cerno is Apertix's work.
+            </p>
+            <div class="repo-anim cp-anim" aria-hidden="true">
+              <p><b>A</b><i style="--w: 64%"></i></p>
+              <p><b>B</b><i style="--w: 20%"></i></p>
+              <p><b>C</b><i style="--w: 11%"></i></p>
+              <p><b>D</b><i style="--w: 5%"></i></p>
+            </div>
+            <ul class="repo-tags"><li>Raspberry Pi 4</li><li>Apache-2.0</li></ul>
+          </article>
+
           <article class="repo-card reveal" data-repo="gpu-pulse">
             <div class="repo-top"><span class="repo-kind">tool</span><span class="repo-stars" hidden></span></div>
-            <h3><a href="https://github.com/Optimizer077/gpu-pulse" target="_blank" rel="noopener noreferrer">gpu-pulse</a></h3>
+            <h3><img class="repo-logo" src="assets/img/projects/gpu-pulse.png" alt="" width="28" height="28" loading="lazy" decoding="async"><a href="https://github.com/Optimizer077/gpu-pulse" target="_blank" rel="noopener noreferrer">gpu-pulse</a></h3>
             <p>
               Live GPU, CPU and memory dashboards in VS Code (also over Remote-SSH) or any terminal: usage history,
               true GPU utilization from SM, Tensor Core and DRAM activity, and a bottleneck diagnosis with suggested fixes.
             </p>
+            <div class="repo-anim gp-anim" aria-hidden="true">
+              <svg viewBox="0 0 300 64" preserveAspectRatio="xMinYMid meet">
+                <g class="gp-ring" style="--to: 13"><circle cx="24" cy="30" r="15"/><circle class="gp-val" cx="24" cy="30" r="15"/><text x="24" y="60">GPU</text></g>
+                <g class="gp-ring" style="--to: 38"><circle cx="70" cy="30" r="15"/><circle class="gp-val" cx="70" cy="30" r="15"/><text x="70" y="60">SM</text></g>
+                <g class="gp-ring" style="--to: 55"><circle cx="116" cy="30" r="15"/><circle class="gp-val" cx="116" cy="30" r="15"/><text x="116" y="60">MEM</text></g>
+                <polyline class="gp-line" points="150,32 178,32 186,32 192,14 200,50 207,24 213,32 238,32 244,26 250,32 296,32"/>
+              </svg>
+            </div>
             <ul class="repo-tags"><li>VS Code extension</li><li>Python terminal app</li><li>MIT</li></ul>
           </article>
 
